@@ -18,19 +18,11 @@ import { GalleryVerticalEnd } from 'lucide-react';
 const data = {
   navMain: [
     {
-      title: 'Main',
+      title: '',
       url: '#',
       items: [
         {
           title: 'Projects',
-          url: '#',
-        },
-        {
-          title: 'Dashboard',
-          url: '#',
-        },
-        {
-          title: 'Project Setup',
           url: '#',
         },
       ],
