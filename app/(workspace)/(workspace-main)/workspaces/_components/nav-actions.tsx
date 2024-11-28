@@ -42,10 +42,6 @@ const data = [
 export function NavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  React.useEffect(() => {
-    setIsOpen(true);
-  }, []);
-
   return (
     <div className="flex items-center gap-2 text-sm">
       <div className="mr-8">
