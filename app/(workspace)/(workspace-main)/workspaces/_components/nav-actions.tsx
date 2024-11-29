@@ -1,13 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {
-  BellIcon,
-  MoreHorizontal,
-  PlusIcon,
-  PowerOffIcon,
-  User,
-} from 'lucide-react';
+import { BellIcon, PlusIcon, PowerOffIcon, User, UserIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -50,7 +44,7 @@ export function NavActions() {
           <span>New Project</span>
         </Button>
       </div>
-      <Button variant="ghost" size="icon" className="h-8 w-8">
+      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
         <BellIcon />
       </Button>
       <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -58,9 +52,14 @@ export function NavActions() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 data-[state=open]:bg-accent"
+            className="h-8 w-8 data-[state=open]:bg-accent rounded-full"
           >
-            <MoreHorizontal />
+            <span
+              className="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8 items-center
+                justify-center"
+            >
+              <UserIcon className="h-6 w-6" />
+            </span>
           </Button>
         </PopoverTrigger>
         <PopoverContent

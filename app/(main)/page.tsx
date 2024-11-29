@@ -1,9 +1,19 @@
-import { Button } from '@/components/ui/button';
+import ContactDemo from './_components/contact-demo';
+import Features from './_components/features';
+import Footer from './_components/footer';
+import Heroes from './_components/heroes';
 
-export default function Home() {
+const LandingPage = () => {
   return (
-    <div className="">
-      <Button>Init</Button>
+    <div className="bg-gray-50 text-gray-900 min-h-screen">
+      <main>
+        <Heroes />
+        <Features />
+        <ContactDemo />
+      </main>
+      <Footer />
     </div>
   );
-}
+};
+
+export default LandingPage;

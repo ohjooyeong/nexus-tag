@@ -25,7 +25,7 @@ const WorkspaceCard = () => {
         </div>
       </div>
       <Button
-        className="w-6 h-6 p-3 flex items-center justify-center top-3 right-3 absolute bg-slate-50
+        className="w-6 h-6 p-3 flex items-center justify-center top-3 right-3 absolute bg-white
           hover:bg-slate-100 border"
       >
         <PinIcon className="w-3 h-3 text-muted-foreground" />
