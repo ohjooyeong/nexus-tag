@@ -5,7 +5,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/app/(workspace)/(workspace-main)/workspaces/_components/app-siderbar';
+
 import { Separator } from '@/components/ui/separator';
 import {
   Breadcrumb,
@@ -15,7 +15,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { NavActions } from './_components/nav-actions';
+
+import { ProjectSidebar } from './_components/project-sidebar';
+import { ProjectNavActions } from './_components/project-nav-actions';
 
 function Layout({ children }: { children: React.ReactNode }) {
   const cookieStore = cookies();
@@ -23,7 +25,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <AppSidebar />
+      <ProjectSidebar />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b">
           <div className="flex flex-1 items-center gap-2 px-6">
@@ -38,11 +40,15 @@ function Layout({ children }: { children: React.ReactNode }) {
                 <BreadcrumbItem>
                   <BreadcrumbPage>Projects</BreadcrumbPage>
                 </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>brb1111</BreadcrumbPage>
+                </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
           </div>
           <div className="ml-auto px-6">
-            <NavActions />
+            <ProjectNavActions />
           </div>
         </header>
         <div className="mx-6">{children}</div>

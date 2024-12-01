@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import Logo from './logo';
+import Link from 'next/link';
 
 const Navbar = () => {
   return (
@@ -23,15 +24,22 @@ const Navbar = () => {
           </ul>
         </nav>
         <div className="flex space-x-4">
-          <Button variant={'outline'} size={'lg'} className="rounded-xl">
-            Sign In
+          <Button
+            variant={'outline'}
+            size={'lg'}
+            className="rounded-xl"
+            asChild
+          >
+            <Link href={'/login'}>Login</Link>
           </Button>
           <Button
             variant={'default'}
             size={'lg'}
-            className="rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-white"
+            className="rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 text-white
+              hover:opacity-80 transition"
+            asChild
           >
-            Sign Up
+            <Link href={'/signup'}>Sign Up</Link>
           </Button>
         </div>
       </div>

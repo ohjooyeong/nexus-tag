@@ -7,8 +7,8 @@ const ContactDemo = () => {
           Embrace the future of data labeling with Nexus Tag
         </p>
         <button
-          className="bg-blue-600 text-white px-10 py-4 rounded-lg text-xl font-semibold
-            hover:bg-blue-700 transition"
+          className="bg-gradient-to-br from-blue-500 to-purple-600 text-white px-10 py-4 rounded-lg
+            text-xl font-semibold hover:opacity-80 transition"
         >
           Book Free Demo
         </button>

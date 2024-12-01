@@ -1,6 +1,6 @@
+import WorkspaceCard from '@/app/(workspace)/(workspace-main)/_components/workspace-card';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, Search } from 'lucide-react';
-import WorkspaceCard from '../../_components/workspace-card';
 
 const ProjectsPage = () => {
   return (
@@ -26,7 +26,7 @@ const ProjectsPage = () => {
                 aria-autocomplete="list"
                 type="text"
                 value=""
-              ></input>
+              />
             </div>
             <Button variant={'default'}>
               <PlusIcon />

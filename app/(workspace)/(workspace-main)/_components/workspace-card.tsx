@@ -11,7 +11,10 @@ import Link from 'next/link';
 const WorkspaceCard = () => {
   return (
     <div className="w-60 h-56 relative rounded-2xl overflow-hidden shadow border hover:bg-muted">
-      <Link href={'#'} className="w-full h-full">
+      <Link
+        href={'/workspaces/brb1111/projects/dsfsdfsf/dashboard'}
+        className="w-full h-full"
+      >
         <span className="absolute top-0 left-0 w-full h-full rounded-2xl"></span>
       </Link>
       <div className="absolute top-3 left-3 right-3">
