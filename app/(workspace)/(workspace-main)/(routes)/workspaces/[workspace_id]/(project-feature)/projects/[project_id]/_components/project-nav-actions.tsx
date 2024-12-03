@@ -19,6 +19,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
 
 const data = [
   [
@@ -39,9 +40,20 @@ export function ProjectNavActions() {
   return (
     <div className="flex items-center gap-2 text-sm">
       <div className="mr-8">
-        <Button variant="default" size="sm" className="h-10 mx-2 text-sm">
-          <span>Start Annotating</span>
-          <PlayIcon className="h-4 w-4" />
+        <Button
+          variant="default"
+          size="sm"
+          className="h-10 mx-2 text-sm"
+          asChild
+        >
+          <Link
+            href={
+              '/workspaces/brb1111/projects/image-chapter123/image-annotate'
+            }
+          >
+            <span>Start Annotating</span>
+            <PlayIcon className="h-4 w-4" />
+          </Link>
         </Button>
       </div>
       <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">

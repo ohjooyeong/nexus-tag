@@ -42,7 +42,7 @@ function Layout({ children }: { children: React.ReactNode }) {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>brb1111</BreadcrumbPage>
+                  <BreadcrumbPage>Image-Chapter123</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
