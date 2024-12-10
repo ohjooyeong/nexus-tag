@@ -23,6 +23,11 @@ import {
   ZapIcon,
 } from 'lucide-react';
 import { ImageMenuDrop } from './image-menu-drop';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 // This is sample data.
 const data = {
@@ -48,7 +53,7 @@ const data = {
       url: '#',
       items: [
         {
-          title: 'SAM',
+          title: 'SAM Brush',
           url: '#',
           icon: ZapIcon,
         },
@@ -102,7 +107,7 @@ export function AnnotateSidebar({
               asChild
               className="flex items-center justify-center"
             >
-              <ImageMenuDrop menuItem={menuData} isCollapsed />
+              <ImageMenuDrop menuItem={menuData} />
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -118,9 +123,14 @@ export function AnnotateSidebar({
               <SidebarMenu>
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title} className="mb-1">
-                    <SidebarMenuButton className="w-full h-10 flex items-center justify-center border rounded-lg">
-                      <item.icon className="w-full h-10" />
-                    </SidebarMenuButton>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <SidebarMenuButton className="w-full h-10 flex items-center justify-center border rounded-lg">
+                          <item.icon className="w-full h-10" />
+                        </SidebarMenuButton>
+                      </TooltipTrigger>
+                      <TooltipContent>{item.title}</TooltipContent>
+                    </Tooltip>
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
