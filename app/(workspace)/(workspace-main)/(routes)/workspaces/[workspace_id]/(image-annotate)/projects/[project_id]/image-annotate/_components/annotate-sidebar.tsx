@@ -12,7 +12,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarRail,
 } from '@/components/ui/sidebar';
 import {
   BrushIcon,
@@ -138,7 +137,6 @@ export function AnnotateSidebar({
           </SidebarGroup>
         ))}
       </SidebarContent>
-      <SidebarRail />
     </Sidebar>
   );
 }
