@@ -2,6 +2,7 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AnnotateSidebar } from './_components/annotate-sidebar';
 import { AnnotateNavActions } from './_components/annotate-nav-actions';
 import AnnotateImageInfo from './_components/annotate-image-info';
+import AnnotateMain from './_components/annotate-main';
 
 const ImageAnnotatePage = () => {
   return (
@@ -23,7 +24,7 @@ const ImageAnnotatePage = () => {
             <AnnotateNavActions />
           </div>
         </header>
-        <div className=""></div>
+        <AnnotateMain />
       </SidebarInset>
     </SidebarProvider>
   );
