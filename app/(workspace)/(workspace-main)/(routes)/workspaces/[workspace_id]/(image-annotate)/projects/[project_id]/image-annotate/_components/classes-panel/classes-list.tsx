@@ -91,6 +91,24 @@ const ClassesList = () => {
               <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
               <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
               <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
+              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
+              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
+              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
+              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
+              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
+              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
+              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
+              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
+              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
+              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
+              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
+              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
+              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
+              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
+              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
+              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
+              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
+              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
             </CollapsibleContent>
           </Collapsible>
           <Collapsible
