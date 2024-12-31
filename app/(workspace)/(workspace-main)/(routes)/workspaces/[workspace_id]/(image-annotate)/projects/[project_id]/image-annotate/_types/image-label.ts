@@ -8,11 +8,14 @@ export enum LabelType {
 }
 
 export type ApiLabel = {
+  id: string;
+  classId: string;
   updatedOn: string;
   createdOn: string;
   polygon: Label['polygon'];
   mask: Label['mask'];
   bbox: Label['bbox'];
+  zIndex: number;
 };
 
 const fromBackendLabel = ({

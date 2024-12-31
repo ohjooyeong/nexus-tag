@@ -14,6 +14,7 @@ type ImageViewContainerProps = {
 
 const ImageViewContainer = ({ params }: ImageViewContainerProps) => {
   const { project_id: projectId } = params;
+  const imageObjectId = 0;
   const { width, height, ref } = useResizeDetector();
 
   return (
@@ -28,6 +29,7 @@ const ImageViewContainer = ({ params }: ImageViewContainerProps) => {
                 containerWidth={width}
                 containerHeight={height}
                 imageId=""
+                imageObjectId={imageObjectId}
                 labels={[]}
               />
             )}

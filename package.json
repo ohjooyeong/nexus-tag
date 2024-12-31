@@ -30,6 +30,7 @@
     "motion": "^11.11.17",
     "next": "14.2.18",
     "next-themes": "^0.4.3",
+    "rbush": "^4.0.1",
     "react": "^18",
     "react-dom": "^18",
     "react-konva": "^18.2.10",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/rbush": "^4.0.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
