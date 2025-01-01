@@ -1,35 +1,48 @@
+import { Button } from '@/components/ui/button';
+import Pointer from './pointer';
+
 const Heroes = () => {
   return (
-    <section className="bg-gradient-to-br from-blue-500 to-purple-600 text-white py-20">
-      <div className="max-w-7xl mx-auto px-4 flex items-center">
-        <div className="w-1/2 pr-12">
-          <h2 className="text-5xl font-bold mb-6">
-            The Future of AI Data Labeling
-          </h2>
-          <p className="text-xl mb-8 text-white/90">
-            Experience precise and efficient data labeling with cutting-edge AI
-            technology. Say goodbye to manual, time-consuming processes!
-          </p>
-          <div className="flex space-x-4">
-            <button
-              className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50
-                transition"
-            >
-              Start Free Trial
-            </button>
-            <button
-              className="border border-white/50 text-white px-6 py-3 rounded-lg font-semibold
-                hover:bg-white/10 transition"
-            >
-              Learn More
-            </button>
+    <section className="py-24">
+      <div className="container mx-auto relative">
+        <div className="absolute left-56 top-96 hidden lg:block">
+          <Pointer name="Andres" />
+        </div>
+        <div className="absolute right-80 -top-4 hidden lg:block">
+          <Pointer name="Bryan" color="red" />
+        </div>
+        <div className="flex justify-center">
+          <div
+            className="inline-flex py-1 px-3 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full
+              text-neutral-950 font-semibold"
+          >
+            ✨ The Future of AI Data Labeling
           </div>
         </div>
-        <div className="w-1/2">
-          <div className="bg-gray-200 h-[400px] rounded-xl flex items-center justify-center">
-            Dashboard Placeholder
-          </div>
-        </div>
+        <h1 className="text-5xl md:text-7xl font-medium text-center mt-6">
+          Smarter, Faster Data Labeling
+          <br /> Great AI Models Start with Great Data
+        </h1>
+        <p className="text-center text-lg md:text-xl text-black/50 mt-8 max-w-4xl mx-auto">
+          Elevate your data quality and accelerate model training with our
+          cutting-edge AI labeling solution.
+          <br />
+          The new standard in data labeling—achieve more with less effort.
+        </p>
+        <form className="flex border border-black/15 rounded-full p-2 mt-8 max-w-lg mx-auto">
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className="bg-transparent px-4 flex-1 outline-none"
+          />
+          <Button
+            type="submit"
+            className="whitespace-nowrap rounded-full px-6"
+            size={'sm'}
+          >
+            Sign Up
+          </Button>
+        </form>
       </div>
     </section>
   );

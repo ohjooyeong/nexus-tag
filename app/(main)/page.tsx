@@ -1,18 +1,18 @@
-import ContactDemo from './_components/contact-demo';
 import Features from './_components/features';
 import Footer from './_components/footer';
+
 import Heroes from './_components/heroes';
+import Introduction from './_components/introduction';
 
 const LandingPage = () => {
   return (
-    <div className="bg-gray-50 text-gray-900 min-h-screen">
-      <main>
-        <Heroes />
-        <Features />
-        <ContactDemo />
-      </main>
+    <>
+      <Heroes />
+      <Introduction />
+      <Features />
+
       <Footer />
-    </div>
+    </>
   );
 };
 
