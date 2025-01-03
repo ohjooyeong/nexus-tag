@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import Pointer from '../_components/pointer';
+import { motion } from 'motion/react';
 
 const Heroes = () => {
   return (

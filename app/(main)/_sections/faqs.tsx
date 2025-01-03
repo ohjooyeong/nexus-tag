@@ -1,17 +1,22 @@
+'use client';
+
 import { PlusIcon } from 'lucide-react';
 import Tag from '../_components/tag';
 import { twMerge } from 'tailwind-merge';
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 
 const faqs = [
   {
-    question: 'How is Layers different from other design tools?',
+    question: 'What does an AI labeling solution do?',
     answer:
-      'Unlike traditional design tools, Layers prioritizes speed and simplicity without sacrificing power. Our intelligent interface adapts to your workflow, reducing clicks and keeping you in your creative flow.',
+      'An AI labeling solution automates the process of annotating data, such as images, text, or videos, for machine learning. It uses advanced algorithms and sometimes human-in-the-loop systems to ensure high-quality labels essential for training AI models.',
   },
   {
-    question: 'Is there a learning curve?',
+    question:
+      'What measures are in place to guarantee the quality of annotations?',
     answer:
-      'Layers is designed to feel intuitive from day one. Most designers are productive within hours, not weeks. We also provide interactive tutorials and comprehensive documentation to help you get started.',
+      ' We combine automated quality checks, human-in-the-loop reviews, and customizable validation steps to deliver highly accurate annotations. You can also set specific quality thresholds to match your project requirements.',
   },
   {
     question: 'How do you handle version control?',
@@ -19,19 +24,15 @@ const faqs = [
       'Every change in Layers is automatically saved and versioned. You can review history, restore previous versions, and create named versions for important milestones.',
   },
   {
-    question: 'Can I work offline?',
+    question: 'Who can use your AI labeling solution?',
     answer:
-      "Yes! Layers includes a robust offline mode. Changes sync automatically when you're back online, so you can keep working anywhere.",
-  },
-  {
-    question: 'How does Layers handle collaboration?',
-    answer:
-      'Layers is built for collaboration. You can invite team members to your projects, share feedback, and work together in real-time.',
+      'Our solution is versatile and can be used across various industries, including healthcare, autonomous vehicles, retail, finance, and more. If your project requires labeled data, we can help!',
   },
 ];
 
 const Faqs = () => {
-  const selectedIndex = 0;
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
   return (
     <section>
       <div className="container mx-auto">
@@ -46,25 +47,37 @@ const Faqs = () => {
           {faqs.map((faq, faqIndex) => (
             <div
               key={faq.question}
-              className="bg-neutral-100 rounded-2xl border border-black/10 p-6"
+              className="bg-neutral-100 rounded-2xl border border-black/10 p-6 cursor-pointer"
+              onClick={() => {
+                if (faqIndex === selectedIndex) {
+                  setSelectedIndex(-1);
+                } else {
+                  setSelectedIndex(faqIndex);
+                }
+              }}
             >
               <div className="flex justify-between items-center">
                 <h3 className="font-medium">{faq.question}</h3>
+
                 <PlusIcon
                   className={twMerge(
-                    'w-6 h-6 text-blue-500 flex-shrink-0',
+                    'w-6 h-6 text-blue-500 flex-shrink-0 transition duration-300',
                     selectedIndex === faqIndex && 'rotate-45',
                   )}
                 />
               </div>
-              <div
-                className={twMerge(
-                  'mt-6',
-                  selectedIndex !== faqIndex && 'hidden',
+              <AnimatePresence>
+                {selectedIndex === faqIndex && (
+                  <motion.div
+                    initial={{ height: 0, marginTop: 0 }}
+                    animate={{ height: 'auto', marginTop: 24 }}
+                    exit={{ height: 0, marginTop: 0 }}
+                    className={twMerge('overflow-hidden')}
+                  >
+                    <p className="text-black/50">{faq.answer}</p>
+                  </motion.div>
                 )}
-              >
-                <p className="text-black/50">{faq.answer}</p>
-              </div>
+              </AnimatePresence>
             </div>
           ))}
         </div>
