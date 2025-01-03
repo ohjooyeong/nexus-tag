@@ -1,8 +1,10 @@
-import Features from './_components/features';
-import Footer from './_components/footer';
+import CallToAction from './_sections/call-to-action';
+import Faqs from './_sections/faqs';
+import Features from './_sections/features';
+import Footer from './_sections/footer';
 
-import Heroes from './_components/heroes';
-import Introduction from './_components/introduction';
+import Heroes from './_sections/heroes';
+import Introduction from './_sections/introduction';
 
 const LandingPage = () => {
   return (
@@ -10,7 +12,8 @@ const LandingPage = () => {
       <Heroes />
       <Introduction />
       <Features />
-
+      <Faqs />
+      <CallToAction />
       <Footer />
     </>
   );

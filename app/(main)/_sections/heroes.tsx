@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import Pointer from './pointer';
+import Pointer from '../_components/pointer';
 
 const Heroes = () => {
   return (
