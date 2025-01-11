@@ -1,6 +1,6 @@
 'use client';
 
-import * as React from 'react';
+import { useState } from 'react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -8,26 +8,46 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Icons } from '@/components/icons';
 import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import GenericForm from '@/components/generic-form';
+import { twMerge } from 'tailwind-merge';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
+type SignUpFormData = {
+  email: string;
+};
+
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault();
+  const {
+    register,
+
+    watch,
+
+    formState: { errors },
+  } = useForm<SignUpFormData>({
+    defaultValues: {
+      email: '',
+    },
+  });
+
+  const email = watch('email');
+
+  async function onSubmit() {
     setIsLoading(true);
 
     setTimeout(() => {
-      router.push('/signup/email-verification');
+      router.push(`/signup/additional-info?email=${email}`);
       setIsLoading(false);
     }, 3000);
   }
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
-      <form onSubmit={onSubmit}>
+      <GenericForm onSubmit={onSubmit}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -35,13 +55,29 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             </Label>
             <Input
               id="email"
-              placeholder="name@example.com"
+              placeholder=""
               type="email"
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
+              className={twMerge(
+                '',
+                errors.email && 'focus-visible:ring-transparent border-red-500',
+              )}
+              {...register('email', {
+                pattern: {
+                  value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
+                  message: 'Invalid email or password. Please try again.',
+                },
+                required: 'Email must be provided.',
+              })}
             />
+            <div className="w-full text-right mt-1 mb-1">
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email?.message}</p>
+              )}
+            </div>
           </div>
           <Button
             disabled={isLoading}
@@ -54,7 +90,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             Sign Up with Email
           </Button>
         </div>
-      </form>
+      </GenericForm>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />

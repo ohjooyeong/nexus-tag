@@ -4,13 +4,7 @@ import { AnnotateNavActions } from './_components/annotate-nav-actions';
 import AnnotateImageInfo from './_components/annotate-image-info';
 import AnnotateMain from './_components/annotate-main';
 
-type ImageAnnotatePageProps = {
-  params: {
-    project_id: string;
-  };
-};
-
-const ImageAnnotatePage = ({ params }: ImageAnnotatePageProps) => {
+const ImageAnnotatePage = () => {
   return (
     <SidebarProvider
       style={
@@ -30,7 +24,7 @@ const ImageAnnotatePage = ({ params }: ImageAnnotatePageProps) => {
             <AnnotateNavActions />
           </div>
         </header>
-        <AnnotateMain params={params} />
+        <AnnotateMain />
       </SidebarInset>
     </SidebarProvider>
   );

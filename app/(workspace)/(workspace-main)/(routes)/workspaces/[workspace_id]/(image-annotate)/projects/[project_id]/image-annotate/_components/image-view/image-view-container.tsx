@@ -3,17 +3,14 @@
 import { useResizeDetector } from 'react-resize-detector';
 import dynamic from 'next/dynamic';
 import ImageViewNavbar from './image-view-navbar';
+import { useParams } from 'next/navigation';
 
 const DynamicImageView = dynamic(() => import('./image-view'), {
   ssr: false,
 });
 
-type ImageViewContainerProps = {
-  params: { project_id: string };
-};
-
-const ImageViewContainer = ({ params }: ImageViewContainerProps) => {
-  const { project_id: projectId } = params;
+const ImageViewContainer = () => {
+  const { project_id: projectId } = useParams();
   const imageObjectId = 0;
   const { width, height, ref } = useResizeDetector();
 
@@ -25,7 +22,7 @@ const ImageViewContainer = ({ params }: ImageViewContainerProps) => {
           <div className="flex-1 overflow-hidden" ref={ref}>
             {width && height && (
               <DynamicImageView
-                projectId={projectId}
+                projectId={projectId as string}
                 containerWidth={width}
                 containerHeight={height}
                 imageId=""

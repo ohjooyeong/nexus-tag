@@ -13,6 +13,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import useLogin from '../_hooks/use-login';
 import axios, { AxiosError } from 'axios';
 import { toast } from 'sonner';
+import { twMerge } from 'tailwind-merge';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -28,7 +29,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   const {
     register,
-    setValue,
+
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
@@ -41,7 +42,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const loginMutation = useLogin();
 
   const onSubmit: SubmitHandler<LoginFormData> = async (context) => {
-    setIsLoading(true); // 로딩 상태 시작
+    setIsLoading(true);
     setLoginError(null); // 이전 에러 초기화
     try {
       const response = await loginMutation.mutateAsync({
@@ -64,7 +65,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         console.error(error);
       }
     } finally {
-      setIsLoading(false); // 로딩 상태 종료
+      setIsLoading(false);
     }
   };
   return (
@@ -87,6 +88,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 autoComplete="email"
                 autoCorrect="off"
                 disabled={isLoading}
+                className={twMerge(
+                  '',
+                  errors.email &&
+                    'focus-visible:ring-transparent border-red-500',
+                )}
                 {...register('email', {
                   pattern: {
                     value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
@@ -108,6 +114,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
                 autoComplete="password"
                 autoCorrect="off"
                 disabled={isLoading}
+                className={twMerge(
+                  '',
+                  errors.password &&
+                    'focus-visible:ring-transparent border-red-500',
+                )}
                 {...register('password', {
                   pattern: {
                     value:
