@@ -1,4 +1,4 @@
-import EmailVerifyForm from './_components/email-verify-form';
+import EmailVerifyForm from './_components/email-verification';
 
 const EmailVerificationPage = () => {
   return (

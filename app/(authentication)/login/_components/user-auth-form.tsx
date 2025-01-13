@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import GenericForm from '@/components/generic-form';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import useLogin from '../_hooks/use-login';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 
@@ -54,12 +54,18 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       if (axios.isAxiosError(error) && error.response) {
         // AxiosError인 경우 처리
         const { status, data } = error.response;
-        setLoginError(
-          data?.message || 'Invalid email or password. Please try again.',
-        );
+        if (status === 450) {
+          router.push(`/email-verify?email=${data.data}`);
+        } else {
+          setLoginError(
+            data?.message || 'Invalid email or password. Please try again.',
+          );
+        }
+
         console.error(`Error ${status}:`, data);
       } else {
         // 기타 에러 처리
+
         setLoginError(null); // 이전 에러 초기화
         toast('An unknown error occurred.');
         console.error(error);

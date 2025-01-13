@@ -9,13 +9,15 @@ import { Label } from '@/components/ui/label';
 
 import axios from 'axios';
 
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 import { BirthPicker } from './birth-picker';
 import dayjs from 'dayjs';
+import useSignUp from '../../_hooks/use-login';
+import { Icons } from '@/components/icons';
 
 export type SignUpFormData = {
   email: string;
@@ -27,6 +29,7 @@ export type SignUpFormData = {
 
 const AdditionalInfoForm = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const email = searchParams.get('email');
 
@@ -34,6 +37,8 @@ const AdditionalInfoForm = () => {
   const [SignUpError, setSignUpError] = useState<string | null>(null);
   const [checkedTerms, setCheckedTerms] = useState(false);
   const [open, setOpen] = useState(false); // 달력 on off state
+
+  const signupMutation = useSignUp();
 
   const {
     register,
@@ -75,11 +80,18 @@ const AdditionalInfoForm = () => {
     setIsLoading(true);
     setSignUpError(null); // 이전 에러 초기화
     try {
-      // const response = await loginMutation.mutateAsync({
-      //   email: context.email,
-      //   password: context.password,
-      // });
-      // console.log(response); // 성공적으로 회원가입한 경우의 처리
+      const response = await signupMutation.mutateAsync({
+        email: context.email,
+        password: context.password,
+        birthdate: context.birthdate,
+        username: context.username,
+      });
+      if (response) {
+        toast.info(
+          'Email Verification Required. Check your email and the verification link to activate your account',
+        );
+        router.replace(`/login`);
+      }
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         // AxiosError인 경우 처리
@@ -217,7 +229,7 @@ const AdditionalInfoForm = () => {
                 )}
                 {...register('username', {
                   pattern: {
-                    value: /^[a-zA-Z\s]{2,40}$/,
+                    value: /^^[\w\s]{2,40}$/,
                     message:
                       'Name must be 2-40 characters long and only include letters and spaces.',
                   },
@@ -290,8 +302,13 @@ const AdditionalInfoForm = () => {
           <Button
             className="w-full bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
               transition mt-8"
-            disabled={canStarted}
-          >{`Let's get started!`}</Button>
+            disabled={canStarted || isLoading}
+          >
+            {isLoading && (
+              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {`Let's get started!`}
+          </Button>
           <BirthPicker
             open={open}
             setOpen={setOpen}
