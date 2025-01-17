@@ -1,35 +1,76 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/spinner';
+import axiosInstance from '@/config/axios-instance';
+
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 const EmailVerification = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const email = searchParams.get('email');
+  const token = searchParams.get('token');
+  const [status, setStatus] = useState('loading');
+
+  useEffect(() => {
+    const verifyEmail = async () => {
+      try {
+        await axiosInstance.post('/auth/verify-email', { token });
+        setStatus('success');
+        setTimeout(() => {
+          router.replace('/login');
+        }, 3000);
+      } catch (error) {
+        setStatus('error');
+      }
+    };
+
+    if (!token) {
+      setStatus('notfound');
+      return;
+    }
+
+    verifyEmail();
+  }, [token]);
 
   return (
-    <div className="flex-col flex justify-center items-center mt-8 p-20">
-      <div className="w-96 flex flex-col">
-        <div className="flex justify-center mb-4">
-          <div className="text-center text-xl font-semibold text-red-500">
-            Email Verification Required
+    <div className="flex-col flex justify-center items-center p-20">
+      <div className="flex items-center justify-center">
+        {status === 'loading' && (
+          <div className="flex flex-col">
+            <p className="mt-8 mb-4 text-lg text-gray-500">
+              Verifying your email...
+            </p>
+            <div className="flex w-full justify-center items-center">
+              <Spinner size={'lg'} />
+            </div>
           </div>
-        </div>
-        <p className="mt-8 mb-4 text-sm text-gray-500">
-          {`Please check your email and verify your account. If you don't see our
-          email, check your spam folder.`}
-        </p>
-        <div className="w-full h-11 flex items-center justify-center rounded-sm mt-8 bg-slate-300">
-          <span className="text-lg font-semibold text-black">{email}</span>
-        </div>
+        )}
+        {status === 'success' && (
+          <div className="flex flex-col">
+            <p className="mt-8 mb-4 text-lg text-gray-500">
+              Your email has been verified! Redirecting to the login page...
+            </p>
+            <div className="flex w-full justify-center items-center">
+              <Spinner size={'lg'} />
+            </div>
+          </div>
+        )}
 
-        <Button
-          className="bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
-            transition mt-4"
-          onClick={() => router.replace('/login')}
-        >{`I've already verified`}</Button>
-        <Button variant={'outline'} className="mt-4">{`Resend Email`}</Button>
+        {status === 'error' && (
+          <>
+            <p className="mt-8 mb-4 text-lg text-gray-500">
+              Email verification failed. Please try again or request a new
+              verification email.
+            </p>
+          </>
+        )}
+        {status === 'notfound' && (
+          <p className="mt-8 mb-4 text-lg text-gray-500">
+            Invalid or missing token. Please check your email for the correct
+            link.
+          </p>
+        )}
       </div>
     </div>
   );

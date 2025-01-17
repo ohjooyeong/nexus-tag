@@ -55,7 +55,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         // AxiosError인 경우 처리
         const { status, data } = error.response;
         if (status === 450) {
-          router.push(`/email-verify?email=${data.data}`);
+          setLoginError(data?.message || 'Email Verification Required');
+          // router.push(`/email-verify?email=${data.data}`);
         } else {
           setLoginError(
             data?.message || 'Invalid email or password. Please try again.',
