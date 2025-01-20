@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
@@ -14,7 +13,7 @@ export const metadata: Metadata = {
   description: 'Sign Up',
 };
 
-export default function AuthenticationPage() {
+function SignUpPage() {
   return (
     <>
       <AuthenticationImage />
@@ -71,3 +70,5 @@ export default function AuthenticationPage() {
     </>
   );
 }
+
+export default SignUpPage;
