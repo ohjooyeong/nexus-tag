@@ -50,7 +50,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       <GenericForm onSubmit={onSubmit}>
         <div className="grid gap-2">
           <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
+            <Label htmlFor="email" className="ml-1 text-neutral-500">
               Email
             </Label>
             <Input

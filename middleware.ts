@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server';
 export const publicRoutes = ['/', '/login', '/signup'];
 
 // 로그인 필요
-export const protectedRoutes = ['/workpsace', '/settings', '/test'];
+export const protectedRoutes = ['/workspaces', '/settings'];
 
 // 유틸 함수: 로그인 페이지로 리다이렉트
 function redirectToLogin(request: NextRequest, redirectPath: string) {
@@ -39,6 +39,7 @@ export default async function middleware(request: NextRequest) {
       });
 
       const { data } = await response.json();
+      console.log(data);
       if (!data.loggedIn) {
         return redirectToLogin(request, currentPath);
       }
@@ -48,10 +49,11 @@ export default async function middleware(request: NextRequest) {
       return redirectToLogin(request, currentPath);
     }
   }
+  console.log(token);
 
   // 로그인 상태로 공용 라우트에 접근할 때 (예: 로그인 후 /login으로 이동)
   if (isPublicRoute && token) {
-    return NextResponse.redirect(new URL('/test', request.url)); // 로그인 후 기본 페이지로 리다이렉트
+    return NextResponse.redirect(new URL('/workspaces', request.url)); // 로그인 후 기본 페이지로 리다이렉트
   }
 
   return NextResponse.next(); // 인증 통과

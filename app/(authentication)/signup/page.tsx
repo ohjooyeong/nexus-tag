@@ -18,8 +18,8 @@ function SignUpPage() {
     <>
       <AuthenticationImage />
       <div
-        className="container relative hidden h-full flex-col items-center justify-center md:grid
-          lg:max-w-none lg:grid-cols-2 lg:px-0"
+        className="px-3 flex lg:container relative h-full flex-col items-center justify-center
+          md:grid lg:max-w-none lg:grid-cols-2 md:px-0"
       >
         <Link
           href="/login"

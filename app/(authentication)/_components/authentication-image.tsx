@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 const AuthenticationImage = () => {
   return (
-    <div className="md:hidden">
+    <div className="hidden">
       <Image
         src="/examples/authentication-light.png"
         width={1280}

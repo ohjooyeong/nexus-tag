@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Icons } from '@/components/icons';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import GenericForm from '@/components/generic-form';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import useLogin from '../_hooks/use-login';
@@ -24,6 +24,7 @@ type LoginFormData = {
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loginError, setLoginError] = useState<string | null>(null);
 
@@ -45,11 +46,19 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setIsLoading(true);
     setLoginError(null); // 이전 에러 초기화
     try {
-      const response = await loginMutation.mutateAsync({
+      await loginMutation.mutateAsync({
         email: context.email,
         password: context.password,
       });
-      console.log(response); // 성공적으로 로그인한 경우의 처리
+
+      const redirect = searchParams.get('redirect');
+
+      if (redirect) {
+        router.replace(redirect);
+        return;
+      }
+
+      router.replace('/workspaces');
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         // AxiosError인 경우 처리
