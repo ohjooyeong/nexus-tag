@@ -1,4 +1,6 @@
-import WorkspaceCard from '@/app/(workspace)/(workspace-main)/_components/workspace-card';
+'use client';
+
+import ProjectCard from '@/app/(workspace)/(workspace-main)/_components/project-card';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, Search } from 'lucide-react';
 
@@ -28,20 +30,24 @@ const ProjectsPage = () => {
                 value=""
               />
             </div>
-            <Button variant={'default'}>
+            <Button
+              variant={'default'}
+              className="bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
+                transition"
+            >
               <PlusIcon />
               <span>New Project</span>
             </Button>
           </div>
         </div>
         <div className="flex flex-wrap gap-6">
-          <WorkspaceCard />
-          <WorkspaceCard />
-          <WorkspaceCard />
-          <WorkspaceCard />
-          <WorkspaceCard />
-          <WorkspaceCard />
-          <WorkspaceCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
+          <ProjectCard />
         </div>
       </div>
     </div>

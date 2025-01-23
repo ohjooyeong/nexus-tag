@@ -39,7 +39,12 @@ export function NavActions() {
   return (
     <div className="flex items-center gap-2 text-sm">
       <div className="mr-8">
-        <Button variant="default" size="sm" className="h-10 mx-2 text-sm">
+        <Button
+          variant="default"
+          size="sm"
+          className="h-10 mx-2 text-sm bg-gradient-to-br from-blue-500 to-purple-600 text-white
+            hover:opacity-80 transition"
+        >
           <PlusIcon />
           <span>New Project</span>
         </Button>

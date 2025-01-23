@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-const WorkspaceCard = () => {
+const ProjectCard = () => {
   return (
     <div className="w-60 h-56 relative rounded-2xl overflow-hidden shadow border hover:bg-muted">
       <Link
@@ -63,4 +63,4 @@ const WorkspaceCard = () => {
   );
 };
 
-export default WorkspaceCard;
+export default ProjectCard;
