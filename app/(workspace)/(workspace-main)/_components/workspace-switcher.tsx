@@ -10,17 +10,8 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { DialogTrigger } from '@/components/ui/dialog';
+
 import {
   Popover,
   PopoverContent,
@@ -30,10 +21,11 @@ import { cn } from '@/lib/utils';
 import { Check, ChevronsUpDown, LayersIcon, PlusCircle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import useWorkspaceList from '../_hooks/use-workspace-list';
-import useWorkspace from '../_hooks/use-workspace';
+import useWorkspaceInfo from '../_hooks/use-workspace-info';
 import { Workspace } from '../_types';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import NewWorkspaceDialog from './dialog/new-workspace-dialog';
 
 const WorkspaceTrigger = ({
   open,
@@ -66,38 +58,42 @@ const WorkspaceList = ({
   selectedWorkspace: Workspace | null;
   workspaceList: Workspace[];
   onSelect: (workspace: Workspace) => void;
-}) => (
-  <CommandList>
-    <CommandEmpty>No workspace found.</CommandEmpty>
-    <CommandGroup heading="Workspace">
-      {workspaceList?.map((workspace) => (
-        <CommandItem
-          key={workspace.id}
-          onSelect={() => onSelect(workspace)}
-          className={cn(
-            'text-sm truncate',
-            selectedWorkspace?.id === workspace.id && 'text-blue-500',
-          )}
-          asChild
-        >
-          <Link href={`/workspaces/${workspace.id}/projects`}>
-            <span className="truncate" title={workspace.name}>
-              {workspace.name}
-            </span>
-            <Check
-              className={cn(
-                'ml-auto',
-                selectedWorkspace?.id === workspace.id
-                  ? 'opacity-100'
-                  : 'opacity-0',
-              )}
-            />
-          </Link>
-        </CommandItem>
-      ))}
-    </CommandGroup>
-  </CommandList>
-);
+}) => {
+  return (
+    <CommandList>
+      <CommandEmpty>No workspace found.</CommandEmpty>
+      <CommandGroup heading="Workspace">
+        {workspaceList?.map((workspace) => (
+          <CommandItem
+            onSelect={() => onSelect(workspace)}
+            className={cn(
+              'text-sm truncate',
+              selectedWorkspace?.id === workspace.id && 'text-blue-500',
+            )}
+            key={workspace.id}
+            value={workspace.id}
+            keywords={[workspace.name]}
+            asChild
+          >
+            <Link href={`/workspaces/${workspace.id}/projects`}>
+              <span className="truncate" title={workspace.name}>
+                {workspace.name}
+              </span>
+              <Check
+                className={cn(
+                  'ml-auto',
+                  selectedWorkspace?.id === workspace.id
+                    ? 'opacity-100'
+                    : 'opacity-0',
+                )}
+              />
+            </Link>
+          </CommandItem>
+        ))}
+      </CommandGroup>
+    </CommandList>
+  );
+};
 
 const CreateWorkspaceItem = ({ onCreate }: { onCreate: () => void }) => (
   <CommandList>
@@ -113,46 +109,6 @@ const CreateWorkspaceItem = ({ onCreate }: { onCreate: () => void }) => (
   </CommandList>
 );
 
-const NewWorkspaceDialog = ({
-  isOpen,
-  onClose,
-  children,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-}) => (
-  <Dialog open={isOpen} onOpenChange={onClose}>
-    {children}
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Create Workspace</DialogTitle>
-        <DialogDescription>
-          Add a new workspace to manage products and customers.
-        </DialogDescription>
-      </DialogHeader>
-      <div className="space-y-4 py-2 pb-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">Workspace name</Label>
-          <Input id="name" placeholder="Please enter the new workspace name." />
-        </div>
-      </div>
-      <DialogFooter>
-        <Button variant="outline" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          className="bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
-            transition"
-        >
-          Create
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
-);
-
 const WorkspaceSwitcher = () => {
   const { workspace_id: workspaceId } = useParams();
   const [open, setOpen] = useState(false);
@@ -162,7 +118,7 @@ const WorkspaceSwitcher = () => {
   );
 
   const { data: workspaceList } = useWorkspaceList();
-  const { data: currentWorkspace } = useWorkspace(workspaceId as string);
+  const { data: currentWorkspace } = useWorkspaceInfo(workspaceId as string);
 
   useEffect(() => {
     if (currentWorkspace) {
@@ -183,7 +139,15 @@ const WorkspaceSwitcher = () => {
       <Popover open={open} onOpenChange={setOpen}>
         <WorkspaceTrigger open={open} selectedWorkspace={selectedWorkspace} />
         <PopoverContent className="w-[230px] p-0">
-          <Command>
+          <Command
+            filter={(value, search, keywords = []) => {
+              const extendValue = keywords.join(' ');
+              if (extendValue.toLowerCase().includes(search.toLowerCase())) {
+                return 1;
+              }
+              return 0;
+            }}
+          >
             <CommandInput placeholder="Search workspace..." />
             <WorkspaceList
               workspaceList={workspaceList}
