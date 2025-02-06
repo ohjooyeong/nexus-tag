@@ -93,6 +93,11 @@ const NewWorkspaceDialog = ({
                   },
                 })}
                 disabled={isLoading}
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck="false"
+                autoCapitalize="none"
+                type="text"
               />
               {(errors.workspaceName || createError) && (
                 <p className="text-red-500 text-xs">
