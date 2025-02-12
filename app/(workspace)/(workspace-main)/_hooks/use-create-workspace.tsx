@@ -2,7 +2,7 @@ import axiosInstance from '@/config/axios-instance';
 import { useMutation } from '@tanstack/react-query';
 
 type CreateWorkspace = {
-  workspaceName: string;
+  name: string;
 };
 
 export default function useCreateWorkspace() {

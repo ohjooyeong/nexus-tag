@@ -42,7 +42,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setTimeout(() => {
       router.push(`/signup/additional-info?email=${email}`);
       setIsLoading(false);
-    }, 3000);
+    }, 2000);
   }
 
   return (

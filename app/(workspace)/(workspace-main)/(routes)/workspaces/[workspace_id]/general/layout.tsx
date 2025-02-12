@@ -8,7 +8,9 @@ function Layout({
   params: { workspace_id: string };
 }) {
   return (
-    <CommonWorkspaceLayout params={params}>{children}</CommonWorkspaceLayout>
+    <CommonWorkspaceLayout params={params} breadTitle="General">
+      {children}
+    </CommonWorkspaceLayout>
   );
 }
 

@@ -15,6 +15,8 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { useQueryClient } from '@tanstack/react-query';
+import { workspaceQueries } from '@/constants/querykey-factory';
 
 const NewWorkspaceDialog = ({
   isOpen,
@@ -25,9 +27,10 @@ const NewWorkspaceDialog = ({
   onClose: () => void;
   children: React.ReactNode;
 }) => {
+  const queryClient = useQueryClient();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [createError, setCreateError] = useState<string | null>(null);
-  const router = useRouter();
 
   const {
     register,
@@ -35,21 +38,22 @@ const NewWorkspaceDialog = ({
     reset,
     formState: { errors },
   } = useForm<{
-    workspaceName: string;
+    name: string;
   }>();
 
   const createWorkspaceMutation = useCreateWorkspace();
 
-  const onSubmit = async (data: { workspaceName: string }) => {
+  const onSubmit = async (data: { name: string }) => {
     setIsLoading(true);
     try {
       const response = await createWorkspaceMutation.mutateAsync({
-        workspaceName: data.workspaceName,
+        name: data.name,
       });
       toast.info(response.message);
-      router.push(`/workspaces/${response.data.id}/projects`);
+      queryClient.invalidateQueries({ queryKey: workspaceQueries.default() });
       reset();
       onClose();
+      router.push(`/workspaces/${response.data.id}/projects`);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         // AxiosError인 경우 처리
@@ -59,7 +63,7 @@ const NewWorkspaceDialog = ({
       } else {
         // 기타 에러 처리
         setCreateError(null); // 이전 에러 초기화
-        toast('An unknown error occurred.');
+        toast.error('An unknown error occurred.');
         console.error(error);
       }
     } finally {
@@ -80,11 +84,11 @@ const NewWorkspaceDialog = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4 py-2 pb-4">
             <div className="space-y-2">
-              <Label htmlFor="workspaceName">Workspace name</Label>
+              <Label htmlFor="name">Workspace name</Label>
               <Input
-                id="workspaceName"
+                id="name"
                 placeholder="Please enter the new workspace name."
-                {...register('workspaceName', {
+                {...register('name', {
                   required: 'Workspace name is required',
                   minLength: {
                     value: 4,
@@ -99,9 +103,9 @@ const NewWorkspaceDialog = ({
                 autoCapitalize="none"
                 type="text"
               />
-              {(errors.workspaceName || createError) && (
+              {(errors.name || createError) && (
                 <p className="text-red-500 text-xs">
-                  {errors.workspaceName?.message || createError}
+                  {errors.name?.message || createError}
                 </p>
               )}
             </div>

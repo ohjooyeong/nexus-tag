@@ -8,11 +8,11 @@ const ProjectsPage = () => {
   return (
     <div className="mt-6">
       <div className="flex flex-col gap-5">
-        <div className="flex justify-between">
+        <div className="flex justify-between min-h-9">
           <h1 className="text-2xl font-bold">Projects</h1>
           <div className="flex gap-3">
             <div
-              className="px-3 py-[6px] flex items-center justify-between gap-2 border border-gray-400
+              className="px-3 py-[2px] flex items-center justify-between gap-2 border border-gray-400
                 hover:bg-accent hover:text-accent-foreground rounded-md"
             >
               <Search className="opacity-50" />
