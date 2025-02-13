@@ -9,7 +9,7 @@ export default function useDeleteWorkspace() {
   const mutate = useMutation({
     mutationFn: async (context: DeleteWorkspace) => {
       const { data } = await axiosInstance.delete(
-        `/workspace/${context.workspaceId}`,
+        `/workspaces/${context.workspaceId}`,
       );
       return data;
     },

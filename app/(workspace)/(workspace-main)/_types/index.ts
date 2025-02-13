@@ -34,3 +34,19 @@ export interface Workspace {
 
 // 워크스페이스 목록 타입
 export type WorkspaceList = Workspace[];
+
+export interface Project {
+  id: number;
+  name: string;
+  description: string;
+  content_type: 'IMAGE' | 'VIDEO';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProjectsResponse {
+  projects: Project[];
+  total: number;
+  page: number;
+  limit: number;
+}

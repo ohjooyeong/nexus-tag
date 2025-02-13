@@ -6,7 +6,7 @@ export default function useWorkspaceList() {
   const { isLoading, isError, data } = useQuery({
     queryKey: workspaceQueries.list(),
     queryFn: async () => {
-      const { data } = await axiosInstance.get('/workspace');
+      const { data } = await axiosInstance.get('/workspaces');
 
       return data.data;
     },

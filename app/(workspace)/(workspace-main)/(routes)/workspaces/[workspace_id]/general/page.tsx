@@ -6,7 +6,7 @@ const GeneralPage = () => {
   return (
     <div className="mt-6">
       <div className="flex flex-col gap-5">
-        <div className="flex justify-between min-h-9">
+        <div className="flex justify-between min-h-9 gap-2">
           <h1 className="text-2xl font-bold">General</h1>
         </div>
         <div className="lg:max-w-3xl">

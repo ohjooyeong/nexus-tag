@@ -12,7 +12,7 @@ export default function useWorkspaceInfo(workspaceId: string) {
   >({
     queryKey: workspaceQueries.detail(workspaceId),
     queryFn: async () => {
-      const { data } = await axiosInstance.get(`/workspace/${workspaceId}`);
+      const { data } = await axiosInstance.get(`/workspaces/${workspaceId}`);
 
       return data.data;
     },

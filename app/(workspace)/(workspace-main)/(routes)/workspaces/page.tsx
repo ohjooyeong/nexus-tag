@@ -14,7 +14,7 @@ const WorkspacesPage = () => {
     const getDefaultWorkspace = async () => {
       try {
         const { data } = await axiosInstance.get(
-          '/workspace/default-workspace',
+          '/workspaces/default-workspace',
         );
         if (data) {
           router.replace(`/workspaces/${data.data.id}/projects`);

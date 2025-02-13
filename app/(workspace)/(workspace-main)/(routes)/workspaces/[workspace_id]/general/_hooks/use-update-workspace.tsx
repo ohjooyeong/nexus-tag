@@ -11,7 +11,7 @@ export default function useUpdateWorkspace() {
   const mutate = useMutation({
     mutationFn: async (context: UpdateWorkspace) => {
       const { data } = await axiosInstance.put(
-        `/workspace/${context.workspaceId}`,
+        `/workspaces/${context.workspaceId}`,
         {
           name: context.name,
           description: context.description,
