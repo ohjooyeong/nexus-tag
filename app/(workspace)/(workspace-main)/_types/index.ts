@@ -35,11 +35,13 @@ export interface Workspace {
 // 워크스페이스 목록 타입
 export type WorkspaceList = Workspace[];
 
+export type Content_Type = 'IMAGE' | 'VIDEO';
+
 export interface Project {
   id: number;
   name: string;
   description: string;
-  content_type: 'IMAGE' | 'VIDEO';
+  content_type: Content_Type;
   createdAt: string;
   updatedAt: string;
 }

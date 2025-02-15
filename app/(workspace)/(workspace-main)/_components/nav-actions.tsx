@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import { BellIcon, PlusIcon, PowerOffIcon, User, UserIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -19,6 +18,8 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
+import NewProjectDialog from './dialog/new-project-dialog';
+import { useState } from 'react';
 
 const data = [
   [
@@ -34,7 +35,8 @@ const data = [
 ];
 
 export function NavActions() {
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
 
   return (
     <div className="flex items-center gap-2 text-sm">
@@ -44,6 +46,9 @@ export function NavActions() {
           size="sm"
           className="h-10 mx-2 text-sm bg-gradient-to-br from-blue-500 to-purple-600 text-white
             hover:opacity-80 transition"
+          onClick={() => {
+            setShowNewProjectDialog(true);
+          }}
         >
           <PlusIcon />
           <span>New Project</span>
@@ -104,6 +109,10 @@ export function NavActions() {
           </Sidebar>
         </PopoverContent>
       </Popover>
+      <NewProjectDialog
+        isOpen={showNewProjectDialog}
+        onClose={() => setShowNewProjectDialog(false)}
+      />
     </div>
   );
 }

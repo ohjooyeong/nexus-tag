@@ -6,6 +6,7 @@ import ProjectList from './_components/project-list';
 import { useEffect, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import useProjectList from './_hooks/use-project-list';
+import NewProjectDialog from '@/app/(workspace)/(workspace-main)/_components/dialog/new-project-dialog';
 
 const ProjectsPage = () => {
   const searchParams = useSearchParams();
@@ -15,6 +16,7 @@ const ProjectsPage = () => {
 
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [query, setQuery] = useState(initialSearch);
+  const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
 
   useEffect(() => {
     if (query) {
@@ -84,6 +86,9 @@ const ProjectsPage = () => {
               variant={'default'}
               className="bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
                 transition"
+              onClick={() => {
+                setShowNewProjectDialog(true);
+              }}
             >
               <PlusIcon />
               <span>New Project</span>
@@ -92,6 +97,10 @@ const ProjectsPage = () => {
         </div>
         <ProjectList isLoading={isLoading} data={data} />
       </div>
+      <NewProjectDialog
+        isOpen={showNewProjectDialog}
+        onClose={() => setShowNewProjectDialog(false)}
+      />
     </div>
   );
 };

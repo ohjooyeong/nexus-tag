@@ -14,12 +14,13 @@ export default function useProjectList(
     queryFn: async () => {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
+      params.append('workspaceId', workspaceId);
       params.append('page', page.toString());
       params.append('limit', limit.toString());
       params.append('order', order);
 
       const { data } = await axiosInstance.get(
-        `/workspaces/${workspaceId}/projects?${params.toString()}`,
+        `/projects?${params.toString()}`,
       );
 
       return data.data;
