@@ -20,6 +20,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import NewProjectDialog from './dialog/new-project-dialog';
 import { useState } from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const data = [
   [
@@ -38,9 +39,11 @@ export function NavActions() {
   const [isOpen, setIsOpen] = useState(false);
   const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
 
+  const isMobile = useIsMobile();
+
   return (
     <div className="flex items-center gap-2 text-sm">
-      <div className="mr-8">
+      <div className="hidden sm:block mr-8">
         <Button
           variant="default"
           size="sm"
@@ -54,6 +57,7 @@ export function NavActions() {
           <span>New Project</span>
         </Button>
       </div>
+
       <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
         <BellIcon />
       </Button>

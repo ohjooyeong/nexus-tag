@@ -64,7 +64,7 @@ export function WorkspaceSidebar({
               title: 'General',
               url: `/workspaces/${workspaceId}/general`,
               icon: Pickaxe,
-              keyword: 'members',
+              keyword: 'general',
             },
             // {
             //   title: 'Payment',
