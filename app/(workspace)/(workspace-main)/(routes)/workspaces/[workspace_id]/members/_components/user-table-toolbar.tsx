@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table } from '@tanstack/react-table';
 import { X } from 'lucide-react';
+import AddMemberSheet from './sheet/add-member-sheet';
+import { useState } from 'react';
 
 interface UserTableToolbarProps<TMember> {
   table: Table<TMember>;
@@ -12,6 +14,8 @@ interface UserTableToolbarProps<TMember> {
 export function UserTableToolbar<TMember>({
   table,
 }: UserTableToolbarProps<TMember>) {
+  const [showAddMemberSheet, setShowAddMemberSheet] = useState(false);
+
   const isFiltered = table.getState().columnFilters.length > 0;
 
   return (
@@ -19,9 +23,11 @@ export function UserTableToolbar<TMember>({
       <div className="flex flex-1 items-center space-x-2">
         <Input
           placeholder="Search name..."
-          value={(table.getColumn('title')?.getFilterValue() as string) ?? ''}
+          value={
+            (table.getColumn('username')?.getFilterValue() as string) ?? ''
+          }
           onChange={(event) =>
-            table.getColumn('title')?.setFilterValue(event.target.value)
+            table.getColumn('username')?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
@@ -37,6 +43,22 @@ export function UserTableToolbar<TMember>({
           </Button>
         )}
       </div>
+      <div>
+        <Button
+          variant={'default'}
+          className="bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
+            transition"
+          onClick={() => {
+            setShowAddMemberSheet(true);
+          }}
+        >
+          Add Member
+        </Button>
+      </div>
+      <AddMemberSheet
+        isOpen={showAddMemberSheet}
+        onClose={() => setShowAddMemberSheet(false)}
+      />
     </div>
   );
 }
