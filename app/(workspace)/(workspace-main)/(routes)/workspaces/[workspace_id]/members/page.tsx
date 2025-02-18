@@ -18,7 +18,7 @@ const MembersPage = () => {
         </div>
         <div className="md:max-w-3xl">
           <UserTable
-            data={memberList || []}
+            data={memberList}
             columns={isMobile ? mobileColumns : columns}
           />
         </div>
