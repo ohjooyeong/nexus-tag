@@ -14,3 +14,8 @@ export const projectQueries = {
     order: 'asc' | 'desc' = 'desc',
   ) => [...projectQueries.default(), workspaceId, search, page, limit, order],
 };
+
+export const memberQueries = {
+  default: () => ['members'],
+  list: () => [...memberQueries.default(), 'list'],
+};

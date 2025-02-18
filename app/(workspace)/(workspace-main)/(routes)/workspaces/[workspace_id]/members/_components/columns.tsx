@@ -20,7 +20,7 @@ export const columns: ColumnDef<Task>[] = [
       <UserTableColumnHeader column={column} title="Name" />
     ),
     cell: ({ row }) => (
-      <div className="w-[100px] truncate" title={`${row.getValue('username')}`}>
+      <div className="w-[170px] truncate" title={`${row.getValue('username')}`}>
         {row.getValue('username')}
       </div>
     ),
@@ -33,7 +33,7 @@ export const columns: ColumnDef<Task>[] = [
       <UserTableColumnHeader column={column} title="Email" />
     ),
     cell: ({ row }) => (
-      <div className="w-[150px] truncate" title={`${row.getValue('email')}`}>
+      <div className="w-[140px] truncate" title={`${row.getValue('email')}`}>
         {row.getValue('email')}
       </div>
     ),

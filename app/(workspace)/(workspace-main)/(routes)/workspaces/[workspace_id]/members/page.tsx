@@ -3,10 +3,12 @@
 import { UserTable } from './_components/user-table';
 import { columns, mobileColumns } from './_components/columns';
 import { useIsMobile } from '@/hooks/use-mobile';
+import useMemberList from './_hooks/use-member-list';
 
 const MembersPage = () => {
   const isMobile = useIsMobile();
-  const datas = require('/public/tasks.json');
+
+  const { data: memberList } = useMemberList();
 
   return (
     <div className="mt-6">
@@ -16,7 +18,7 @@ const MembersPage = () => {
         </div>
         <div className="md:max-w-3xl">
           <UserTable
-            data={datas}
+            data={memberList || []}
             columns={isMobile ? mobileColumns : columns}
           />
         </div>
