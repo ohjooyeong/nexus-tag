@@ -18,18 +18,21 @@ import {
 } from '@/components/ui/select';
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import useAddMember from '../../_hooks/use-add-member';
+import { toast } from 'sonner';
+import { memberQueries } from '@/constants/querykey-factory';
+import axios from 'axios';
 
 const memberFormSchema = z.object({
   email: z.string().email('Please enter a valid email address.'),
@@ -48,6 +51,7 @@ const AddMemberSheet = ({
   onClose: () => void;
 }) => {
   const queryClient = useQueryClient();
+  const { workspace_id: workspaceId } = useParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<MemberFormValues>({
@@ -58,32 +62,34 @@ const AddMemberSheet = ({
     },
   });
 
+  const addMemberMutation = useAddMember();
+
   const onSubmit = async (data: MemberFormValues) => {
-    // setIsLoading(true);
-    // try {
-    //   const response = await createProjectMutation.mutateAsync({
-    //     name: data.name,
-    //     description: data.description,
-    //     workspaceId: workspaceId as string,
-    //   });
-    //   toast.info(response.message);
-    //   queryClient.invalidateQueries({ queryKey: projectQueries.default() });
-    //   form.reset();
-    //   onClose();
-    //   router.push(`/workspaces/${workspaceId}/projects`);
-    // } catch (error) {
-    //   if (axios.isAxiosError(error) && error.response) {
-    //     // AxiosError인 경우 처리
-    //     const { status, data } = error.response;
-    //     console.error(`Error ${status}:`, data);
-    //   } else {
-    //     // 기타 에러 처리
-    //     toast.error('An unknown error occurred.');
-    //     console.error(error);
-    //   }
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    setIsLoading(true);
+    try {
+      const response = await addMemberMutation.mutateAsync({
+        email: data.email,
+        role: data.role,
+        workspaceId: workspaceId as string,
+      });
+      toast.info(response.message);
+      queryClient.invalidateQueries({ queryKey: memberQueries.default() });
+      form.reset();
+      onClose();
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        // AxiosError인 경우 처리
+        const { status, data } = error.response;
+        toast.error(data.message);
+        console.error(`Error ${status}:`, data);
+      } else {
+        // 기타 에러 처리
+        toast.error('An unknown error occurred.');
+        console.error(error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -100,7 +106,7 @@ const AddMemberSheet = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="py-4 space-y-2"
+            className="py-4 space-y-4"
           >
             <FormField
               control={form.control}
@@ -153,14 +159,11 @@ const AddMemberSheet = ({
                 </FormItem>
               )}
             />
+            <Button type="submit" className="">
+              Add Member
+            </Button>
           </form>
         </Form>
-
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Add Member</Button>
-          </SheetClose>
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
