@@ -61,7 +61,7 @@ const GeneralForm = () => {
         workspaceId: workspaceId as string,
         description: data.description,
       });
-      toast.info(response.message);
+      toast.success(response.message);
       queryClient.invalidateQueries({ queryKey: workspaceQueries.default() });
       setIsChanged(false);
     } catch (error) {

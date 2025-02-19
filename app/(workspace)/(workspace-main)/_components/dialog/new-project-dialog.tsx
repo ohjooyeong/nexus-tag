@@ -72,7 +72,7 @@ const NewProjectDialog = ({
         description: data.description,
         workspaceId: workspaceId as string,
       });
-      toast.info(response.message);
+      toast.success(response.message);
       queryClient.invalidateQueries({ queryKey: projectQueries.default() });
       form.reset();
       onClose();

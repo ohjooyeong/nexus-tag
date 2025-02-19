@@ -72,7 +72,7 @@ const AddMemberSheet = ({
         role: data.role,
         workspaceId: workspaceId as string,
       });
-      toast.info(response.message);
+      toast.success(response.message);
       queryClient.invalidateQueries({ queryKey: memberQueries.default() });
       form.reset();
       onClose();

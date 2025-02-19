@@ -1,7 +1,7 @@
 export const workspaceQueries = {
   default: () => ['workspaces'],
   detail: (id: string) => [...workspaceQueries.default(), id],
-  list: () => [...workspaceQueries.default(), 'list'],
+  list: (id: string) => [...workspaceQueries.default(), 'list', id],
 };
 
 export const projectQueries = {
@@ -17,5 +17,5 @@ export const projectQueries = {
 
 export const memberQueries = {
   default: () => ['members'],
-  list: () => [...memberQueries.default(), 'list'],
+  list: (id: string) => [...memberQueries.default(), 'list', id],
 };

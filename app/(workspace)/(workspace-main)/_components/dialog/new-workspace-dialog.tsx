@@ -49,7 +49,7 @@ const NewWorkspaceDialog = ({
       const response = await createWorkspaceMutation.mutateAsync({
         name: data.name,
       });
-      toast.info(response.message);
+      toast.success(response.message);
       queryClient.invalidateQueries({ queryKey: workspaceQueries.default() });
       reset();
       onClose();

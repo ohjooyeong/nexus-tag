@@ -10,7 +10,7 @@ export default function useMemberList() {
   const workspaceId = params.workspace_id as string;
 
   const { isLoading, isError, data } = useQuery({
-    queryKey: memberQueries.list(),
+    queryKey: memberQueries.list(workspaceId),
     queryFn: async () => {
       const { data } = await axiosInstance.get(
         `/workspaces/${workspaceId}/members`,
