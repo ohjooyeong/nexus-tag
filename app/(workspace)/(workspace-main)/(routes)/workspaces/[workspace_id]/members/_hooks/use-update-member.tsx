@@ -2,16 +2,16 @@ import { Role } from '@/app/(workspace)/(workspace-main)/_types';
 import axiosInstance from '@/config/axios-instance';
 import { useMutation } from '@tanstack/react-query';
 
-type AddMemberParams = {
+type UpdateMemberParams = {
   email: string;
   role: Role;
   workspaceId: string;
 };
 
-export default function useAddMember() {
+export default function useUpdateMember() {
   return useMutation({
-    mutationFn: async ({ email, role, workspaceId }: AddMemberParams) => {
-      const { data } = await axiosInstance.post(
+    mutationFn: async ({ email, role, workspaceId }: UpdateMemberParams) => {
+      const { data } = await axiosInstance.put(
         `/workspaces/${workspaceId}/members`,
         {
           email,

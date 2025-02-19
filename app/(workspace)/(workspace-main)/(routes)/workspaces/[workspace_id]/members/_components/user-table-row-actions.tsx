@@ -10,6 +10,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Row } from '@tanstack/react-table';
 import { MoreHorizontal } from 'lucide-react';
+import UpdateMemberSheet, {
+  MemberFormValues,
+} from './sheet/update-member-sheet';
+import { useState } from 'react';
 
 interface UserTableRowActionsProps<TMember> {
   row: Row<TMember>;
@@ -18,8 +22,11 @@ interface UserTableRowActionsProps<TMember> {
 export function UserTableRowActions<TMember>({
   row,
 }: UserTableRowActionsProps<TMember>) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showUpdateMemberSheet, setShowUpdateMemberSheet] = useState(false);
+
   return (
-    <DropdownMenu>
+    <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -29,11 +36,24 @@ export function UserTableRowActions<TMember>({
           <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            setShowUpdateMemberSheet(true);
+            setIsDropdownOpen(false);
+          }}
+        >
+          Update
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>Delete</DropdownMenuItem>
       </DropdownMenuContent>
+      <UpdateMemberSheet
+        isOpen={showUpdateMemberSheet}
+        onClose={() => setShowUpdateMemberSheet(false)}
+        data={row.original as MemberFormValues}
+      />
     </DropdownMenu>
   );
 }

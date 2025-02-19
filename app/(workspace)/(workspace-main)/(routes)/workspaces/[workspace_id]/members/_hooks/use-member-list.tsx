@@ -16,7 +16,7 @@ export default function useMemberList() {
         `/workspaces/${workspaceId}/members`,
       );
 
-      return data?.data || [];
+      return data?.data;
     },
   });
 

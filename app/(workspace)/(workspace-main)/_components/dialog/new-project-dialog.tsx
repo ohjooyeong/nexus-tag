@@ -81,6 +81,7 @@ const NewProjectDialog = ({
       if (axios.isAxiosError(error) && error.response) {
         // AxiosError인 경우 처리
         const { status, data } = error.response;
+        toast.error(data.message);
 
         console.error(`Error ${status}:`, data);
       } else {

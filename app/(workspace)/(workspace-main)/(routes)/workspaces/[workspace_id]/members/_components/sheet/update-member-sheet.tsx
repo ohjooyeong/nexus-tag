@@ -29,10 +29,10 @@ import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import useAddMember from '../../_hooks/use-add-member';
 import { toast } from 'sonner';
 import { memberQueries } from '@/constants/querykey-factory';
 import axios from 'axios';
+import useUpdateMember from '../../_hooks/use-update-member';
 
 const memberFormSchema = z.object({
   email: z.string().email('Please enter a valid email address.'),
@@ -41,33 +41,36 @@ const memberFormSchema = z.object({
   }),
 });
 
-type MemberFormValues = z.infer<typeof memberFormSchema>;
+export type MemberFormValues = z.infer<typeof memberFormSchema>;
 
-const AddMemberSheet = ({
+const UpdateMemberSheet = ({
   isOpen,
   onClose,
+  data,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  data: MemberFormValues;
 }) => {
   const queryClient = useQueryClient();
   const { workspace_id: workspaceId } = useParams();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { email: defaultEmail, role: defaultRole } = data;
 
   const form = useForm<MemberFormValues>({
     resolver: zodResolver(memberFormSchema),
     defaultValues: {
-      email: '',
-      role: Role.WORKER,
+      email: defaultEmail,
+      role: defaultRole,
     },
   });
 
-  const addMemberMutation = useAddMember();
+  const updateMemberMutation = useUpdateMember();
 
   const onSubmit = async (data: MemberFormValues) => {
     setIsLoading(true);
     try {
-      const response = await addMemberMutation.mutateAsync({
+      const response = await updateMemberMutation.mutateAsync({
         email: data.email,
         role: data.role,
         workspaceId: workspaceId as string,
@@ -96,10 +99,10 @@ const AddMemberSheet = ({
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Add Member</SheetTitle>
+          <SheetTitle>Update Member</SheetTitle>
           <SheetDescription>
-            Add a member to the workspace by selecting their role and adding
-            their email. Below you can see the privileges this user will have.
+            Update a member to the workspace by selecting their role. Below you
+            can see the privileges this user will have.
           </SheetDescription>
         </SheetHeader>
 
@@ -118,7 +121,7 @@ const AddMemberSheet = ({
                     <Input
                       placeholder="Add a email"
                       {...field}
-                      disabled={isLoading}
+                      disabled={true}
                       autoComplete="off"
                       autoCorrect="off"
                       spellCheck="false"
@@ -137,7 +140,8 @@ const AddMemberSheet = ({
                   <FormLabel>Role</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={Role.WORKER}
+                    defaultValue={defaultRole}
+                    disabled={isLoading}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -149,10 +153,10 @@ const AddMemberSheet = ({
                         {Role.MANAGER}
                       </SelectItem>
                       <SelectItem value={Role.WORKER}>{Role.WORKER}</SelectItem>
-                      <SelectItem value={Role.REVIEWER}>
+                      {/* <SelectItem value={Role.REVIEWER}>
                         {Role.REVIEWER}
                       </SelectItem>
-                      <SelectItem value={Role.VIEWER}>{Role.VIEWER}</SelectItem>
+                      <SelectItem value={Role.VIEWER}>{Role.VIEWER}</SelectItem> */}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -163,9 +167,9 @@ const AddMemberSheet = ({
               type="submit"
               className="bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
                 transition"
-              disabled={isLoading}
+              disabled={isLoading || defaultRole === form.getValues('role')}
             >
-              Add Member
+              Update Member
             </Button>
           </form>
         </Form>
@@ -174,4 +178,4 @@ const AddMemberSheet = ({
   );
 };
 
-export default AddMemberSheet;
+export default UpdateMemberSheet;
