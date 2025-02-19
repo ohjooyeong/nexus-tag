@@ -20,6 +20,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import NewProjectDialog from './dialog/new-project-dialog';
 import { useState } from 'react';
+import useWorkspaceMyRole from '../_hooks/use-workspace-my-role';
 
 const data = [
   [
@@ -35,25 +36,31 @@ const data = [
 ];
 
 export function NavActions() {
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwner = currentMyRole === 'OWNER';
+
   const [isOpen, setIsOpen] = useState(false);
   const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      <div className="hidden sm:block mr-8">
-        <Button
-          variant="default"
-          size="sm"
-          className="h-10 mx-2 text-sm bg-gradient-to-br from-blue-500 to-purple-600 text-white
-            hover:opacity-80 transition"
-          onClick={() => {
-            setShowNewProjectDialog(true);
-          }}
-        >
-          <PlusIcon />
-          <span>New Project</span>
-        </Button>
-      </div>
+      {isMyRoleOwner && (
+        <div className="hidden sm:block mr-8">
+          <Button
+            variant="default"
+            size="sm"
+            className="h-10 mx-2 text-sm bg-gradient-to-br from-blue-500 to-purple-600 text-white
+              hover:opacity-80 transition"
+            onClick={() => {
+              setShowNewProjectDialog(true);
+            }}
+          >
+            <PlusIcon />
+            <span>New Project</span>
+          </Button>
+        </div>
+      )}
 
       <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
         <BellIcon />

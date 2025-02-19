@@ -2,6 +2,7 @@ export const workspaceQueries = {
   default: () => ['workspaces'],
   detail: (id: string) => [...workspaceQueries.default(), id],
   list: (id: string) => [...workspaceQueries.default(), 'list', id],
+  myRole: (id: string) => [...workspaceQueries.default(), 'myRole', id],
 };
 
 export const projectQueries = {

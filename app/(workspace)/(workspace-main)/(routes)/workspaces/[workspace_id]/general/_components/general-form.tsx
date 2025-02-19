@@ -25,6 +25,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
 import { workspaceQueries } from '@/constants/querykey-factory';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 const workspaceFormSchema = z.object({
   name: z.string().min(4, {
@@ -39,6 +40,9 @@ const GeneralForm = () => {
   const queryClient = useQueryClient();
   const { workspace_id: workspaceId } = useParams();
   const { data: currentWorkspace } = useWorkspaceInfo(workspaceId as string);
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwner = currentMyRole === 'OWNER';
 
   const form = useForm<WorkspaceFormValues>({
     resolver: zodResolver(workspaceFormSchema),
@@ -108,6 +112,7 @@ const GeneralForm = () => {
                   autoCorrect="off"
                   spellCheck="false"
                   autoCapitalize="none"
+                  readOnly={!isMyRoleOwner}
                 />
               </FormControl>
               <FormDescription>
@@ -133,6 +138,7 @@ const GeneralForm = () => {
                   spellCheck="false"
                   autoCapitalize="none"
                   disabled={isLoading}
+                  readOnly={!isMyRoleOwner}
                 />
               </FormControl>
               <FormDescription>
@@ -143,20 +149,22 @@ const GeneralForm = () => {
             </FormItem>
           )}
         />
-        <div className="flex gap-4 justify-end">
-          <Button
-            type="submit"
-            disabled={!isChanged || isLoading}
-            className="transition-all duration-300"
-          >
-            {isLoading && (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            Update workspace
-          </Button>
-        </div>
+        {isMyRoleOwner && (
+          <div className="flex gap-4 justify-end">
+            <Button
+              type="submit"
+              disabled={!isChanged || isLoading}
+              className="transition-all duration-300"
+            >
+              {isLoading && (
+                <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Update workspace
+            </Button>
+          </div>
+        )}
       </form>
-      <DangerZone />
+      {isMyRoleOwner && <DangerZone />}
     </Form>
   );
 };

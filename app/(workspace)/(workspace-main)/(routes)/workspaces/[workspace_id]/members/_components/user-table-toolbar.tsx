@@ -6,6 +6,7 @@ import { Table } from '@tanstack/react-table';
 import { X } from 'lucide-react';
 import AddMemberSheet from './sheet/add-member-sheet';
 import { useState } from 'react';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 interface UserTableToolbarProps<TMember> {
   table: Table<TMember>;
@@ -14,6 +15,10 @@ interface UserTableToolbarProps<TMember> {
 export function UserTableToolbar<TMember>({
   table,
 }: UserTableToolbarProps<TMember>) {
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwner = currentMyRole === 'OWNER';
+
   const [showAddMemberSheet, setShowAddMemberSheet] = useState(false);
 
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -43,18 +48,20 @@ export function UserTableToolbar<TMember>({
           </Button>
         )}
       </div>
-      <div>
-        <Button
-          variant={'default'}
-          className="bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
-            transition"
-          onClick={() => {
-            setShowAddMemberSheet(true);
-          }}
-        >
-          Add Member
-        </Button>
-      </div>
+      {isMyRoleOwner && (
+        <div>
+          <Button
+            variant={'default'}
+            className="bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
+              transition"
+            onClick={() => {
+              setShowAddMemberSheet(true);
+            }}
+          >
+            Add Member
+          </Button>
+        </div>
+      )}
       <AddMemberSheet
         isOpen={showAddMemberSheet}
         onClose={() => setShowAddMemberSheet(false)}

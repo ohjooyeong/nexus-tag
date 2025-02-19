@@ -64,7 +64,7 @@ export function UserTable<TUser, TValue>({
   });
 
   return (
-    <div className="space-y-4 overflow-auto">
+    <div className="space-y-4">
       <UserTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>

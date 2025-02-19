@@ -15,6 +15,7 @@ import UpdateMemberSheet, {
 } from './sheet/update-member-sheet';
 import { useState } from 'react';
 import DeleteMemberDialog from './dialog/delete-member-dialog';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 interface UserTableRowActionsProps<TMember> {
   row: Row<TMember>;
@@ -23,21 +24,31 @@ interface UserTableRowActionsProps<TMember> {
 export function UserTableRowActions<TMember>({
   row,
 }: UserTableRowActionsProps<TMember>) {
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwner = currentMyRole === 'OWNER';
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showUpdateMemberSheet, setShowUpdateMemberSheet] = useState(false);
   const [showDeleteMemberDialog, setShowDeleteMemberDialog] = useState(false);
 
   return (
     <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
-        >
-          <MoreHorizontal />
-          <span className="sr-only">Open menu</span>
-        </Button>
-      </DropdownMenuTrigger>
+      {isMyRoleOwner ? (
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            className="flex h-8 w-8 p-0 data-[state=open]:bg-muted"
+          >
+            <MoreHorizontal />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+      ) : (
+        <DropdownMenuTrigger asChild disabled>
+          <div className="flex h-8 w-8 p-0"></div>
+        </DropdownMenuTrigger>
+      )}
 
       <DropdownMenuContent align="end" className="w-[160px]">
         <DropdownMenuItem

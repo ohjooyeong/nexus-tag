@@ -7,12 +7,16 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import useProjectList from './_hooks/use-project-list';
 import NewProjectDialog from '@/app/(workspace)/(workspace-main)/_components/dialog/new-project-dialog';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 const ProjectsPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialSearch = searchParams.get('term') || '';
   const { workspace_id: workspaceId } = useParams();
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwner = currentMyRole === 'OWNER';
 
   const [searchTerm, setSearchTerm] = useState(initialSearch);
   const [query, setQuery] = useState(initialSearch);
@@ -82,17 +86,19 @@ const ProjectsPage = () => {
                 onKeyDown={handleSearch}
               />
             </div>
-            <Button
-              variant={'default'}
-              className="bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
-                transition"
-              onClick={() => {
-                setShowNewProjectDialog(true);
-              }}
-            >
-              <PlusIcon />
-              <span>New Project</span>
-            </Button>
+            {isMyRoleOwner && (
+              <Button
+                variant={'default'}
+                className="bg-gradient-to-br from-blue-500 to-purple-600 text-white hover:opacity-80
+                  transition"
+                onClick={() => {
+                  setShowNewProjectDialog(true);
+                }}
+              >
+                <PlusIcon />
+                <span>New Project</span>
+              </Button>
+            )}
           </div>
         </div>
         <ProjectList isLoading={isLoading} data={data} />

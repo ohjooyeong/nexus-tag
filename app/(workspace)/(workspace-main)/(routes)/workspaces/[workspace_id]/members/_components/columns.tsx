@@ -62,7 +62,7 @@ export const columns: ColumnDef<Task>[] = [
     id: 'actions',
     cell: ({ row }) => {
       if (row.getValue('role') === 'OWNER') {
-        return <div className="h-8"></div>;
+        return <div className="h-[31.5px]"></div>;
       }
       return <UserTableRowActions row={row} />;
     },
