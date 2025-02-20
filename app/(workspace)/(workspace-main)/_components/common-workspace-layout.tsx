@@ -15,7 +15,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { NavActions } from '@/app/(workspace)/(workspace-main)/_components/nav-actions';
+import NavActions from '@/app/(workspace)/(workspace-main)/_components/nav-actions';
 
 type LayoutProps = {
   breadTitle?: string;

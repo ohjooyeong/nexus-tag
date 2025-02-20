@@ -19,33 +19,41 @@ import {
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import NewProjectDialog from './dialog/new-project-dialog';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import useWorkspaceMyRole from '../_hooks/use-workspace-my-role';
 import useProfile from '../_hooks/use-profile';
+import { useLogout } from '../_hooks/use-logout';
 
-const data = [
-  [
-    {
-      label: 'My Account',
-      icon: User,
-    },
-    {
-      label: 'Logout',
-      icon: PowerOffIcon,
-    },
-  ],
-];
-
-export function NavActions() {
+const NavActions = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
-
   const { data: currentMyRole } = useWorkspaceMyRole();
-
-  const isMyRoleOwner = currentMyRole === 'OWNER';
-
   const { data: profile } = useProfile();
-
+  const { logout } = useLogout();
+  const menuItems = useMemo(
+    () => [
+      [
+        {
+          label: 'My Account',
+          icon: User,
+          onClick: () => {
+            // Add my account action here
+            console.log('My Account clicked');
+          },
+        },
+        {
+          label: 'Logout',
+          icon: PowerOffIcon,
+          onClick: () => {
+            logout();
+            setIsOpen(false);
+          },
+        },
+      ],
+    ],
+    [],
+  );
+  const isMyRoleOwner = currentMyRole === 'OWNER';
   return (
     <div className="flex items-center gap-2 text-sm">
       {isMyRoleOwner && (
@@ -101,12 +109,12 @@ export function NavActions() {
               </div>
               <Separator />
 
-              {data.map((group, index) => (
+              {menuItems.map((group, index) => (
                 <SidebarGroup key={index} className="border-b last:border-none">
                   <SidebarGroupContent className="gap-0">
                     <SidebarMenu>
                       {group.map((item, index) => (
-                        <SidebarMenuItem key={index}>
+                        <SidebarMenuItem key={index} onClick={item.onClick}>
                           <SidebarMenuButton>
                             <item.icon /> <span>{item.label}</span>
                           </SidebarMenuButton>
@@ -126,4 +134,6 @@ export function NavActions() {
       />
     </div>
   );
-}
+};
+
+export default NavActions;

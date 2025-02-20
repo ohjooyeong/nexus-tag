@@ -78,17 +78,17 @@ export function WorkspaceSidebar({
           title: 'Help & Support',
           url: '#',
           items: [
-            {
-              title: 'Documents',
-              url: `/workspaces/${workspaceId}/documents`,
-              icon: FileSearch2,
-              keyword: 'documents',
-            },
+            // {
+            //   title: 'Documents',
+            //   url: `/workspaces/${workspaceId}/documents`,
+            //   icon: FileSearch2,
+            //   keyword: 'documents',
+            // },
             {
               title: 'Contact us',
               url: `#`,
               icon: PhoneCall,
-              // keyword: 'contact',
+              keyword: 'contact',
             },
           ],
         },
