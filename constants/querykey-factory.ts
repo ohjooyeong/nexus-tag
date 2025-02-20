@@ -16,6 +16,12 @@ export const projectQueries = {
   ) => [...projectQueries.default(), workspaceId, search, page, limit, order],
 };
 
+export const userQueries = {
+  default: () => ['user'],
+  profile: () => [...userQueries.default(), 'profile'],
+  // ... other user related queries
+} as const;
+
 export const memberQueries = {
   default: () => ['members'],
   list: (id: string) => [...memberQueries.default(), 'list', id],

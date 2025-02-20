@@ -21,6 +21,7 @@ import { Separator } from '@/components/ui/separator';
 import NewProjectDialog from './dialog/new-project-dialog';
 import { useState } from 'react';
 import useWorkspaceMyRole from '../_hooks/use-workspace-my-role';
+import useProfile from '../_hooks/use-profile';
 
 const data = [
   [
@@ -36,12 +37,14 @@ const data = [
 ];
 
 export function NavActions() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
+
   const { data: currentMyRole } = useWorkspaceMyRole();
 
   const isMyRoleOwner = currentMyRole === 'OWNER';
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
+  const { data: profile } = useProfile();
 
   return (
     <div className="flex items-center gap-2 text-sm">
@@ -62,9 +65,9 @@ export function NavActions() {
         </div>
       )}
 
-      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+      {/* <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
         <BellIcon />
-      </Button>
+      </Button> */}
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -89,10 +92,10 @@ export function NavActions() {
               <div className="px-4 pt-3 pb-1 text-sm font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-base font-medium leading-none pb-1">
-                    Ohjoo
+                    {profile?.username}
                   </p>
                   <p className="text-sm leading-none text-muted-foreground">
-                    brb1111@naver.com
+                    {profile?.email}
                   </p>
                 </div>
               </div>
