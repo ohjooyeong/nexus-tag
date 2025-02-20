@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 
 const data = [
   [
@@ -36,6 +37,7 @@ const data = [
 
 export function ProjectNavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const { workspace_id: workspaceId, project_id: projectId } = useParams();
 
   return (
     <div className="flex items-center gap-2 text-sm">
@@ -47,9 +49,7 @@ export function ProjectNavActions() {
           asChild
         >
           <Link
-            href={
-              '/workspaces/brb1111/projects/image-chapter123/image-annotate'
-            }
+            href={`/workspaces/${workspaceId}/projects/${projectId}/image-annotate`}
           >
             <span>Start Annotating</span>
             <PlayIcon className="h-4 w-4" />

@@ -18,6 +18,7 @@ import {
 
 import { ProjectSidebar } from './_components/project-sidebar';
 import { ProjectNavActions } from './_components/project-nav-actions';
+import ProjectBradcrumb from './_components/project-breadcrumb';
 
 function Layout({ children }: { children: React.ReactNode }) {
   const cookieStore = cookies();
@@ -31,21 +32,7 @@ function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex flex-1 items-center gap-2 px-6">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Home</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Projects</BreadcrumbPage>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Image-Chapter123</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <ProjectBradcrumb />
           </div>
           <div className="ml-auto px-6">
             <ProjectNavActions />

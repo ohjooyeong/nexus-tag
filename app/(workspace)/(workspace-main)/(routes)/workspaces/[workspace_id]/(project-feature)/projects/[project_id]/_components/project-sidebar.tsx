@@ -1,3 +1,5 @@
+'use client';
+
 import * as React from 'react';
 
 import {
@@ -12,78 +14,94 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar';
-import { GalleryVerticalEnd } from 'lucide-react';
-
-// This is sample data.
-const data = {
-  navMain: [
-    {
-      title: '',
-      url: '#',
-      items: [
-        {
-          title: 'Projects',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Content',
-      url: '#',
-      items: [
-        {
-          title: 'File Manager',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Settings',
-      url: '#',
-      items: [
-        {
-          title: 'Members',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Help & Support',
-      url: '#',
-      items: [
-        {
-          title: 'Documents',
-          url: '#',
-        },
-        {
-          title: 'Contact us',
-          url: '#',
-        },
-      ],
-    },
-  ],
-};
+import {
+  Airplay,
+  Download,
+  Folder,
+  GalleryVerticalEnd,
+  Pickaxe,
+} from 'lucide-react';
+import { useParams, usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
+import useWorkspaceInfo from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-info';
 
 export function ProjectSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const pathname = usePathname();
+  const currentPath = pathname.split('/').pop();
+  const { workspace_id: workspaceId } = useParams();
+  const { data: currentWorkspace } = useWorkspaceInfo(workspaceId as string);
+
+  const data = React.useMemo(() => {
+    return {
+      navMain: [
+        {
+          title: '',
+          url: '#',
+          items: [
+            {
+              title: 'Dashboard',
+              url: '#',
+              icon: Airplay,
+              keyword: 'dashboard',
+            },
+          ],
+        },
+        {
+          title: 'Content',
+          url: '#',
+          items: [
+            {
+              title: 'File Manager',
+              url: '#',
+              icon: Folder,
+              keyword: 'file',
+            },
+            {
+              title: 'Export data',
+              url: '#',
+              icon: Download,
+              keyword: 'export',
+            },
+          ],
+        },
+        {
+          title: 'Settings',
+          url: '#',
+          items: [
+            {
+              title: 'Project Setup',
+              url: '#',
+              icon: Pickaxe,
+              keyword: 'setup',
+            },
+          ],
+        },
+      ],
+    };
+  }, [pathname, workspaceId]);
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="#">
+              <Link href={`/workspaces/${currentWorkspace?.id}/projects`}>
                 <div
                   className="flex aspect-square size-8 items-center justify-center rounded-lg
                     bg-sidebar-primary text-sidebar-primary-foreground"
                 >
                   <GalleryVerticalEnd className="size-4" />
                 </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Workspace Name</span>
+                <div className="flex flex-col gap-0.5 leading-none truncate">
+                  <span className="font-semibold truncate">
+                    {currentWorkspace?.name}
+                  </span>
                 </div>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -95,13 +113,27 @@ export function ProjectSidebar({
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <a href={item.url}>{item.title}</a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                {item.items.map((item) => {
+                  const isActive = item.keyword === currentPath;
+                  return (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        asChild
+                        variant={isActive ? 'default' : 'ghost'}
+                      >
+                        <Link
+                          href={item.url}
+                          className={cn(
+                            'h-8 rounded-md px-3 text-xs font-semibold',
+                          )}
+                        >
+                          <item.icon className="h-4 w-4" />
+                          {item.title}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

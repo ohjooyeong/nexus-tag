@@ -14,6 +14,7 @@ export const projectQueries = {
     limit: number = 20,
     order: 'asc' | 'desc' = 'desc',
   ) => [...projectQueries.default(), workspaceId, search, page, limit, order],
+  detail: (id: string) => [...projectQueries.default(), id],
 };
 
 export const userQueries = {

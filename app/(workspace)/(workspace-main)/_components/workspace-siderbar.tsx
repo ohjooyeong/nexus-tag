@@ -18,13 +18,7 @@ import {
 import WorkspaceSwitcher from './workspace-switcher';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import {
-  FileSearch2,
-  PhoneCall,
-  Pickaxe,
-  Presentation,
-  Users2Icon,
-} from 'lucide-react';
+import { PhoneCall, Pickaxe, Presentation, Users2Icon } from 'lucide-react';
 import { useParams, usePathname } from 'next/navigation';
 
 export function WorkspaceSidebar({
