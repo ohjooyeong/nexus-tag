@@ -52,3 +52,17 @@ export interface ProjectsResponse {
   page: number;
   limit: number;
 }
+export interface Dataset {
+  id: string;
+  name: string;
+  project: Project;
+  dataItems?: DataItem[];
+  createdBy: WorkspaceMember;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DataItem {
+  id: string;
+  dataset: Dataset;
+}

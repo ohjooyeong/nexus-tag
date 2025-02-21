@@ -31,7 +31,7 @@ export function ProjectSidebar({
 }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname();
   const currentPath = pathname.split('/').pop();
-  const { workspace_id: workspaceId } = useParams();
+  const { workspace_id: workspaceId, project_id: projectId } = useParams();
   const { data: currentWorkspace } = useWorkspaceInfo(workspaceId as string);
 
   const data = React.useMemo(() => {
@@ -43,7 +43,7 @@ export function ProjectSidebar({
           items: [
             {
               title: 'Dashboard',
-              url: '#',
+              url: `/workspaces/${workspaceId}/projects/${projectId}/dashboard`,
               icon: Airplay,
               keyword: 'dashboard',
             },
@@ -55,9 +55,9 @@ export function ProjectSidebar({
           items: [
             {
               title: 'File Manager',
-              url: '#',
+              url: `/workspaces/${workspaceId}/projects/${projectId}/file-manager`,
               icon: Folder,
-              keyword: 'file',
+              keyword: 'file-manager',
             },
             {
               title: 'Export data',
