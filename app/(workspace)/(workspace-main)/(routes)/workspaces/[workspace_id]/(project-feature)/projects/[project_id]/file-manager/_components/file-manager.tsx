@@ -14,11 +14,20 @@ import { Plus, Search, TrashIcon } from 'lucide-react';
 import { useState } from 'react';
 import DataItemCard from './data-item-card';
 import DatasetCard from './dataset-card';
-import { mockDatasets } from '@/app/(workspace)/(workspace-main)/data/mock-data';
+
+import NewDatasetDialog from './dialog/new-dataset-dialog';
+import useDatasetList from '../_hooks/use-dataset-list';
+import { Dataset } from '@/app/(workspace)/(workspace-main)/_types';
+import DatasetCardAll from './dataset-card-all';
+import useDatasetStats from '../_hooks/use-dataset-stats';
 
 const FileManager = () => {
   const [query, setQuery] = useState('');
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [showNewDatasetDialog, setShowNewDatasetDialog] = useState(false);
+
+  const { data } = useDatasetList();
+  const { data: datsetStats } = useDatasetStats();
 
   // Dummy data for example
   const items = [
@@ -62,12 +71,14 @@ const FileManager = () => {
         <div className="w-[360px] shrink-0">
           <div className="flex flex-row justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Datasets</h2>
-            <div>
-              <Button className="p-1 text-xs px-4 h-8">
-                <Plus />
-                Create New
-              </Button>
-            </div>
+
+            <Button
+              className="p-1 text-xs px-4 h-8"
+              onClick={() => setShowNewDatasetDialog(true)}
+            >
+              <Plus />
+              Create New
+            </Button>
           </div>
           <div className="flex flex-row items-center mb-4">
             <div className="flex-1 relative">
@@ -85,10 +96,12 @@ const FileManager = () => {
             </div>
           </div>
           <ul className="list-none m-0 p-0 relative bg-none max-h-[calc(100vh-473px)] overflow-auto">
-            <DatasetCard isAll />
-            {mockDatasets.map((dataset) => (
-              <DatasetCard dataset={dataset} />
-            ))}
+            <DatasetCardAll
+              totalDatasets={datsetStats?.totalDatasets ?? 0}
+              totalItems={datsetStats?.totalItems ?? 0}
+            />
+            {data &&
+              data.map((dataset: Dataset) => <DatasetCard dataset={dataset} />)}
           </ul>
         </div>
         <div className="flex-1 ml-8">
@@ -152,6 +165,10 @@ const FileManager = () => {
           </div>
         </div>
       </div>
+      <NewDatasetDialog
+        isOpen={showNewDatasetDialog}
+        onClose={() => setShowNewDatasetDialog(false)}
+      />
     </div>
   );
 };
