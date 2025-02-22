@@ -1,5 +1,6 @@
 'use client';
 
+import { DataItem } from '@/app/(workspace)/(workspace-main)/_types';
 import { cn } from '@/lib/utils';
 import { CheckSquareIcon, Edit2, ExternalLink, SquareIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -8,15 +9,13 @@ import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface DataItemCardProps {
-  id: string;
-  title: string;
+  dataItem: DataItem;
   isSelected: boolean;
   onSelect: (id: string) => void;
 }
 
 const DataItemCard = ({
-  id,
-  title,
+  dataItem,
   isSelected,
   onSelect,
 }: DataItemCardProps) => {
@@ -30,7 +29,7 @@ const DataItemCard = ({
     event.stopPropagation();
 
     router.push(
-      `/workspaces/${workspaceId}/projects/${projectId}/image-annotate/${id}`,
+      `/workspaces/${workspaceId}/projects/${projectId}/image-annotate/${dataItem.id}`,
     );
   };
 
@@ -44,7 +43,7 @@ const DataItemCard = ({
         setIsHover(false);
       }}
     >
-      <div className="relative" onClick={() => onSelect(id)}>
+      <div className="relative" onClick={() => onSelect(dataItem.id)}>
         {isSelected && (
           <CheckSquareIcon className="w-3 h-3 absolute top-2 left-2 hover:text-blue-500" />
         )}
@@ -72,7 +71,7 @@ const DataItemCard = ({
             isHover && 'max-w-[100px]',
           )}
         >
-          {title}
+          {dataItem?.name}
         </p>
         {isHover && <Edit2 className="flex w-3 h-3 ml-1" />}
       </div>

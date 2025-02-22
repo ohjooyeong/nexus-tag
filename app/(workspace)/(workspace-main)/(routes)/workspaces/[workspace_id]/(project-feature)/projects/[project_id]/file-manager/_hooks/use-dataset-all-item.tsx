@@ -3,8 +3,7 @@ import { datasetQueries } from '@/constants/querykey-factory';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
-export default function useDatasetItem(
-  datasetId: string,
+export default function useDatasetAllItem(
   page: number = 1,
   limit: number = 20,
   order: 'asc' | 'desc' = 'desc',
@@ -23,7 +22,7 @@ export default function useDatasetItem(
       params.append('order', order);
 
       const { data } = await axiosInstance.get(
-        `/workspaces/${workspaceId}/projects/${projectId}/datasets/${datasetId}?${params.toString()}`,
+        `/workspaces/${workspaceId}/projects/${projectId}/datasets/items?${params.toString()}`,
       );
 
       return data.data;

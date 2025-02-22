@@ -23,7 +23,7 @@ export default function useDatasetItem(
       params.append('order', order);
 
       const { data } = await axiosInstance.get(
-        `/workspaces/${workspaceId}/projects/${projectId}/datasets/${datasetId}?${params.toString()}`,
+        `/workspaces/${workspaceId}/projects/${projectId}/datasets/${datasetId}/items?${params.toString()}`,
       );
 
       return data.data;
@@ -34,6 +34,7 @@ export default function useDatasetItem(
     이걸 keepPreviousData를 활용해서 기존 캐시된 데이터를 활용하겠다고 선언해 주는 것이다.
     이는 아마도 react의 useDifferedValue라는 훅을 참조했다고 전한다.
   */
+    enabled: datasetId !== '',
   });
 
   return { isLoading, isError, data };

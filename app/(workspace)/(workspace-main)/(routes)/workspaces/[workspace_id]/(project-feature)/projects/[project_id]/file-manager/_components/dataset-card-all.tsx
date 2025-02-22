@@ -1,5 +1,5 @@
-import { Dataset } from '@/app/(workspace)/(workspace-main)/_types';
-import { Folder, MoreVertical, Trash2 } from 'lucide-react';
+import { Folder } from 'lucide-react';
+import { useParams, useRouter } from 'next/navigation';
 
 interface DatasetCardProps {
   totalDatasets: number;
@@ -7,8 +7,18 @@ interface DatasetCardProps {
 }
 
 const DatasetCardAll = ({ totalDatasets, totalItems }: DatasetCardProps) => {
+  const router = useRouter();
+  const { workspace_id: workspaceId, project_id: projectId } = useParams();
+
   return (
-    <li className="flex relative w-full items-center border-b hover:bg-gray-100">
+    <li
+      className="flex relative w-full items-center border-b hover:bg-gray-100"
+      onClick={() => {
+        router.push(
+          `/workspaces/${workspaceId}/projects/${projectId}/file-manager`,
+        );
+      }}
+    >
       <div className="w-full p-3 cursor-pointer">
         <div className="flex flex-row justify-between items-center w-full">
           <div className="flex flex-row items-center w-4/5">

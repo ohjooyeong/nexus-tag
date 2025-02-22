@@ -20,7 +20,6 @@ export const projectQueries = {
 export const userQueries = {
   default: () => ['user'],
   profile: () => [...userQueries.default(), 'profile'],
-  // ... other user related queries
 } as const;
 
 export const memberQueries = {

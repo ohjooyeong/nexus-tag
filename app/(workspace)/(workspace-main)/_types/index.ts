@@ -64,5 +64,17 @@ export interface Dataset {
 
 export interface DataItem {
   id: string;
+  name: string;
+  fileUrl: string;
+  status:
+    | 'NEW'
+    | 'IN_PROGRESS'
+    | 'TO_REVIEW'
+    | 'DONE'
+    | 'SKIPPED'
+    | 'COMPLETED';
   dataset: Dataset;
+
+  createdAt: string;
+  updatedAt: string;
 }

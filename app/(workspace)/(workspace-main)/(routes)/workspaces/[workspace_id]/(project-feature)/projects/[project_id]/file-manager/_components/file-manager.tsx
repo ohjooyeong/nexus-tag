@@ -20,43 +20,15 @@ import useDatasetList from '../_hooks/use-dataset-list';
 import { Dataset } from '@/app/(workspace)/(workspace-main)/_types';
 import DatasetCardAll from './dataset-card-all';
 import useDatasetStats from '../_hooks/use-dataset-stats';
+import DataItemList from './data-item-list';
 
 const FileManager = () => {
   const [query, setQuery] = useState('');
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
   const [showNewDatasetDialog, setShowNewDatasetDialog] = useState(false);
 
   const { data } = useDatasetList();
   const { data: datsetStats } = useDatasetStats();
-
-  // Dummy data for example
-  const items = [
-    { id: '1', title: 'Item 1' },
-    { id: '2', title: 'Item 2' },
-    { id: '3', title: 'Item 3' },
-    { id: '4', title: 'Item 4' },
-    { id: '5', title: 'Item 5' },
-    { id: '6', title: 'Item 6' },
-    { id: '7', title: 'Item 7' },
-  ];
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedItems(items.map((item) => item.id));
-    } else {
-      setSelectedItems([]);
-    }
-  };
-
-  const handleSelectItem = (itemId: string) => {
-    setSelectedItems((prev) => {
-      if (prev.includes(itemId)) {
-        return prev.filter((id) => id !== itemId);
-      } else {
-        return [...prev, itemId];
-      }
-    });
-  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -101,69 +73,12 @@ const FileManager = () => {
               totalItems={datsetStats?.totalItems ?? 0}
             />
             {data &&
-              data.map((dataset: Dataset) => <DatasetCard dataset={dataset} />)}
+              data.map((dataset: Dataset) => (
+                <DatasetCard key={dataset.id} dataset={dataset} />
+              ))}
           </ul>
         </div>
-        <div className="flex-1 ml-8">
-          <div className="flex items-center sticky mb-2 px-2 z-50">
-            <div className="flex items-center justify-center h-8 w-8">
-              <Checkbox
-                className="w-4 h-4"
-                checked={
-                  selectedItems.length === items.length ||
-                  (selectedItems.length > 0 &&
-                    selectedItems.length < items.length &&
-                    'indeterminate')
-                }
-                onCheckedChange={handleSelectAll}
-              />
-            </div>
-            <div className="flex items-center justify-center h-8 w-8">
-              <TrashIcon
-                className={`w-4 h-4
-                  ${selectedItems.length > 0 ? 'cursor-pointer text-red-500' : 'text-gray-400'}`}
-                onClick={() => {
-                  if (selectedItems.length > 0) {
-                    // Handle delete action
-                    console.log('Deleting items:', selectedItems);
-                  }
-                }}
-              />
-            </div>
-            <div className="flex flex-row ml-auto">
-              <div className="flex flex-row items-center">
-                <p className="text-sm mr-3">Items per page:</p>
-                <Select
-                  defaultValue="100"
-                  onValueChange={(value) => {
-                    console.log(value);
-                  }}
-                >
-                  <SelectTrigger className="h-8 w-[70px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent side="top">
-                    {[20, 40, 60, 80, 100].map((pageSize) => (
-                      <SelectItem key={pageSize} value={`${pageSize}`}>
-                        {pageSize}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-4 flex-wrap content-start overflow-x-auto h-[calc(100vh-473px)]">
-            {items.map((item) => (
-              <DataItemCard
-                key={item.id}
-                isSelected={selectedItems.includes(item.id)}
-                onSelect={handleSelectItem}
-                {...item}
-              />
-            ))}
-          </div>
-        </div>
+        <DataItemList />
       </div>
       <NewDatasetDialog
         isOpen={showNewDatasetDialog}
