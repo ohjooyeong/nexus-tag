@@ -1,14 +1,33 @@
 import { Dataset } from '@/app/(workspace)/(workspace-main)/_types';
 import { Folder, MoreVertical, Trash2 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import DeleteDatasetDialog from './dialog/delete-dataset-dialog';
+import UpdateDatasetDialog from './dialog/update-dataset-dialog';
 
 interface DatasetCardProps {
-  dataset?: Dataset;
+  dataset: Dataset;
 }
 
 const DatasetCard = ({ dataset }: DatasetCardProps) => {
   const router = useRouter();
   const { workspace_id: workspaceId, project_id: projectId } = useParams();
+  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+
+  const handleOpenEditDialog = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setShowEditDialog(true);
+  };
+
+  const handleOpenDeleteDialog = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setShowDeleteDialog(true);
+  };
 
   return (
     <li
@@ -29,15 +48,37 @@ const DatasetCard = ({ dataset }: DatasetCardProps) => {
           </div>
 
           <div className="flex flex-row w-1/5">
-            <button className="p-2 hover:bg-slate-200">
+            <button
+              className="p-2 hover:bg-slate-200"
+              onClick={handleOpenDeleteDialog}
+            >
               <Trash2 className="w-4 h-4" />
             </button>
-            <button className="p-2 hover:bg-slate-200">
+            <button
+              className="p-2 hover:bg-slate-200"
+              onClick={handleOpenEditDialog}
+            >
               <MoreVertical className="w-4 h-4" />
             </button>
           </div>
         </div>
       </div>
+      <DeleteDatasetDialog
+        isOpen={showDeleteDialog}
+        onClose={() => {
+          setShowDeleteDialog(false);
+        }}
+        dataset={dataset}
+      />
+      {showEditDialog && (
+        <UpdateDatasetDialog
+          isOpen={showEditDialog}
+          onClose={() => {
+            setShowEditDialog(false);
+          }}
+          dataset={dataset}
+        />
+      )}
     </li>
   );
 };

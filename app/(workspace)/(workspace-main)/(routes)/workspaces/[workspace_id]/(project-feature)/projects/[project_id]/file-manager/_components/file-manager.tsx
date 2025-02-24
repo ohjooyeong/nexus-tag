@@ -1,18 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Plus, Search, TrashIcon } from 'lucide-react';
+
+import { Plus, Search } from 'lucide-react';
 import { useState } from 'react';
-import DataItemCard from './data-item-card';
 import DatasetCard from './dataset-card';
 
 import NewDatasetDialog from './dialog/new-dataset-dialog';

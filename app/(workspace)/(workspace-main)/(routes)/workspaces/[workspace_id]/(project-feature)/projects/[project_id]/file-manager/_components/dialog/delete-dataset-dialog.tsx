@@ -9,40 +9,44 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import useDeleteMember from '../../_hooks/use-delete-member';
-import { memberQueries } from '@/constants/querykey-factory';
+
+import { datasetQueries } from '@/constants/querykey-factory';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Icons } from '@/components/icons';
-import { MemberFormValues } from '../sheet/update-member-sheet';
+import useDeleteDataset from '../../_hooks/use-delete-dataset';
+import { Dataset } from '@/app/(workspace)/(workspace-main)/_types';
+import { useParams, useRouter } from 'next/navigation';
 
-const DeleteMemberDialog = ({
+const DeleteDatasetDialog = ({
   isOpen,
   onClose,
-  data,
+  dataset,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  data: MemberFormValues;
+  dataset: Dataset;
 }) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
-  const { workspace_id: workspaceId } = useParams();
+  const { workspace_id: workspaceId, project_id: projectId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const deleteMemberMutation = useDeleteMember();
+  const deleteDatasetMutation = useDeleteDataset();
 
   const onDelete = async () => {
     setIsLoading(true);
     try {
-      const response = await deleteMemberMutation.mutateAsync({
-        email: data.email,
-        workspaceId: workspaceId as string,
+      const response = await deleteDatasetMutation.mutateAsync({
+        datasetId: dataset.id,
       });
-      queryClient.invalidateQueries({ queryKey: memberQueries.default() });
+      queryClient.invalidateQueries({ queryKey: datasetQueries.default() });
       toast.success(response.message);
+      router.push(
+        `/workspaces/${workspaceId}/projects/${projectId}/file-manager`,
+      );
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -65,11 +69,11 @@ const DeleteMemberDialog = ({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-2xl">
-            Delete {data?.email || '-'}
+            Delete {dataset?.name || '-'}
           </AlertDialogTitle>
           <AlertDialogDescription>
             <span className="text-black py-4">
-              {`Are you sure you want to delete the workspace member "${data?.email || '-'}"?`}
+              {`Deleting a dataset will delete all images in the dataset, do you want to delete it?`}
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -92,4 +96,4 @@ const DeleteMemberDialog = ({
   );
 };
 
-export default DeleteMemberDialog;
+export default DeleteDatasetDialog;

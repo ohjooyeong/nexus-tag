@@ -37,12 +37,12 @@ const ProjectCard = ({ project }: Props) => {
           </div>
         </div>
       </div>
-      <Button
+      {/* <Button
         className="w-6 h-6 p-3 flex items-center justify-center top-3 right-3 absolute bg-white
           hover:bg-slate-100 border"
       >
         <PinIcon className="w-3 h-3 text-muted-foreground" />
-      </Button>
+      </Button> */}
       <div
         className="absolute bottom-3 left-3 right-3 rounded-lg px-3 py-[6px] text-card-foreground
           border bg-white"
