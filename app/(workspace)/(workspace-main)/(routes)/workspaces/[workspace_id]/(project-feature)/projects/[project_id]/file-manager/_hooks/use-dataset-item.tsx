@@ -14,7 +14,7 @@ export default function useDatasetItem(
   const projectId = params.project_id as string;
 
   const { isLoading, isError, data } = useQuery({
-    queryKey: datasetQueries.item(projectId, page, limit, order),
+    queryKey: datasetQueries.item(projectId, datasetId, page, limit, order),
     queryFn: async () => {
       const params = new URLSearchParams();
 

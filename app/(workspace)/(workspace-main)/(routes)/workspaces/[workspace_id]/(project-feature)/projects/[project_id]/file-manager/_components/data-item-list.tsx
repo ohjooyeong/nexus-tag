@@ -10,12 +10,21 @@ import {
 } from '@/components/ui/select';
 import { TrashIcon } from 'lucide-react';
 import DataItemCard from './data-item-card';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import useDatasetItem from '../_hooks/use-dataset-item';
 import useDatasetAllItem from '../_hooks/use-dataset-all-item';
 import { DataItem } from '@/app/(workspace)/(workspace-main)/_types';
 import NoResultDataItem from './no-result-data-item';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from '@/components/ui/pagination';
 
 const DataItemList = () => {
   const searchParams = useSearchParams();
@@ -25,24 +34,24 @@ const DataItemList = () => {
 
   const datasetId = searchParams.get('datasetId');
 
-  // Conditionally use the appropriate hook
-  const {
-    data: singleDatasetItems,
-    isLoading: isSingleLoading,
-    isError: isSingleError,
-  } = useDatasetItem(datasetId || '', page, limit, 'asc');
-  const {
-    data: allDatasetItems,
-    isLoading: isAllLoading,
-    isError: isAllError,
-  } = useDatasetAllItem(page, limit, 'asc');
+  const { data: singleDatasetItems, isLoading: isSingleLoading } =
+    useDatasetItem(datasetId || '', page, limit, 'asc');
+  const { data: allDatasetItems, isLoading: isAllLoading } = useDatasetAllItem(
+    page,
+    limit,
+    'asc',
+  );
 
   const items = datasetId
     ? (singleDatasetItems?.items as DataItem[]) || []
     : (allDatasetItems?.items as DataItem[]) || [];
 
   const isLoading = datasetId ? isSingleLoading : isAllLoading;
-  const isError = datasetId ? isSingleError : isAllError;
+
+  const totalPages =
+    Math.ceil(
+      (datasetId ? singleDatasetItems?.total : allDatasetItems?.total) / limit,
+    ) || 1;
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -64,8 +73,19 @@ const DataItemList = () => {
 
   const handlePageSizeChange = (value: string) => {
     setLimit(Number(value));
-    setPage(1); // Reset to first page when changing page size
+    setPage(1);
+    setSelectedItems([]);
   };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    setSelectedItems([]);
+  };
+
+  // datasetId가 바뀔 때 선택된 아이템 초기화
+  useEffect(() => {
+    setSelectedItems([]);
+  }, [datasetId]);
 
   return (
     <div className="flex-1 ml-8">
@@ -73,7 +93,10 @@ const DataItemList = () => {
         <div className="flex items-center justify-center h-8 w-8">
           <Checkbox
             className="w-4 h-4"
-            checked={selectedItems.length === items.length}
+            checked={
+              selectedItems.length !== 0 &&
+              selectedItems.length === items.length
+            }
             indeterminate={
               selectedItems.length > 0 && selectedItems.length < items.length
             }
@@ -116,18 +139,79 @@ const DataItemList = () => {
         </div>
       </div>
       <div className="flex gap-4 flex-wrap content-start overflow-x-auto h-[calc(100vh-473px)]">
-        {items.length === 0 ? (
-          <NoResultDataItem />
-        ) : (
-          items.map((item: DataItem) => (
-            <DataItemCard
-              key={item.id}
-              isSelected={selectedItems.includes(item.id)}
-              onSelect={handleSelectItem}
-              dataItem={item}
-            />
-          ))
-        )}
+        {!isLoading &&
+          (items.length === 0 ? (
+            <NoResultDataItem />
+          ) : (
+            items.map((item: DataItem) => (
+              <DataItemCard
+                key={item.id}
+                isSelected={selectedItems.includes(item.id)}
+                onSelect={handleSelectItem}
+                dataItem={item}
+              />
+            ))
+          ))}
+        {isLoading &&
+          Array.from({ length: 10 }, (_, index) => (
+            <DataItemCard.Skeleton key={index} />
+          ))}
+      </div>
+
+      <div className="flex items-center justify-center py-4 min-h-8">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => page > 1 && handlePageChange(page - 1)}
+                className={
+                  page <= 1
+                    ? 'pointer-events-none opacity-50'
+                    : 'cursor-pointer'
+                }
+              />
+            </PaginationItem>
+
+            {[...Array(totalPages)].map((_, index) => {
+              const pageNumber = index + 1;
+
+              if (
+                pageNumber === 1 ||
+                pageNumber === totalPages ||
+                (pageNumber >= page - 1 && pageNumber <= page + 1)
+              ) {
+                return (
+                  <PaginationItem key={pageNumber}>
+                    <PaginationLink
+                      onClick={() => handlePageChange(pageNumber)}
+                      isActive={page === pageNumber}
+                    >
+                      {pageNumber}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              } else if (pageNumber === page - 2 || pageNumber === page + 2) {
+                return (
+                  <PaginationItem key={pageNumber}>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                );
+              }
+              return null;
+            })}
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => page < totalPages && handlePageChange(page + 1)}
+                className={
+                  page >= totalPages
+                    ? 'pointer-events-none opacity-50'
+                    : 'cursor-pointer'
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   );

@@ -31,10 +31,11 @@ export const datasetQueries = {
   default: () => ['datasets'],
   item: (
     projectId: string,
+    datasetId: string,
     page: number = 1,
     limit: number = 20,
     order: 'asc' | 'desc' = 'desc',
-  ) => [...datasetQueries.default(), projectId, page, limit, order],
+  ) => [...datasetQueries.default(), projectId, datasetId, page, limit, order],
   detail: (id: string) => [...datasetQueries.default(), id],
   list: (id: string) => [...datasetQueries.default(), 'list', id],
   stats: (id: string) => [...datasetQueries.default(), id, 'stats'],

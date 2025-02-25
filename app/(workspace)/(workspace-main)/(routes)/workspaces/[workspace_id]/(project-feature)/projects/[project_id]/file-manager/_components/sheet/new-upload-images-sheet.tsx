@@ -20,11 +20,14 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import axios from 'axios';
+
 import useDatasetList from '../../_hooks/use-dataset-list';
 import { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { Upload } from 'lucide-react';
+
+import { datasetQueries } from '@/constants/querykey-factory';
+import useUploadImages from '../../_hooks/use-upload-images';
 
 const NewUploadImagesSheet = ({
   isOpen,
@@ -94,6 +97,31 @@ const NewUploadImagesSheet = ({
     setFiles([]);
     setSelectedDataset('');
     onClose();
+  };
+
+  const uploadMutation = useUploadImages();
+
+  const handleUpload = async () => {
+    if (!selectedDataset || files.length === 0) return;
+
+    setIsLoading(true);
+    try {
+      await uploadMutation.mutateAsync({
+        datasetId: selectedDataset,
+        files,
+      });
+      toast.success('Files uploaded successfully');
+      handleSheetClose();
+
+      queryClient.invalidateQueries({
+        queryKey: datasetQueries.default(),
+      });
+    } catch (error) {
+      toast.error('Failed to upload files');
+      console.error('Upload error:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -168,10 +196,7 @@ const NewUploadImagesSheet = ({
           <Button
             className="w-full"
             disabled={!selectedDataset || files.length === 0 || isLoading}
-            onClick={() => {
-              // Handle upload logic here
-              console.log('Uploading files to dataset:', selectedDataset);
-            }}
+            onClick={handleUpload}
           >
             {isLoading ? 'Uploading...' : 'Upload Images'}
           </Button>

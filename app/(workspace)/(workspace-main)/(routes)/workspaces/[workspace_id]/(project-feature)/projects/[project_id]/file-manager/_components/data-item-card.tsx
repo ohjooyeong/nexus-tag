@@ -1,6 +1,7 @@
 'use client';
 
 import { DataItem } from '@/app/(workspace)/(workspace-main)/_types';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { CheckSquareIcon, Edit2, ExternalLink, SquareIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -33,6 +34,8 @@ const DataItemCard = ({
     );
   };
 
+  const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${dataItem.fileUrl}`;
+
   return (
     <div
       className="flex relative flex-col"
@@ -45,23 +48,23 @@ const DataItemCard = ({
     >
       <div className="relative" onClick={() => onSelect(dataItem.id)}>
         {isSelected && (
-          <CheckSquareIcon className="w-3 h-3 absolute top-2 left-2 hover:text-blue-500" />
+          <CheckSquareIcon className="w-3 h-3 absolute top-2 left-2 hover:text-blue-500 text-blue-600" />
         )}
         {isHover && !isSelected && (
-          <SquareIcon className="w-3 h-3 absolute top-2 left-2 hover:text-blue-500" />
+          <SquareIcon className="w-3 h-3 absolute top-2 left-2 hover:text-blue-500 text-blue-600" />
         )}
         {isHover && (
           <ExternalLink
             onClick={handleRoute}
-            className="w-3 h-3 absolute top-2 right-2 cursor-pointer hover:text-blue-500"
+            className="w-3 h-3 absolute top-2 right-2 cursor-pointer hover:text-blue-500 text-blue-600"
           />
         )}
         <Image
           alt=""
-          src={'/assets/placeholder-image.png'}
+          src={dataItem?.fileUrl ? imageUrl : '/assets/placeholder-image.png'}
           width={120}
           height={80}
-          className="object-cover h-full cursor-pointer border rounded-md"
+          className="object-fill h-full cursor-pointer border rounded-md max-h-20 min-h-20"
         />
       </div>
       <div className="flex items-center pt-1">
@@ -80,3 +83,15 @@ const DataItemCard = ({
 };
 
 export default DataItemCard;
+
+DataItemCard.Skeleton = function DataItemCardSkeleton() {
+  return (
+    <div className="flex relative flex-col">
+      <Skeleton className="h-[80px] w-[120px]" />
+
+      <div className="flex items-center pt-1">
+        <Skeleton className="h-4 w-20" />
+      </div>
+    </div>
+  );
+};
