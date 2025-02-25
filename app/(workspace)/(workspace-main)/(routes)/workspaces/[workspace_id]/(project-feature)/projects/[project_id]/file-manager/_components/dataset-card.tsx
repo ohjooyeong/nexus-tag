@@ -1,9 +1,10 @@
 import { Dataset } from '@/app/(workspace)/(workspace-main)/_types';
 import { Folder, MoreVertical, Trash2 } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import DeleteDatasetDialog from './dialog/delete-dataset-dialog';
 import UpdateDatasetDialog from './dialog/update-dataset-dialog';
+import { cn } from '@/lib/utils';
 
 interface DatasetCardProps {
   dataset: Dataset;
@@ -11,9 +12,12 @@ interface DatasetCardProps {
 
 const DatasetCard = ({ dataset }: DatasetCardProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { workspace_id: workspaceId, project_id: projectId } = useParams();
   const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+
+  const datasetId = searchParams.get('datasetId');
 
   const handleOpenEditDialog = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -31,7 +35,10 @@ const DatasetCard = ({ dataset }: DatasetCardProps) => {
 
   return (
     <li
-      className="flex relative w-full items-center border-b hover:bg-gray-100"
+      className={cn(
+        'flex relative w-full items-center border-b hover:bg-gray-100',
+        dataset?.id === datasetId && 'bg-gray-100',
+      )}
       onClick={() => {
         router.push(
           `/workspaces/${workspaceId}/projects/${projectId}/file-manager?datasetId=${dataset?.id}`,

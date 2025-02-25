@@ -1,5 +1,6 @@
+import { cn } from '@/lib/utils';
 import { Folder } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 
 interface DatasetCardProps {
   totalDatasets: number;
@@ -8,11 +9,17 @@ interface DatasetCardProps {
 
 const DatasetCardAll = ({ totalDatasets, totalItems }: DatasetCardProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { workspace_id: workspaceId, project_id: projectId } = useParams();
+
+  const datasetId = searchParams.get('datasetId');
 
   return (
     <li
-      className="flex relative w-full items-center border-b hover:bg-gray-100"
+      className={cn(
+        'flex relative w-full items-center border-b hover:bg-gray-100',
+        !datasetId && 'bg-gray-100',
+      )}
       onClick={() => {
         router.push(
           `/workspaces/${workspaceId}/projects/${projectId}/file-manager`,

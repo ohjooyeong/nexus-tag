@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 import { Input } from '@/components/ui/input';
 
-import { Plus, Search } from 'lucide-react';
+import { Plus, Search, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import DatasetCard from './dataset-card';
 
@@ -17,7 +17,6 @@ import DataItemList from './data-item-list';
 
 const FileManager = () => {
   const [query, setQuery] = useState('');
-
   const [showNewDatasetDialog, setShowNewDatasetDialog] = useState(false);
 
   const { data } = useDatasetList();
@@ -26,9 +25,14 @@ const FileManager = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
   };
+
   const handleReset = () => {
     setQuery('');
   };
+
+  const filteredDatasets = data?.filter((dataset: Dataset) =>
+    dataset.name.toLowerCase().includes(query.toLowerCase()),
+  );
 
   return (
     <div className="border rounded-md overflow-auto p-4">
@@ -50,7 +54,7 @@ const FileManager = () => {
               <Search className="opacity-50 absolute left-2 top-2" />
               <Input
                 placeholder="Search Datasets"
-                className="pl-10 h-10 bg-transparent outline-none placeholder:text-muted-foreground
+                className="pl-10 pr-10 h-10 bg-transparent outline-none placeholder:text-muted-foreground
                   disabled:opacity-50 text-sm hover:bg-accent hover:text-accent-foreground"
                 autoComplete="off"
                 autoCorrect="off"
@@ -58,6 +62,16 @@ const FileManager = () => {
                 onChange={handleChange}
                 value={query}
               />
+              {query && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-2 h-6 w-6 p-0"
+                  onClick={handleReset}
+                >
+                  <XIcon />
+                </Button>
+              )}
             </div>
           </div>
           <ul className="list-none m-0 p-0 relative bg-none max-h-[calc(100vh-473px)] overflow-auto">
@@ -65,8 +79,8 @@ const FileManager = () => {
               totalDatasets={datsetStats?.totalDatasets ?? 0}
               totalItems={datsetStats?.totalItems ?? 0}
             />
-            {data &&
-              data.map((dataset: Dataset) => (
+            {filteredDatasets &&
+              filteredDatasets.map((dataset: Dataset) => (
                 <DatasetCard key={dataset.id} dataset={dataset} />
               ))}
           </ul>
