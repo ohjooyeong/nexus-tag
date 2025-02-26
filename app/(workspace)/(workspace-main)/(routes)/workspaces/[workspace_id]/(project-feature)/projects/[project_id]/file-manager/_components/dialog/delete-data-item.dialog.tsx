@@ -15,38 +15,35 @@ import { datasetQueries } from '@/constants/querykey-factory';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Icons } from '@/components/icons';
-import useDeleteDataset from '../../_hooks/use-delete-dataset';
-import { Dataset } from '@/app/(workspace)/(workspace-main)/_types';
-import { useParams, useRouter } from 'next/navigation';
 
-const DeleteDatasetDialog = ({
+import useDeleteDataItem from '../../_hooks/use-delete-data-item';
+
+const DeleteDataItemDialog = ({
   isOpen,
   onClose,
-  dataset,
+  itemIds,
+  onReset,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  dataset: Dataset;
+  itemIds: string[];
+  onReset: () => void;
 }) => {
-  const router = useRouter();
   const queryClient = useQueryClient();
-  const { workspace_id: workspaceId, project_id: projectId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const deleteDatasetMutation = useDeleteDataset();
+  const deleteDataItemMutation = useDeleteDataItem();
 
   const onDelete = async () => {
     setIsLoading(true);
     try {
-      const response = await deleteDatasetMutation.mutateAsync({
-        datasetId: dataset.id,
+      const response = await deleteDataItemMutation.mutateAsync({
+        itemIds: itemIds,
       });
       queryClient.invalidateQueries({ queryKey: datasetQueries.default() });
       toast.success(response.message);
-      router.push(
-        `/workspaces/${workspaceId}/projects/${projectId}/file-manager`,
-      );
+      onReset();
       onClose();
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -69,11 +66,11 @@ const DeleteDatasetDialog = ({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-2xl">
-            Delete {dataset?.name || '-'}
+            Delete images
           </AlertDialogTitle>
           <AlertDialogDescription>
             <span className="text-black py-4">
-              {`Deleting a dataset will delete all images in the dataset, do you want to delete it?`}
+              {`Are you sure you want to delete ${itemIds?.length} image?`}
             </span>
           </AlertDialogDescription>
         </AlertDialogHeader>
@@ -96,4 +93,4 @@ const DeleteDatasetDialog = ({
   );
 };
 
-export default DeleteDatasetDialog;
+export default DeleteDataItemDialog;

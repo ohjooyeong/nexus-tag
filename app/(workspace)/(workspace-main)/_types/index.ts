@@ -62,19 +62,26 @@ export interface Dataset {
   updatedAt: string;
 }
 
+export enum Status {
+  NEW = 'NEW',
+  IN_PROGRESS = 'IN_PROGRESS',
+  TO_REVIEW = 'TO_REVIEW',
+  DONE = 'DONE',
+  SKIPPED = 'SKIPPED',
+  COMPLETED = 'COMPLETED',
+}
+
 export interface DataItem {
   id: string;
   name: string;
   fileUrl: string;
-  status:
-    | 'NEW'
-    | 'IN_PROGRESS'
-    | 'TO_REVIEW'
-    | 'DONE'
-    | 'SKIPPED'
-    | 'COMPLETED';
+  originalName: string;
+  filename: string;
+  path: string;
+  mimeType: string;
+  size: number;
+  status: Status;
   dataset: Dataset;
-
   createdAt: string;
   updatedAt: string;
 }

@@ -14,15 +14,17 @@ const DatasetCard = ({ dataset }: DatasetCardProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { workspace_id: workspaceId, project_id: projectId } = useParams();
-  const [showEditDialog, setShowEditDialog] = useState<boolean>(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
 
   const datasetId = searchParams.get('datasetId');
 
-  const handleOpenEditDialog = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenUpdateDialog = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
     event.stopPropagation();
-    setShowEditDialog(true);
+    setShowUpdateDialog(true);
   };
 
   const handleOpenDeleteDialog = (
@@ -63,7 +65,7 @@ const DatasetCard = ({ dataset }: DatasetCardProps) => {
             </button>
             <button
               className="p-2 hover:bg-slate-200"
-              onClick={handleOpenEditDialog}
+              onClick={handleOpenUpdateDialog}
             >
               <MoreVertical className="w-4 h-4" />
             </button>
@@ -77,11 +79,11 @@ const DatasetCard = ({ dataset }: DatasetCardProps) => {
         }}
         dataset={dataset}
       />
-      {showEditDialog && (
+      {showUpdateDialog && (
         <UpdateDatasetDialog
-          isOpen={showEditDialog}
+          isOpen={showUpdateDialog}
           onClose={() => {
-            setShowEditDialog(false);
+            setShowUpdateDialog(false);
           }}
           dataset={dataset}
         />

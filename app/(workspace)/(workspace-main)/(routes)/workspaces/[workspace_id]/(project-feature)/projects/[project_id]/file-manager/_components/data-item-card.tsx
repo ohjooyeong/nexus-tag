@@ -8,6 +8,7 @@ import Image from 'next/image';
 
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import UpdateDataItemDialog from './dialog/update-data-item-dialog';
 
 interface DataItemCardProps {
   dataItem: DataItem;
@@ -24,6 +25,9 @@ const DataItemCard = ({
   const { workspace_id: workspaceId, project_id: projectId } = useParams();
 
   const [isHover, setIsHover] = useState(false);
+  const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
+
+  const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${dataItem.fileUrl}`;
 
   const handleRoute = (event: React.MouseEvent<SVGSVGElement>) => {
     event.preventDefault();
@@ -34,7 +38,11 @@ const DataItemCard = ({
     );
   };
 
-  const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${dataItem.fileUrl}`;
+  const handleOpenUpdateDialog = (event: React.MouseEvent<SVGSVGElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setShowUpdateDialog(true);
+  };
 
   return (
     <div
@@ -48,16 +56,22 @@ const DataItemCard = ({
     >
       <div className="relative" onClick={() => onSelect(dataItem.id)}>
         {isSelected && (
-          <CheckSquareIcon className="w-3 h-3 absolute top-2 left-2 hover:text-blue-500 text-blue-600" />
+          <div className="w-3 h-3 absolute top-2 left-2 bg-white">
+            <CheckSquareIcon className="w-3 h-3 hover:text-blue-500" />
+          </div>
         )}
         {isHover && !isSelected && (
-          <SquareIcon className="w-3 h-3 absolute top-2 left-2 hover:text-blue-500 text-blue-600" />
+          <div className="absolute top-2 left-2 w-3 h-3 bg-white">
+            <SquareIcon className="w-3 h-3 hover:text-blue-500" />
+          </div>
         )}
         {isHover && (
-          <ExternalLink
-            onClick={handleRoute}
-            className="w-3 h-3 absolute top-2 right-2 cursor-pointer hover:text-blue-500 text-blue-600"
-          />
+          <div className="w-3 h-3 absolute top-2 right-2 bg-white">
+            <ExternalLink
+              onClick={handleRoute}
+              className="w-3 h-3 cursor-pointer hover:text-blue-500"
+            />
+          </div>
         )}
         <Image
           alt=""
@@ -76,8 +90,22 @@ const DataItemCard = ({
         >
           {dataItem?.name}
         </p>
-        {isHover && <Edit2 className="flex w-3 h-3 ml-1" />}
+        {isHover && (
+          <Edit2
+            className="flex w-3 h-3 ml-1 cursor-pointer"
+            onClick={handleOpenUpdateDialog}
+          />
+        )}
       </div>
+      {showUpdateDialog && (
+        <UpdateDataItemDialog
+          isOpen={showUpdateDialog}
+          onClose={() => {
+            setShowUpdateDialog(false);
+          }}
+          dataItem={dataItem}
+        />
+      )}
     </div>
   );
 };

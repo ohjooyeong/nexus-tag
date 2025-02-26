@@ -25,12 +25,15 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import DeleteDataItemDialog from './dialog/delete-data-item.dialog';
 
 const DataItemList = () => {
   const searchParams = useSearchParams();
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(20);
+
+  const [showDeleteItems, setShowDeleteItems] = useState<boolean>(false);
 
   const datasetId = searchParams.get('datasetId');
 
@@ -71,6 +74,12 @@ const DataItemList = () => {
     });
   };
 
+  const handleDeleteItems = () => {
+    if (selectedItems.length > 0) {
+      setShowDeleteItems(true);
+    }
+  };
+
   const handlePageSizeChange = (value: string) => {
     setLimit(Number(value));
     setPage(1);
@@ -79,6 +88,10 @@ const DataItemList = () => {
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
+    setSelectedItems([]);
+  };
+
+  const handleResetSelectedItems = () => {
     setSelectedItems([]);
   };
 
@@ -110,11 +123,7 @@ const DataItemList = () => {
                 ? 'cursor-pointer text-red-500'
                 : 'text-gray-400'
               }`}
-            onClick={() => {
-              if (selectedItems.length > 0) {
-                console.log('Deleting items:', selectedItems);
-              }
-            }}
+            onClick={handleDeleteItems}
           />
         </div>
         <div className="flex flex-row ml-auto">
@@ -213,6 +222,14 @@ const DataItemList = () => {
           </PaginationContent>
         </Pagination>
       </div>
+      <DeleteDataItemDialog
+        isOpen={showDeleteItems}
+        onClose={() => {
+          setShowDeleteItems(false);
+        }}
+        itemIds={selectedItems}
+        onReset={handleResetSelectedItems}
+      />
     </div>
   );
 };
