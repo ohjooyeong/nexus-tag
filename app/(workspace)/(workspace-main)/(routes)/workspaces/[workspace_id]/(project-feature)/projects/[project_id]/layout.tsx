@@ -7,14 +7,6 @@ import {
 } from '@/components/ui/sidebar';
 
 import { Separator } from '@/components/ui/separator';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 
 import { ProjectSidebar } from './_components/project-sidebar';
 import { ProjectNavActions } from './_components/project-nav-actions';

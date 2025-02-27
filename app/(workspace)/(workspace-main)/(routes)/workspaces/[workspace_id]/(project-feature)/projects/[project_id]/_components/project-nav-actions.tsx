@@ -21,23 +21,38 @@ import {
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-
-const data = [
-  [
-    {
-      label: 'My Account',
-      icon: User,
-    },
-    {
-      label: 'Logout',
-      icon: PowerOffIcon,
-    },
-  ],
-];
+import { useLogout } from '@/app/(workspace)/(workspace-main)/_hooks/use-logout';
+import useProfile from '@/app/(workspace)/(workspace-main)/_hooks/use-profile';
 
 export function ProjectNavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
   const { workspace_id: workspaceId, project_id: projectId } = useParams();
+  const { data: profile } = useProfile();
+  const { logout } = useLogout();
+
+  const menuItems = React.useMemo(
+    () => [
+      [
+        {
+          label: 'My Account',
+          icon: User,
+          onClick: () => {
+            // Add my account action here
+            console.log('My Account clicked');
+          },
+        },
+        {
+          label: 'Logout',
+          icon: PowerOffIcon,
+          onClick: () => {
+            logout();
+            setIsOpen(false);
+          },
+        },
+      ],
+    ],
+    [],
+  );
 
   return (
     <div className="flex items-center gap-2 text-sm">
@@ -56,9 +71,9 @@ export function ProjectNavActions() {
           </Link>
         </Button>
       </div>
-      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+      {/* <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
         <BellIcon />
-      </Button>
+      </Button> */}
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -83,21 +98,21 @@ export function ProjectNavActions() {
               <div className="px-4 pt-3 pb-1 text-sm font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-base font-medium leading-none pb-1">
-                    Ohjoo
+                    {profile?.username}
                   </p>
                   <p className="text-sm leading-none text-muted-foreground">
-                    brb1111@naver.com
+                    {profile?.email}
                   </p>
                 </div>
               </div>
               <Separator />
 
-              {data.map((group, index) => (
+              {menuItems.map((group, index) => (
                 <SidebarGroup key={index} className="border-b last:border-none">
                   <SidebarGroupContent className="gap-0">
                     <SidebarMenu>
                       {group.map((item, index) => (
-                        <SidebarMenuItem key={index}>
+                        <SidebarMenuItem key={index} onClick={item.onClick}>
                           <SidebarMenuButton>
                             <item.icon /> <span>{item.label}</span>
                           </SidebarMenuButton>

@@ -34,7 +34,7 @@ const DataItemCard = ({
     event.stopPropagation();
 
     router.push(
-      `/workspaces/${workspaceId}/projects/${projectId}/image-annotate/${dataItem.id}`,
+      `/workspaces/${workspaceId}/projects/${projectId}/image-annotate?imageId=${dataItem.id}`,
     );
   };
 

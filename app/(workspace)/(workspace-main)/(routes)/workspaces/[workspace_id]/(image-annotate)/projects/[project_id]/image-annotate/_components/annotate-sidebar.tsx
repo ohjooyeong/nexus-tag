@@ -27,75 +27,83 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-
-// This is sample data.
-const data = {
-  navMain: [
-    {
-      title: 'Manual',
-      url: '#',
-      items: [
-        {
-          title: 'Pan',
-          url: '#',
-          icon: HandIcon,
-        },
-        {
-          title: 'Select & Drag',
-          url: '#',
-          icon: MousePointer,
-        },
-      ],
-    },
-    {
-      title: 'AI Tool',
-      url: '#',
-      items: [
-        {
-          title: 'SAM Brush',
-          url: '#',
-          icon: ZapIcon,
-        },
-      ],
-    },
-    {
-      title: 'Basic Tool',
-      url: '#',
-      items: [
-        {
-          title: 'Polygon',
-          url: '#',
-          icon: Pentagon,
-        },
-        {
-          title: 'Bounding Box',
-          url: '#',
-          icon: Square,
-        },
-        {
-          title: 'Brush',
-          url: '#',
-          icon: BrushIcon,
-        },
-      ],
-    },
-  ],
-};
-
-const menuData = [
-  {
-    title: 'Go to workspaces',
-    url: '#',
-  },
-  {
-    title: 'Go to project dashboard',
-    url: '#',
-  },
-];
+import { useParams } from 'next/navigation';
 
 export function AnnotateSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const { project_id: projectId, workspace_id: workspaceId } = useParams();
+
+  const data = React.useMemo(
+    () => ({
+      navMain: [
+        {
+          title: 'Manual',
+          url: '#',
+          items: [
+            {
+              title: 'Pan',
+              url: '#',
+              icon: HandIcon,
+            },
+            {
+              title: 'Select & Drag',
+              url: '#',
+              icon: MousePointer,
+            },
+          ],
+        },
+        {
+          title: 'AI Tool',
+          url: '#',
+          items: [
+            {
+              title: 'SAM Brush',
+              url: '#',
+              icon: ZapIcon,
+            },
+          ],
+        },
+        {
+          title: 'Basic Tool',
+          url: '#',
+          items: [
+            {
+              title: 'Polygon',
+              url: '#',
+              icon: Pentagon,
+            },
+            {
+              title: 'Bounding Box',
+              url: '#',
+              icon: Square,
+            },
+            {
+              title: 'Brush',
+              url: '#',
+              icon: BrushIcon,
+            },
+          ],
+        },
+      ],
+    }),
+    [],
+  );
+
+  const menuData = React.useMemo(
+    () => [
+      {
+        title: 'Go to workspaces',
+        url: `/workspaces/${workspaceId}/projects`,
+      },
+      {
+        title: 'Go to project',
+        url: `/workspaces/${workspaceId}/projects/${projectId}/dashboard`,
+      },
+    ],
+    [],
+  );
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -112,7 +120,6 @@ export function AnnotateSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {/* We create a SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel className="flex items-center justify-center text-center mb-2">

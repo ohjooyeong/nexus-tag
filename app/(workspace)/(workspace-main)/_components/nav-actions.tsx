@@ -54,6 +54,7 @@ const NavActions = () => {
     [],
   );
   const isMyRoleOwner = currentMyRole === 'OWNER';
+
   return (
     <div className="flex items-center gap-2 text-sm">
       {isMyRoleOwner && (

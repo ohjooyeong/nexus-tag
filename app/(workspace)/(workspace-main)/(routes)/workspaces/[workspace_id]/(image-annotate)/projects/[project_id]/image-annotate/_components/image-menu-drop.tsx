@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import Link from 'next/link';
 
 interface ImageMenuDropProps {
   menuItem: {
@@ -27,12 +28,13 @@ export function ImageMenuDrop({ menuItem }: ImageMenuDropProps) {
       <DropdownMenuContent>
         {menuItem.map((account) => (
           <DropdownMenuItem key={account.title}>
-            <div
+            <Link
+              href={account.url}
               className="flex items-center gap-3 [&_svg]:h-4 [&_svg]:w-4 [&_svg]:shrink-0
                 [&_svg]:text-foreground"
             >
               {account.title}
-            </div>
+            </Link>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

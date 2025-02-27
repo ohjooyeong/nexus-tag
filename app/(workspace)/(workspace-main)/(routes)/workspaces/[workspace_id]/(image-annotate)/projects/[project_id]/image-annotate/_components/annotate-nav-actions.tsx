@@ -19,33 +19,43 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
-
-const data = [
-  [
-    {
-      label: 'My Account',
-      icon: User,
-    },
-    {
-      label: 'Logout',
-      icon: PowerOffIcon,
-    },
-  ],
-];
+import useProfile from '@/app/(workspace)/(workspace-main)/_hooks/use-profile';
+import { useLogout } from '@/app/(workspace)/(workspace-main)/_hooks/use-logout';
 
 export function AnnotateNavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
+  const { data: profile } = useProfile();
+  const { logout } = useLogout();
+
+  const menuItems = React.useMemo(
+    () => [
+      [
+        {
+          label: 'My Account',
+          icon: User,
+          onClick: () => {
+            // Add my account action here
+            console.log('My Account clicked');
+          },
+        },
+        {
+          label: 'Logout',
+          icon: PowerOffIcon,
+          onClick: () => {
+            logout();
+            setIsOpen(false);
+          },
+        },
+      ],
+    ],
+    [],
+  );
 
   return (
     <div className="flex items-center gap-2 text-sm">
-      <div className="mr-8">
-        <Button variant="default" size="sm" className="h-10 mx-2 text-sm">
-          <span>Upgrade</span>
-        </Button>
-      </div>
-      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
+      {/* <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
         <BellIcon />
-      </Button>
+      </Button> */}
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -70,21 +80,21 @@ export function AnnotateNavActions() {
               <div className="px-4 pt-3 pb-1 text-sm font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-base font-medium leading-none pb-1">
-                    Ohjoo
+                    {profile?.username}
                   </p>
                   <p className="text-sm leading-none text-muted-foreground">
-                    brb1111@naver.com
+                    {profile?.email}
                   </p>
                 </div>
               </div>
               <Separator />
 
-              {data.map((group, index) => (
+              {menuItems.map((group, index) => (
                 <SidebarGroup key={index} className="border-b last:border-none">
                   <SidebarGroupContent className="gap-0">
                     <SidebarMenu>
                       {group.map((item, index) => (
-                        <SidebarMenuItem key={index}>
+                        <SidebarMenuItem key={index} onClick={item.onClick}>
                           <SidebarMenuButton>
                             <item.icon /> <span>{item.label}</span>
                           </SidebarMenuButton>
