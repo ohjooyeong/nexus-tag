@@ -26,6 +26,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 import DeleteDataItemDialog from './dialog/delete-data-item.dialog';
+import { cn } from '@/lib/utils';
 
 const DataItemList = () => {
   const searchParams = useSearchParams();
@@ -168,7 +169,7 @@ const DataItemList = () => {
       </div>
 
       <div className="flex items-center justify-center py-4 min-h-8">
-        <Pagination>
+        <Pagination className={cn(totalPages === 1 && 'hidden')}>
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious

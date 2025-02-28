@@ -19,6 +19,12 @@ const DatasetCard = ({ dataset }: DatasetCardProps) => {
 
   const datasetId = searchParams.get('datasetId');
 
+  const handleRouteDataset = () => {
+    router.push(
+      `/workspaces/${workspaceId}/projects/${projectId}/file-manager?datasetId=${dataset?.id}`,
+    );
+  };
+
   const handleOpenUpdateDialog = (
     event: React.MouseEvent<HTMLButtonElement>,
   ) => {
@@ -41,13 +47,8 @@ const DatasetCard = ({ dataset }: DatasetCardProps) => {
         'flex relative w-full items-center border-b hover:bg-gray-100',
         dataset?.id === datasetId && 'bg-gray-100',
       )}
-      onClick={() => {
-        router.push(
-          `/workspaces/${workspaceId}/projects/${projectId}/file-manager?datasetId=${dataset?.id}`,
-        );
-      }}
     >
-      <div className="w-full p-3 cursor-pointer">
+      <div className="w-full p-3 cursor-pointer" onClick={handleRouteDataset}>
         <div className="flex flex-row justify-between items-center w-full">
           <div className="flex flex-row items-center w-4/5">
             <Folder className="w-5 h-5" />

@@ -24,11 +24,20 @@ import { useParams } from 'next/navigation';
 import { useLogout } from '@/app/(workspace)/(workspace-main)/_hooks/use-logout';
 import useProfile from '@/app/(workspace)/(workspace-main)/_hooks/use-profile';
 
+import useDatasetStats from '../file-manager/_hooks/use-dataset-stats';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
+
 export function ProjectNavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
   const { workspace_id: workspaceId, project_id: projectId } = useParams();
   const { data: profile } = useProfile();
   const { logout } = useLogout();
+
+  const { data: datsetStats } = useDatasetStats();
 
   const menuItems = React.useMemo(
     () => [
@@ -57,19 +66,31 @@ export function ProjectNavActions() {
   return (
     <div className="flex items-center gap-2 text-sm">
       <div className="mr-8">
-        <Button
-          variant="default"
-          size="sm"
-          className="h-10 mx-2 text-sm"
-          asChild
-        >
-          <Link
-            href={`/workspaces/${workspaceId}/projects/${projectId}/image-annotate`}
-          >
-            <span>Start Annotating</span>
-            <PlayIcon className="h-4 w-4" />
-          </Link>
-        </Button>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button
+              variant="default"
+              size="sm"
+              className="h-10 mx-2 text-sm bg-gradient-to-br from-blue-500 to-purple-600 text-white
+                hover:opacity-80 transition"
+              disabled={!datsetStats?.totalItems}
+              asChild={datsetStats?.totalItems} // shadcn button asChild 일땐 disabled가 true인 상태 작동이 안되서 이렇게 해줌
+            >
+              <Link
+                className="flex items-center gap-2"
+                href={`/workspaces/${workspaceId}/projects/${projectId}/image-annotate`}
+              >
+                <span>Start Annotating</span>
+                <PlayIcon className="h-4 w-4" />
+              </Link>
+            </Button>
+          </TooltipTrigger>
+          {!datsetStats?.totalItems && (
+            <TooltipContent>
+              Upload at least one image to start annotating
+            </TooltipContent>
+          )}
+        </Tooltip>
       </div>
       {/* <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
         <BellIcon />

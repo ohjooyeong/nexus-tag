@@ -22,10 +22,12 @@ export default function FileManagerPage() {
         <DatasetFileManager />
       </div>
 
-      <NewUploadImagesSheet
-        isOpen={showNewUploadImagesSheet}
-        onClose={() => setShowNewUploadImagesSheet(false)}
-      />
+      {showNewUploadImagesSheet && (
+        <NewUploadImagesSheet
+          isOpen={showNewUploadImagesSheet}
+          onClose={() => setShowNewUploadImagesSheet(false)}
+        />
+      )}
     </div>
   );
 }

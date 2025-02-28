@@ -17,8 +17,8 @@ import {
 } from '@/components/ui/sheet';
 
 import { useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
-import { useState } from 'react';
+
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import useDatasetList from '../../_hooks/use-dataset-list';
@@ -32,12 +32,14 @@ import useUploadImages from '../../_hooks/use-upload-images';
 const NewUploadImagesSheet = ({
   isOpen,
   onClose,
+  datasetId = '',
 }: {
   isOpen: boolean;
   onClose: () => void;
+  datasetId?: string;
 }) => {
   const queryClient = useQueryClient();
-  const { workspace_id: workspaceId, project_id: projectId } = useParams();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedDataset, setSelectedDataset] = useState<string>('');
   const [files, setFiles] = useState<File[]>([]);
@@ -123,6 +125,13 @@ const NewUploadImagesSheet = ({
       setIsLoading(false);
     }
   };
+
+  // No result data에서 업로드 이미지 버튼을 클릭했을 때의 현재 데이터셋 ID로 선택되도록 변경
+  useEffect(() => {
+    if (datasetId) {
+      setSelectedDataset(datasetId);
+    }
+  }, [datasetId]);
 
   return (
     <Sheet open={isOpen} onOpenChange={handleSheetClose}>

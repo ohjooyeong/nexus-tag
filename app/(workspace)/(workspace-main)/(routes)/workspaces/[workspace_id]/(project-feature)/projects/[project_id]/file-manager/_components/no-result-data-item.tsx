@@ -1,6 +1,18 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import NewUploadImagesSheet from './sheet/new-upload-images-sheet';
+import { useSearchParams } from 'next/navigation';
 
 const NoResultDataItem = () => {
+  const searchParams = useSearchParams();
+
+  const [showNewUploadImagesSheet, setShowNewUploadImagesSheet] =
+    useState(false);
+
+  const datasetId = searchParams.get('datasetId');
+
   return (
     <div className="flex items-center justify-center w-full mt-12">
       <div className="flex items-center justify-center flex-col">
@@ -94,8 +106,20 @@ const NoResultDataItem = () => {
         <p className="text-xs mt-4 text-center">
           Upload files in easily in this dataset and start working
         </p>
-        <Button className="mt-4">Upload images</Button>
+        <Button
+          onClick={() => setShowNewUploadImagesSheet(true)}
+          className="mt-4"
+        >
+          Upload images
+        </Button>
       </div>
+      {showNewUploadImagesSheet && (
+        <NewUploadImagesSheet
+          isOpen={showNewUploadImagesSheet}
+          onClose={() => setShowNewUploadImagesSheet(false)}
+          datasetId={datasetId as string}
+        />
+      )}
     </div>
   );
 };
