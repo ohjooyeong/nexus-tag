@@ -68,10 +68,15 @@ const onErrorResponse = (error: AxiosError | Error) => {
     );
 
     if (status === 401) {
-      logOnDev('[API] Authentication expired, redirecting to login...');
-      if (typeof window !== 'undefined') {
-        const currentPath = window.location.pathname + window.location.search;
-        window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+      const authCookie = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('Authentication='));
+
+      if (!authCookie) {
+        if (typeof window !== 'undefined') {
+          const currentPath = window.location.pathname + window.location.search;
+          window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+        }
       }
     }
   } else if (error instanceof Error && error.name === 'TimeoutError') {
