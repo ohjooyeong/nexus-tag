@@ -60,14 +60,20 @@ const onErrorResponse = (error: AxiosError | Error) => {
   if (axios.isAxiosError(error)) {
     const { message } = error;
     const { method, url } = error.config as AxiosRequestConfig;
-
-    // error.response가 있는지 확인
     const status = error.response?.status ?? 0;
     const statusText = error.response?.statusText ?? 'Unknown Error';
 
     logOnDev(
       `[API] ${method?.toUpperCase()} ${url} | Error ${status} ${statusText} | ${message}`,
     );
+
+    if (status === 401) {
+      logOnDev('[API] Authentication expired, redirecting to login...');
+      if (typeof window !== 'undefined') {
+        const currentPath = window.location.pathname + window.location.search;
+        window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
+      }
+    }
   } else if (error instanceof Error && error.name === 'TimeoutError') {
     logOnDev(`[API] | TimeoutError ${error.toString()}`);
     onError(0, '요청 시간이 초과되었습니다.');
