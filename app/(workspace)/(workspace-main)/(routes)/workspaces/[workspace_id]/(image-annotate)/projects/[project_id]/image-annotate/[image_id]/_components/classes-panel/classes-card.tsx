@@ -11,7 +11,10 @@ type ClassesCardProps = {
 
 const ClassesCard = ({ color, name, totalLabel }: ClassesCardProps) => {
   return (
-    <div className="flex relative items-center min-h-9 hover:bg-black hover:bg-opacity-5">
+    <div
+      className="flex relative items-center min-h-9 hover:bg-black hover:bg-opacity-5
+        cursor-pointer"
+    >
       <Button
         variant="ghost"
         size="icon"
@@ -23,7 +26,7 @@ const ClassesCard = ({ color, name, totalLabel }: ClassesCardProps) => {
         aria-label="classes color"
         className={`ml-2 w-4 h-4 rounded-[1px] relative bg-[${color}] opacity-60`}
       />
-      <div className="cursor-pointer flex-1 ml-2">
+      <div className="flex-1 ml-2">
         <div className="flex justify-between items-center">
           <div className="w-40 flex items-center">
             <p className="text-xs font-normal overflow-hidden text-ellipsis whitespace-nowrap">

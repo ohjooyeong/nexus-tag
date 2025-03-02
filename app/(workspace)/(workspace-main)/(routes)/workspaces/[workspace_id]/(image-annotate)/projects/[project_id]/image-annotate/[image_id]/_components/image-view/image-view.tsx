@@ -6,25 +6,21 @@ import { Stage as StageType } from 'konva/lib/Stage';
 import { Image, Layer, Stage } from 'react-konva';
 import Konva from 'konva';
 
-import {
-  MyRBush,
-  retrieveImageDataWithFallback,
-  retrieveObject,
-} from '../../_helpers/image-view/data.helpers';
+import { MyRBush } from '../../_helpers/image-view/data.helpers';
 
 import { STAGE_INTERNAL_PADDING } from '../../_constants/constants';
 import { Vector2d } from 'konva/lib/types';
 import { getClampedPosition } from '../../_helpers/image-view/image-view.helpers';
 import { ImageLabel } from '../../_types/image-label';
-import { RequestParamsContextProvider } from '../../_provider/request-params-context-provider';
+
 import { KonvaStageContextProvider } from '../../_provider/konva-stage-context-provider';
 import { ImageClampingContextProvider } from '../../_provider/image-clamping-context-provider';
 import Labels from '../../_labels/labels';
+import { useImageStore } from '../../_store/image-store';
 
 type ImageViewProps = {
   labels: ImageLabel[];
-  projectId: string;
-  imageId: string;
+
   imageObjectId: number | null;
   containerWidth: number;
   containerHeight: number;
@@ -32,14 +28,14 @@ type ImageViewProps = {
 
 const ImageView = ({
   labels,
-  projectId,
-  imageId,
   imageObjectId,
   containerWidth,
   containerHeight,
 }: ImageViewProps) => {
-  const imageData = retrieveImageDataWithFallback();
-  const imageObject = retrieveObject(imageObjectId);
+  const { getImageData, getObject } = useImageStore();
+
+  const imageData = getImageData() || { width: 1, height: 1 };
+  const imageObject = imageObjectId !== null ? getObject(imageObjectId) : null;
 
   const stageRef = useRef<StageType>(null);
   const groupRef = useRef<Konva.Group | null>(null);
@@ -119,28 +115,26 @@ const ImageView = ({
         y={y || 0}
       >
         {stageRef.current ? (
-          <RequestParamsContextProvider projectId={projectId} imageId={imageId}>
-            <KonvaStageContextProvider stage={stageRef.current.getStage()}>
-              <ImageClampingContextProvider>
-                <Layer>
-                  <Image
-                    ref={imageRef}
-                    image={imageObject}
-                    width={imageWidth}
-                    height={imageHeight}
-                    strokeWidth={3}
-                    stroke={'#7aa2f6'}
-                    strokeScaleEnabled={false}
-                    alt=""
-                  />
-                </Layer>
-                <Labels
-                  processedLabelsTree={processedLabelsTree}
-                  groupRef={groupRef}
+          <KonvaStageContextProvider stage={stageRef.current.getStage()}>
+            <ImageClampingContextProvider>
+              <Layer>
+                <Image
+                  ref={imageRef}
+                  image={imageObject}
+                  width={imageWidth}
+                  height={imageHeight}
+                  strokeWidth={3}
+                  stroke={'#7aa2f6'}
+                  strokeScaleEnabled={false}
+                  alt=""
                 />
-              </ImageClampingContextProvider>
-            </KonvaStageContextProvider>
-          </RequestParamsContextProvider>
+              </Layer>
+              <Labels
+                processedLabelsTree={processedLabelsTree}
+                groupRef={groupRef}
+              />
+            </ImageClampingContextProvider>
+          </KonvaStageContextProvider>
         ) : null}
       </Stage>
     </div>

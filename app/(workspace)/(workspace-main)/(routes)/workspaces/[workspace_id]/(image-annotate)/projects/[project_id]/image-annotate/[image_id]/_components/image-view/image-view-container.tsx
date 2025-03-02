@@ -1,14 +1,36 @@
 'use client';
 
 import { useResizeDetector } from 'react-resize-detector';
-import ImageViewNavbar from './image-view-navbar';
-import { useParams } from 'next/navigation';
+import ImageViewNavbar from './image-sub-toolbar';
+
 import ImageView from './image-view';
+import { useImageStore } from '../../_store/image-store';
+import { useEffect, useState } from 'react';
+import useDataItem from '../../_hooks/use-data-item';
 
 const ImageViewContainer = () => {
-  const { project_id: projectId } = useParams();
-  const imageObjectId = 0;
+  const [imageObjectId, setImageObjectId] = useState(0);
   const { width, height, ref } = useResizeDetector({});
+
+  const { data: dataItem } = useDataItem();
+
+  const { processAndStoreImage } = useImageStore();
+
+  useEffect(() => {
+    const loadImage = async () => {
+      if (!dataItem?.fileUrl) return;
+
+      try {
+        const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${dataItem?.fileUrl}`;
+        const id = await processAndStoreImage(imageUrl);
+        setImageObjectId(id);
+      } catch (error) {
+        console.error('Failed to process image:', error);
+      }
+    };
+
+    loadImage();
+  }, [dataItem]);
 
   return (
     <>
@@ -16,12 +38,10 @@ const ImageViewContainer = () => {
       <div className="flex flex-1 flex-col h-full overflow-hidden">
         <div className="flex flex-1 h-full overflow-hidden relative">
           <div className="flex-1 overflow-hidden bg-slate-300" ref={ref}>
-            {width && height && (
+            {dataItem?.fileUrl && width && height && (
               <ImageView
-                projectId={projectId as string}
                 containerWidth={width}
                 containerHeight={height}
-                imageId=""
                 imageObjectId={imageObjectId}
                 labels={[]}
               />

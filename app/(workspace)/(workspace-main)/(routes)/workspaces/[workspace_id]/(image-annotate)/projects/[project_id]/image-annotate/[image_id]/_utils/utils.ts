@@ -8,9 +8,9 @@ export const getLabelType = ({
   polygon: number[] | [number, number][] | null;
   mask: Label['mask'];
 }) => {
-  if (mask) return LabelType.Mask;
+  if (mask) return LabelType.MASK;
 
-  return polygon ? LabelType.Polygon : LabelType.Bbox;
+  return polygon ? LabelType.POLYGON : LabelType.BBOX;
 };
 
 export const calculateBbox = (points: number[], returnStrictBbox?: boolean) => {

@@ -1,44 +1,48 @@
 import { getBbox, getLabelType } from '../_utils/utils';
-import { Label } from './types';
+import { Bbox, Label, Mask, Polygon } from './types';
 
 export enum LabelType {
-  Polygon = 'polygon',
-  Bbox = 'bbox',
-  Mask = 'mask',
+  BBOX = 'BBOX',
+  POLYGON = 'POLYGON',
+  MASK = 'MASK',
 }
 
-export type ApiLabel = {
+export interface ApiLabel {
   id: string;
-  classId: string;
-  updatedOn: string;
-  createdOn: string;
-  polygon: Label['polygon'];
-  mask: Label['mask'];
-  bbox: Label['bbox'];
+  client_id?: string;
+  labelType: LabelType;
+  data: {
+    polygon: Label['polygon'];
+    mask: Label['mask'];
+    bbox: Label['bbox'];
+  };
+  dataItem: {
+    id: string;
+  };
   zIndex: number;
-};
+  createdAt: string;
+  updatedAt: string;
+}
 
 const fromBackendLabel = ({
-  updatedOn,
-  createdOn,
-  polygon,
-  mask,
-  bbox,
+  data,
+  updatedAt,
+  createdAt,
   ...entry
 }: ApiLabel) => ({
-  updatedOn: (updatedOn || createdOn) as string,
-  createdOn,
-  polygon,
-  mask,
-  type: getLabelType({ polygon, mask }),
-  bbox: getBbox(bbox, mask, polygon),
+  updatedAt: updatedAt,
+  createdAt: createdAt,
+  polygon: data.polygon,
+  mask: data.mask,
+  bbox: getBbox(data.bbox, data.mask, data.polygon),
+  type: getLabelType({ polygon: data.polygon, mask: data.mask }),
   ...entry,
 });
 
 export type ImageLabel = ReturnType<typeof fromBackendLabel>;
 export type EnrichedImageLabel = ImageLabel & {
   imageData?: ImageData;
-  imageDataId?: number;
+  imageDataId?: string;
 };
 
 export const imageLabelDataMapper = {

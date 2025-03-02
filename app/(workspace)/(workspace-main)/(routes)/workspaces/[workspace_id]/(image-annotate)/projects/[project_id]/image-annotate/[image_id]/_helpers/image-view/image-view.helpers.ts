@@ -1,9 +1,11 @@
 import Konva from 'konva';
-import { retrieveImageDataWithFallback } from './data.helpers';
+
+import loadImage from 'blueimp-load-image';
 
 export const getClampedPosition = (
   stage: Konva.Stage,
   { x, y }: { x: number; y: number },
+  imageData = { width: 1920, height: 1080 },
 ) => {
   let newX = x;
   let newY = y;
@@ -18,7 +20,7 @@ export const getClampedPosition = (
   const viewportHeight = stage.height();
 
   const viewportRatio = viewportWidth / viewportHeight;
-  const imageData = retrieveImageDataWithFallback();
+
   const imageRatio = imageData.width / imageData.height;
 
   const [imageWidth, imageHeight] =
@@ -90,4 +92,37 @@ export const getClampedPosition = (
     x: newX,
     y: newY,
   };
+};
+
+export const imageDataFromUrl = async (url: string) => {
+  try {
+    // 이미지 중에 이미지 회전이 제대로 되어있지 않는 경우가 있다.
+    // 그래서 이미지 회전을 제대로 해주는 라이브러리를 사용했음.
+    // orientation: 1 옵션을 주어서 이미지 회전을 제대로 해준다.
+    const result = await loadImage(url, {
+      canvas: true,
+      crossOrigin: 'anonymous',
+      orientation: 1,
+    });
+
+    return {
+      imageData: imageDataFromImage(result.image),
+      imageObject: result.image,
+    };
+  } catch (e) {
+    throw new Error('Unable to load image.');
+  }
+};
+
+export const imageDataFromImage = (image: any) => {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = image.width;
+  canvas.height = image.height;
+
+  if (!ctx) return;
+
+  ctx.drawImage(image, 0, 0);
+
+  return ctx.getImageData(0, 0, image.width, image.height);
 };

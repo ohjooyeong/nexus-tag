@@ -17,16 +17,16 @@ import ClassesCard from './classes-card';
 
 const ClassesList = () => {
   const [isHideObjectClasses, setIsHideObjectClasses] = useState(false);
-  const [isHideSementicClasses, setIsHideSementicClasses] = useState(false);
+  const [isHideSemanticClasses, setIsHideSemanticClasses] = useState(false);
   const [isObjectOpen, setIsObjectOpen] = useState(true);
-  const [isSementicOpen, setIsSementicOpen] = useState(true);
+  const [isSemanticOpen, setIsSemanticOpen] = useState(true);
 
   const toggleHideObjectClasses = () => {
     setIsHideObjectClasses((prev) => !prev);
   };
 
-  const toggleHideSementicClasses = () => {
-    setIsHideSementicClasses((prev) => !prev);
+  const toggleHideSemanticClasses = () => {
+    setIsHideSemanticClasses((prev) => !prev);
   };
 
   return (
@@ -87,7 +87,7 @@ const ClassesList = () => {
                 </div>
               </div>
             </div>
-            <CollapsibleContent className="py-2">
+            <CollapsibleContent className="py-2 max-h-80 overflow-auto z-50">
               <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
               <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
               <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
@@ -112,14 +112,14 @@ const ClassesList = () => {
             </CollapsibleContent>
           </Collapsible>
           <Collapsible
-            open={isSementicOpen}
-            onOpenChange={setIsSementicOpen}
+            open={isSemanticOpen}
+            onOpenChange={setIsSemanticOpen}
             className="w-full"
           >
             <div className="flex min-h-9 pr-2">
               <div className="flex flex-grow m-0 items-center">
                 <p className="text-sm font-bold text-gray-400">
-                  Sementic classes
+                  Semantic classes
                 </p>
                 <div className="flex justify-between ml-auto items-center">
                   <Tooltip>
@@ -128,9 +128,9 @@ const ClassesList = () => {
                         variant={'ghost'}
                         className="w-6 h-6"
                         size={'icon'}
-                        onClick={toggleHideSementicClasses}
+                        onClick={toggleHideSemanticClasses}
                       >
-                        {isHideSementicClasses ? (
+                        {isHideSemanticClasses ? (
                           <EyeIcon className="w-4 h-4 text-gray-600" />
                         ) : (
                           <EyeOffIcon className="w-4 h-4 text-gray-600" />
@@ -138,9 +138,9 @@ const ClassesList = () => {
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      {isHideSementicClasses
-                        ? 'Show all sementic classes'
-                        : 'Hide all sementic classes'}
+                      {isHideSemanticClasses
+                        ? 'Show all semantic classes'
+                        : 'Hide all semantic classes'}
                     </TooltipContent>
                   </Tooltip>
                   <Tooltip>
@@ -152,11 +152,11 @@ const ClassesList = () => {
                       >
                         <PlusIcon className="w-4 h-4 text-gray-600" />
                         <span className="sr-only">
-                          Create new sementic class
+                          Create new semantic class
                         </span>
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Create new sementic class</TooltipContent>
+                    <TooltipContent>Create new semantic class</TooltipContent>
                   </Tooltip>
 
                   <CollapsibleTrigger asChild>
@@ -167,7 +167,7 @@ const ClassesList = () => {
                 </div>
               </div>
             </div>
-            <CollapsibleContent className="py-2">
+            <CollapsibleContent className="py-2 max-h-80 overflow-auto z-50">
               <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
               <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
               <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />

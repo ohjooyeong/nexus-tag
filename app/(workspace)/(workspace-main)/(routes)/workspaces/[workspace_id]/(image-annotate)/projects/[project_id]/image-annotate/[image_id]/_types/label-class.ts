@@ -1,29 +1,24 @@
 export enum LabelClassType {
-  Background = 'background',
-  Object = 'object',
+  SEMANTIC = 'SEMANTIC',
+  OBJECT = 'OBJECT',
 }
 
 export type ApiLabelClass = {
   id: string;
   name: string;
-  order_index: number;
-  parent_id: string | null;
-  external_id: string | null;
-
-  description: string;
-  type: LabelClassType.Object | LabelClassType.Background;
-  norder: number;
+  clientId: string | null;
+  type: LabelClassType.OBJECT | LabelClassType.SEMANTIC;
   color: string;
 };
 
 export const labelClassTypes = [
-  LabelClassType.Object,
-  LabelClassType.Background,
+  LabelClassType.OBJECT,
+  LabelClassType.SEMANTIC,
 ] as const;
 
 export const labelClassTypesLabel = {
-  [LabelClassType.Object]: 'Object',
-  [LabelClassType.Background]: 'Semantic',
+  [LabelClassType.OBJECT]: 'OBJECT',
+  [LabelClassType.SEMANTIC]: 'SEMANTIC',
 };
 
 const fromBackend = ({ ...entry }: ApiLabelClass) => ({
