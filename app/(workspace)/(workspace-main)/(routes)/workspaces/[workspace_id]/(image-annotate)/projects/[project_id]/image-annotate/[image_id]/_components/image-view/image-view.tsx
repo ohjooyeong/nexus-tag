@@ -1,18 +1,24 @@
 'use client';
 
-import { useMemo, useRef } from 'react';
-import { ImageLabel } from '../../_types/image-label';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+
 import { Stage as StageType } from 'konva/lib/Stage';
 import { Image, Layer, Stage } from 'react-konva';
 import Konva from 'konva';
-import { RequestParamsContextProvider } from '../../_provider/request-params-context-provider';
-import { KonvaStageContextProvider } from '../../_provider/konva-stage-context-provider';
-import { ImageClampingContextProvider } from '../../_provider/image-clamping-context-provider';
+
 import {
   MyRBush,
   retrieveImageDataWithFallback,
   retrieveObject,
 } from '../../_helpers/image-view/data.helpers';
+
+import { STAGE_INTERNAL_PADDING } from '../../_constants/constants';
+import { Vector2d } from 'konva/lib/types';
+import { getClampedPosition } from '../../_helpers/image-view/image-view.helpers';
+import { ImageLabel } from '../../_types/image-label';
+import { RequestParamsContextProvider } from '../../_provider/request-params-context-provider';
+import { KonvaStageContextProvider } from '../../_provider/konva-stage-context-provider';
+import { ImageClampingContextProvider } from '../../_provider/image-clamping-context-provider';
 import Labels from '../../_labels/labels';
 
 type ImageViewProps = {
@@ -39,8 +45,8 @@ const ImageView = ({
   const groupRef = useRef<Konva.Group | null>(null);
   const imageRef = useRef<Konva.Image | null>(null);
 
-  const width = containerWidth - 12;
-  const height = containerHeight - 12;
+  const width = containerWidth - 2 - 12;
+  const height = containerHeight - 2 - 12;
 
   const viewportRatio = width / height;
   const imageRatio = imageData.width / imageData.height;
@@ -48,6 +54,52 @@ const ImageView = ({
     viewportRatio > imageRatio
       ? [imageData.width * (height / imageData.height), height]
       : [width, imageData.height * (width / imageData.width)];
+  const getMinScale = useCallback(
+    () =>
+      viewportRatio > imageRatio
+        ? (height - STAGE_INTERNAL_PADDING) / height
+        : (width - STAGE_INTERNAL_PADDING) / width,
+    [height, imageRatio, viewportRatio, width],
+  );
+  const minScaleRef = useRef(getMinScale());
+  const currentScaleRef = useRef(0);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    const scale = stage.scale()?.x;
+
+    if (scale === undefined) return;
+  }, []);
+
+  useEffect(() => {
+    minScaleRef.current = getMinScale();
+  }, [getMinScale]);
+
+  const [x, y] = useMemo(
+    () => [
+      (width - imageWidth + STAGE_INTERNAL_PADDING) / 2,
+      (height - imageHeight + 12) / 2,
+    ],
+    [height, imageHeight, imageWidth, width],
+  );
+  const lastPosition = useRef<Vector2d>({ x, y });
+
+  const setPosition = useCallback(
+    (position: Vector2d, shouldClamp: boolean = true) => {
+      const stage = stageRef.current;
+      if (!stage) return;
+
+      const newPosition = shouldClamp
+        ? getClampedPosition(stage, position)
+        : position;
+
+      stage.position(newPosition);
+
+      lastPosition.current = newPosition;
+    },
+    [stageRef],
+  );
 
   const processedLabelsTree = useMemo(() => {
     stageRef.current?.getStage().batchDraw();
@@ -57,12 +109,14 @@ const ImageView = ({
   }, []);
 
   return (
-    <div className="h-full flex flex-grow flex-shrink flex-col touch-none overscroll-x-none">
+    <div className="flex">
       <Stage
-        className="p-[6px] bg-slate-300"
+        className="flex flex-col relative overscroll-x-none touch-none p-[6px] bg-slate-300"
         ref={stageRef}
-        width={width}
-        height={height}
+        width={width || 0}
+        height={height || 0}
+        x={x || 0}
+        y={y || 0}
       >
         {stageRef.current ? (
           <RequestParamsContextProvider projectId={projectId} imageId={imageId}>

@@ -40,3 +40,8 @@ export const datasetQueries = {
   list: (id: string) => [...datasetQueries.default(), 'list', id],
   stats: (id: string) => [...datasetQueries.default(), id, 'stats'],
 };
+
+export const dataItemQueries = {
+  default: () => ['dataItems'],
+  detail: (id: string) => [...dataItemQueries.default(), id],
+};

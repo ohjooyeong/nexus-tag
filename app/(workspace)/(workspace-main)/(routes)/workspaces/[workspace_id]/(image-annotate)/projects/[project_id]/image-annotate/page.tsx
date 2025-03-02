@@ -1,32 +1,56 @@
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { AnnotateSidebar } from './_components/annotate-sidebar';
-import { AnnotateNavActions } from './_components/annotate-nav-actions';
-import AnnotateImageInfo from './_components/annotate-image-info';
-import AnnotateMain from './_components/annotate-main';
+'use client';
+
+import { Spinner } from '@/components/spinner';
+import axiosInstance from '@/config/axios-instance';
+import axios from 'axios';
+import { useParams, useRouter } from 'next/navigation';
+import { useLayoutEffect } from 'react';
+import { toast } from 'sonner';
 
 const ImageAnnotatePage = () => {
-  return (
-    <SidebarProvider
-      style={
-        {
-          '--sidebar-width': '5rem',
-        } as React.CSSProperties
+  const router = useRouter();
+  const params = useParams();
+  const { workspace_id: workspaceId, project_id: projectId } = params;
+
+  useLayoutEffect(() => {
+    const getDefaultImage = async () => {
+      try {
+        const params = new URLSearchParams();
+
+        params.append('page', '1');
+        params.append('limit', '1');
+        params.append('order', 'desc');
+        const { data } = await axiosInstance.get(
+          `/workspaces/${workspaceId}/projects/${projectId}/datasets/items`,
+        );
+
+        if (data && data.data) {
+          router.replace(
+            `/workspaces/${workspaceId}/projects/${projectId}/image-annotate/${data?.data.items[0]?.id}`,
+          );
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          // AxiosError인 경우 처리
+          const { status, data } = error.response;
+          toast.error(data?.message);
+          console.error(`Error ${status}:`, data);
+        } else {
+          // 기타 에러 처리
+          toast.error('An unknown error occurred.');
+          console.error(error);
+        }
       }
-      open
-    >
-      <AnnotateSidebar />
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-          <div className="flex flex-1 items-center">
-            <AnnotateImageInfo />
-          </div>
-          <div className="ml-auto px-6">
-            <AnnotateNavActions />
-          </div>
-        </header>
-        <AnnotateMain />
-      </SidebarInset>
-    </SidebarProvider>
+    };
+    getDefaultImage();
+  }, [router]);
+
+  return (
+    <div className="h-screen">
+      <div className="h-full w-full flex items-center justify-center">
+        <Spinner size={'icon'} />
+      </div>
+    </div>
   );
 };
 

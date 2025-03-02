@@ -1,10 +1,15 @@
+'use client';
+
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import useDataItem from '../_hooks/use-data-item';
 
 const AnnotateImageInfo = () => {
+  const { data } = useDataItem();
+
   return (
     <Tooltip>
       <TooltipTrigger>

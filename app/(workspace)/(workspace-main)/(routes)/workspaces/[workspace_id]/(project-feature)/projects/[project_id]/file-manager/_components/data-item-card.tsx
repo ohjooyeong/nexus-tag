@@ -27,14 +27,14 @@ const DataItemCard = ({
   const [isHover, setIsHover] = useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
 
-  const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${dataItem.fileUrl}`;
+  const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${dataItem?.fileUrl}`;
 
   const handleRoute = (event: React.MouseEvent<SVGSVGElement>) => {
     event.preventDefault();
     event.stopPropagation();
 
     router.push(
-      `/workspaces/${workspaceId}/projects/${projectId}/image-annotate?imageId=${dataItem.id}`,
+      `/workspaces/${workspaceId}/projects/${projectId}/image-annotate/${dataItem?.id}`,
     );
   };
 

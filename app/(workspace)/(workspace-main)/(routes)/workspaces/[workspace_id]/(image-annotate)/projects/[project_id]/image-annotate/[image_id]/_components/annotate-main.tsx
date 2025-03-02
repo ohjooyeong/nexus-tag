@@ -10,6 +10,7 @@ const AnnotateMain = () => {
       <div className="flex flex-grow flex-shrink flex-col touch-none overscroll-x-none">
         <ImageViewContainer />
       </div>
+
       <Tabs defaultValue="annotation" className="w-[340px] mt-2">
         <TabsList>
           <TabsTrigger value="annotation">Annotation</TabsTrigger>

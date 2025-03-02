@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import RBush from 'rbush';
-import { ImageLabel } from '../../_types/image-label';
+import { ImageLabel } from '../../[image_id]/_types/image-label';
 
 declare global {
   interface Window {
