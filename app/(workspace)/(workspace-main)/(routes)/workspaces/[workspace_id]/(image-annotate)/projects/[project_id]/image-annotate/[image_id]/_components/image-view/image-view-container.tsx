@@ -7,14 +7,22 @@ import ImageView from './image-view';
 import { useImageStore } from '../../_store/image-store';
 import { useEffect, useState } from 'react';
 import useDataItem from '../../_hooks/use-data-item';
+import { useParams } from 'next/navigation';
+import { useEditorStore } from '../../_store/editor-store';
 
 const ImageViewContainer = () => {
   const [imageObjectId, setImageObjectId] = useState(0);
   const { width, height, ref } = useResizeDetector({});
+  const { image_id: imageId } = useParams();
 
   const { data: dataItem } = useDataItem();
 
+  const { setZoom } = useEditorStore();
   const { processAndStoreImage } = useImageStore();
+
+  const handleResetStore = () => {
+    setZoom(1);
+  };
 
   useEffect(() => {
     const loadImage = async () => {
@@ -23,14 +31,16 @@ const ImageViewContainer = () => {
       try {
         const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${dataItem?.fileUrl}`;
         const id = await processAndStoreImage(imageUrl);
+
         setImageObjectId(id);
+        handleResetStore();
       } catch (error) {
         console.error('Failed to process image:', error);
       }
     };
 
     loadImage();
-  }, [dataItem]);
+  }, [dataItem, processAndStoreImage, imageId]);
 
   return (
     <>

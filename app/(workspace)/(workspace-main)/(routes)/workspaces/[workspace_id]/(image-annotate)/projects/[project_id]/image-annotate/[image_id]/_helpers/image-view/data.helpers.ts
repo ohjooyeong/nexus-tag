@@ -2,18 +2,6 @@
 import RBush from 'rbush';
 import { ImageLabel } from '../../_types/image-label';
 
-declare global {
-  interface Window {
-    imageData: ImageData[] | null[];
-    objectStorage: any[];
-  }
-}
-
-window.imageData = [null, null];
-// add first element, so no stored element will get a 0 index – and bool coercion comparison could be
-// performed with ids safely
-window.objectStorage = [null];
-
 const compareLabelsPosition = (a: ImageLabel, b: ImageLabel, index: 0 | 1) =>
   a.bbox[index] - b.bbox[index];
 

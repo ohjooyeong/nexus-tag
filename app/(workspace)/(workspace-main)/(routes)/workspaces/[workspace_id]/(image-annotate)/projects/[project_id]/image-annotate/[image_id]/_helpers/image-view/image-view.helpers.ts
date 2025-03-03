@@ -2,96 +2,92 @@ import Konva from 'konva';
 
 import loadImage from 'blueimp-load-image';
 
-export const getClampedPosition = (
-  stage: Konva.Stage,
-  { x, y }: { x: number; y: number },
-  imageData = { width: 1920, height: 1080 },
+// 이미지 크기 계산 함수
+const calculateImageDimensions = (
+  viewportWidth: number,
+  viewportHeight: number,
+  imageData: { width: number; height: number },
 ) => {
-  let newX = x;
-  let newY = y;
-
-  const scale = stage.scale();
-
-  if (scale === undefined) return { x: newX, y: newY };
-
-  // Width of visible area
-  const viewportWidth = stage.width();
-  // Height of visible area
-  const viewportHeight = stage.height();
-
   const viewportRatio = viewportWidth / viewportHeight;
-
   const imageRatio = imageData.width / imageData.height;
 
-  const [imageWidth, imageHeight] =
-    viewportRatio > imageRatio
-      ? [imageData.width * (viewportHeight / imageData.height), viewportHeight]
-      : [viewportWidth, imageData.height * (viewportWidth / imageData.width)];
+  return viewportRatio > imageRatio
+    ? [imageData.width * (viewportHeight / imageData.height), viewportHeight]
+    : [viewportWidth, imageData.height * (viewportWidth / imageData.width)];
+};
 
-  // Empty gap from top and left.
-  // E.g: For horizontal image -> offsetX === 0 && offsetY > 0
-  //      For vertical image -> offsetY === 0 && offsetX > 0
+// 위치 제한 계산 함수
+const calculatePositionLimits = (
+  viewportWidth: number,
+  viewportHeight: number,
+  imageWidth: number,
+  imageHeight: number,
+  scale: { x: number; y: number },
+) => {
+  const ALLOWED_PAN_THRESHOLD = 25;
   const [offsetX, offsetY] = [
     (viewportWidth - imageWidth) / 2,
     (viewportHeight - imageHeight) / 2,
   ];
 
-  // Amount of allowed pixels to go outside
-  const ALLOWED_PAN_THRESHOLD = 25;
+  return {
+    minXY: ALLOWED_PAN_THRESHOLD,
+    maxX:
+      -viewportWidth * (scale.x - 1) +
+      offsetX * 2 * scale.x -
+      ALLOWED_PAN_THRESHOLD,
+    maxY:
+      -viewportHeight * (scale.y - 1) +
+      offsetY * 2 * scale.y -
+      ALLOWED_PAN_THRESHOLD,
+  };
+};
 
-  // Amount of allowed pixels to go outside from left and top
-  const minXY = ALLOWED_PAN_THRESHOLD;
+export const getClampedPosition = (
+  stage: Konva.Stage,
+  { x, y }: { x: number; y: number },
+  imageData = { width: 1920, height: 1080 },
+) => {
+  const scale = stage.scale();
+  if (scale === undefined) return { x, y };
 
-  // End point of horizontal drag/scroll
-  const maxX =
-    -viewportWidth * (scale.x - 1) +
-    offsetX * 2 * scale.x -
-    ALLOWED_PAN_THRESHOLD;
+  const viewportWidth = stage.width();
+  const viewportHeight = stage.height();
+  const viewportRatio = viewportWidth / viewportHeight;
+  const imageRatio = imageData.width / imageData.height;
 
-  // End point of vertical drag/scroll
-  const maxY =
-    -viewportHeight * (scale.y - 1) +
-    offsetY * 2 * scale.y -
-    ALLOWED_PAN_THRESHOLD;
+  const [imageWidth, imageHeight] = calculateImageDimensions(
+    viewportWidth,
+    viewportHeight,
+    imageData,
+  );
 
-  // If horizontally zoomed in enough and there's
-  // a space from left and right to pan, apply
-  // the position but keep it within the limit
+  const { minXY, maxX, maxY } = calculatePositionLimits(
+    viewportWidth,
+    viewportHeight,
+    imageWidth,
+    imageHeight,
+    scale,
+  );
+
+  let newX = x;
+  let newY = y;
+
+  // 가로 위치 계산
   if (scale.x > viewportRatio / imageRatio) {
-    // Restrict panning if it goes to far from the left (left of the image)
-    if (newX > minXY) {
-      newX = minXY;
-    } else if (newX < maxX) {
-      // Restrict panning if it goes to far from the right (right of the image)
-      newX = maxX;
-    }
+    newX = Math.min(Math.max(newX, maxX), minXY);
   } else {
-    // If horizontally wasn't zoomed in enough to pan,
-    // keep it in the center horizontally
     newX = (viewportWidth - imageWidth * scale.x) / 2;
   }
 
-  // If vertically zoomed in enough and there's
-  // a space from top and bottom to pan, apply
-  // the position but keep it within the limit
+  // 세로 위치 계산
   if (scale.y > imageRatio / viewportRatio) {
-    // Restrict panning if it goes to far from the top (start of the image)
-    if (newY > minXY) {
-      newY = minXY;
-    } else if (newY < maxY) {
-      // Restrict panning if it goes to far from the bottom (end of the image)
-      newY = maxY;
-    }
+    newY = Math.min(Math.max(newY, maxY), minXY);
   } else {
-    // If vertically wasn't zoomed in enough to pan,
-    // keep it in the middle vertically
     newY = (viewportHeight - imageHeight * scale.y) / 2;
   }
 
-  return {
-    x: newX,
-    y: newY,
-  };
+  return { x: newX, y: newY };
 };
 
 export const imageDataFromUrl = async (url: string) => {
