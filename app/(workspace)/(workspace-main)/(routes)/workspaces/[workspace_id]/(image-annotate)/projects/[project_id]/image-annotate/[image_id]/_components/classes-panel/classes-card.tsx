@@ -24,7 +24,8 @@ const ClassesCard = ({ color, name, totalLabel }: ClassesCardProps) => {
       </Button>
       <label
         aria-label="classes color"
-        className={`ml-2 w-4 h-4 rounded-[1px] relative bg-[${color}] opacity-60`}
+        className={'ml-2 w-4 h-4 rounded-[4px] relative opacity-60'}
+        style={{ background: `${color}` }}
       />
       <div className="flex-1 ml-2">
         <div className="flex justify-between items-center">

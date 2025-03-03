@@ -318,7 +318,7 @@ const ImageView = ({
                   width={imageWidth}
                   height={imageHeight}
                   strokeWidth={3}
-                  stroke={'#7aa2f6'}
+                  stroke={'#2E6FF2'}
                   strokeScaleEnabled={false}
                   alt=""
                 />
