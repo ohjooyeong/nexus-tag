@@ -14,8 +14,17 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import ClassesCard from './classes-card';
+import { LabelClass } from '../../_types/label-class';
 
-const ClassesList = () => {
+interface DatasetCardProps {
+  filteredObjectLabels: LabelClass[];
+  filteredSemanticLabels: LabelClass[];
+}
+
+const ClassesList = ({
+  filteredObjectLabels,
+  filteredSemanticLabels,
+}: DatasetCardProps) => {
   const [isHideObjectClasses, setIsHideObjectClasses] = useState(false);
   const [isHideSemanticClasses, setIsHideSemanticClasses] = useState(false);
   const [isObjectOpen, setIsObjectOpen] = useState(true);
@@ -88,27 +97,15 @@ const ClassesList = () => {
               </div>
             </div>
             <CollapsibleContent className="py-2 max-h-80 overflow-auto z-50">
-              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
-              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
-              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
-              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
-              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
-              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
-              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
-              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
-              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
-              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
-              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
-              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
-              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
-              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
-              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
-              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
-              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
-              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
-              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
-              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
-              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
+              {filteredObjectLabels &&
+                filteredObjectLabels.map((label) => (
+                  <ClassesCard
+                    key={label.id}
+                    name={label.name}
+                    color={label.color}
+                    totalLabel={label.annotationCount}
+                  />
+                ))}
             </CollapsibleContent>
           </Collapsible>
           <Collapsible
@@ -168,9 +165,15 @@ const ClassesList = () => {
               </div>
             </div>
             <CollapsibleContent className="py-2 max-h-80 overflow-auto z-50">
-              <ClassesCard name="Car" color={'#231232'} totalLabel={0} />
-              <ClassesCard name="Apt" color={'#f21521'} totalLabel={2} />
-              <ClassesCard name="Home" color={'#a06065'} totalLabel={3} />
+              {filteredSemanticLabels &&
+                filteredSemanticLabels.map((label) => (
+                  <ClassesCard
+                    key={label.id}
+                    name={label.name}
+                    color={label.color}
+                    totalLabel={label.annotationCount}
+                  />
+                ))}
             </CollapsibleContent>
           </Collapsible>
         </div>

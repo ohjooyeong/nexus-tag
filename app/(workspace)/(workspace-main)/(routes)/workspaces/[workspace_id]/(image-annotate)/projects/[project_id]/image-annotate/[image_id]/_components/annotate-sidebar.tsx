@@ -45,11 +45,13 @@ export function AnnotateSidebar({
               title: 'Pan',
               url: '#',
               icon: HandIcon,
+              isDisable: false,
             },
             {
               title: 'Select & Drag',
               url: '#',
               icon: MousePointer,
+              isDisable: false,
             },
           ],
         },
@@ -61,6 +63,7 @@ export function AnnotateSidebar({
               title: 'SAM Brush',
               url: '#',
               icon: ZapIcon,
+              isDisable: true,
             },
           ],
         },
@@ -72,16 +75,19 @@ export function AnnotateSidebar({
               title: 'Polygon',
               url: '#',
               icon: Pentagon,
+              isDisable: false,
             },
             {
               title: 'Bounding Box',
               url: '#',
               icon: Square,
+              isDisable: false,
             },
             {
               title: 'Brush',
               url: '#',
               icon: BrushIcon,
+              isDisable: false,
             },
           ],
         },
@@ -131,11 +137,14 @@ export function AnnotateSidebar({
                   <SidebarMenuItem key={item.title} className="mb-1">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <SidebarMenuButton className="w-full h-10 flex items-center justify-center border rounded-lg">
+                        <SidebarMenuButton
+                          className="w-full h-10 flex items-center justify-center border rounded-lg"
+                          disabled={item.isDisable}
+                        >
                           <item.icon className="w-full h-10" />
                         </SidebarMenuButton>
                       </TooltipTrigger>
-                      <TooltipContent>{item.title}</TooltipContent>
+                      <TooltipContent side="right">{item.title}</TooltipContent>
                     </Tooltip>
                   </SidebarMenuItem>
                 ))}

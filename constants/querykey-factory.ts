@@ -45,3 +45,12 @@ export const dataItemQueries = {
   default: () => ['dataItems'],
   detail: (id: string) => [...dataItemQueries.default(), id],
 };
+
+export const classLabelQueries = {
+  default: () => ['classLabels'],
+  list: (id: string, type: string) => [
+    ...classLabelQueries.default(),
+    id,
+    type,
+  ],
+};
