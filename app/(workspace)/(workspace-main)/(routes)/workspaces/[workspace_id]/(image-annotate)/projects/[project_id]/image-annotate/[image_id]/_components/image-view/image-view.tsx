@@ -31,7 +31,6 @@ import { useEditorStore } from '../../_store/editor-store';
 
 type ImageViewProps = {
   labels: ImageLabel[];
-
   imageObjectId: number | null;
   containerWidth: number;
   containerHeight: number;
@@ -47,7 +46,10 @@ const ImageView = ({
   const { setZoom, getZoom } = useEditorStore();
   const currentZoom = getZoom();
 
-  const imageData = getImageData() || { width: 1, height: 1 };
+  const imageData = useMemo(
+    () => getImageData() || { width: 1, height: 1 },
+    [getImageData()?.width, getImageData()?.height, getImageData],
+  );
 
   const imageObject = imageObjectId !== null ? getObject(imageObjectId) : null;
 

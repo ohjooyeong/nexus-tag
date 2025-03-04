@@ -2,15 +2,13 @@ import { Input } from '@/components/ui/input';
 import { Search, XIcon } from 'lucide-react';
 import ClassesList from './classes-list';
 import useClassLabels from '../../_hooks/use-class-labels';
-import { LabelClassType } from '../../_types/label-class';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
 const ClassesPanel = () => {
   const [query, setQuery] = useState('');
 
-  const { data: objectLabels } = useClassLabels(LabelClassType.OBJECT);
-  const { data: semanticLabels } = useClassLabels(LabelClassType.SEMANTIC);
+  const { data: classLabels } = useClassLabels();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -20,11 +18,7 @@ const ClassesPanel = () => {
     setQuery('');
   };
 
-  const filteredObjectLabels = objectLabels?.filter((label: any) =>
-    label.name.toLowerCase().includes(query.toLowerCase()),
-  );
-
-  const filteredSemanticLabels = semanticLabels?.filter((label: any) =>
+  const filteredClassLabels = classLabels?.filter((label: any) =>
     label.name.toLowerCase().includes(query.toLowerCase()),
   );
 
@@ -56,10 +50,7 @@ const ClassesPanel = () => {
               )}
             </div>
             <div>
-              <ClassesList
-                filteredObjectLabels={filteredObjectLabels}
-                filteredSemanticLabels={filteredSemanticLabels}
-              />
+              <ClassesList filteredClassLabels={filteredClassLabels} />
             </div>
           </section>
         </div>

@@ -14,21 +14,23 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import ClassesCard from './classes-card';
-import { LabelClass } from '../../_types/label-class';
+import { LabelClass, LabelClassType } from '../../_types/label-class';
+import { cn } from '@/lib/utils';
+import NewClassLabelDialog from '../dialog/new-classes-dialog';
 
 interface DatasetCardProps {
-  filteredObjectLabels: LabelClass[];
-  filteredSemanticLabels: LabelClass[];
+  filteredClassLabels: LabelClass[];
 }
 
-const ClassesList = ({
-  filteredObjectLabels,
-  filteredSemanticLabels,
-}: DatasetCardProps) => {
+const ClassesList = ({ filteredClassLabels = [] }: DatasetCardProps) => {
   const [isHideObjectClasses, setIsHideObjectClasses] = useState(false);
   const [isHideSemanticClasses, setIsHideSemanticClasses] = useState(false);
   const [isObjectOpen, setIsObjectOpen] = useState(true);
   const [isSemanticOpen, setIsSemanticOpen] = useState(true);
+  const [showNewLabelDialog, setShowNewLabelDialog] = useState(false);
+  const [LabelType, setLabelType] = useState<LabelClassType>(
+    LabelClassType.OBJECT,
+  );
 
   const toggleHideObjectClasses = () => {
     setIsHideObjectClasses((prev) => !prev);
@@ -37,6 +39,14 @@ const ClassesList = ({
   const toggleHideSemanticClasses = () => {
     setIsHideSemanticClasses((prev) => !prev);
   };
+
+  const filteredObjectLabels = filteredClassLabels?.filter(
+    (label) => label.type === 'OBJECT' && !isHideObjectClasses,
+  );
+
+  const filteredSemanticLabels = filteredClassLabels?.filter(
+    (label) => label.type === 'SEMANTIC' && !isHideSemanticClasses,
+  );
 
   return (
     <div className="relative transition-all">
@@ -80,6 +90,10 @@ const ClassesList = ({
                         variant={'ghost'}
                         className="w-6 h-6"
                         size={'icon'}
+                        onClick={() => {
+                          setShowNewLabelDialog(true);
+                          setLabelType(LabelClassType.OBJECT);
+                        }}
                       >
                         <PlusIcon className="w-4 h-4 text-gray-600" />
                         <span className="sr-only">Create new object class</span>
@@ -89,7 +103,14 @@ const ClassesList = ({
                   </Tooltip>
 
                   <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="icon" className="w-6 h-6">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={cn(
+                        'w-6 h-6',
+                        !isObjectOpen && 'bg-slate-200 hover:bg-slate-200',
+                      )}
+                    >
                       <ChevronsUpDown className="h-4 w-4 text-gray-600" />
                     </Button>
                   </CollapsibleTrigger>
@@ -97,15 +118,15 @@ const ClassesList = ({
               </div>
             </div>
             <CollapsibleContent className="py-2 max-h-80 overflow-auto z-50">
-              {filteredObjectLabels &&
+              {filteredObjectLabels?.length === 0 ? (
+                <div className="flex justify-center text-sm text-gray-500 p-1 bg-slate-100 rounded-sm">
+                  {'No Labels'}
+                </div>
+              ) : (
                 filteredObjectLabels.map((label) => (
-                  <ClassesCard
-                    key={label.id}
-                    name={label.name}
-                    color={label.color}
-                    totalLabel={label.annotationCount}
-                  />
-                ))}
+                  <ClassesCard key={label.id} label={label} />
+                ))
+              )}
             </CollapsibleContent>
           </Collapsible>
           <Collapsible
@@ -146,6 +167,10 @@ const ClassesList = ({
                         variant={'ghost'}
                         className="w-6 h-6"
                         size={'icon'}
+                        onClick={() => {
+                          setShowNewLabelDialog(true);
+                          setLabelType(LabelClassType.SEMANTIC);
+                        }}
                       >
                         <PlusIcon className="w-4 h-4 text-gray-600" />
                         <span className="sr-only">
@@ -157,7 +182,14 @@ const ClassesList = ({
                   </Tooltip>
 
                   <CollapsibleTrigger asChild>
-                    <Button variant="ghost" size="icon" className="w-6 h-6">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className={cn(
+                        'w-6 h-6',
+                        !isSemanticOpen && 'bg-slate-200 hover:bg-slate-200',
+                      )}
+                    >
                       <ChevronsUpDown className="h-4 w-4 text-gray-600" />
                     </Button>
                   </CollapsibleTrigger>
@@ -165,19 +197,28 @@ const ClassesList = ({
               </div>
             </div>
             <CollapsibleContent className="py-2 max-h-80 overflow-auto z-50">
-              {filteredSemanticLabels &&
+              {filteredSemanticLabels?.length === 0 ? (
+                <div className="flex justify-center text-sm text-gray-500 p-1 bg-slate-100 rounded-sm">
+                  {'No Labels'}
+                </div>
+              ) : (
                 filteredSemanticLabels.map((label) => (
-                  <ClassesCard
-                    key={label.id}
-                    name={label.name}
-                    color={label.color}
-                    totalLabel={label.annotationCount}
-                  />
-                ))}
+                  <ClassesCard key={label.id} label={label} />
+                ))
+              )}
             </CollapsibleContent>
           </Collapsible>
         </div>
       </div>
+      {showNewLabelDialog && (
+        <NewClassLabelDialog
+          isOpen={showNewLabelDialog}
+          onClose={() => {
+            setShowNewLabelDialog(false);
+          }}
+          currentType={LabelType}
+        />
+      )}
     </div>
   );
 };

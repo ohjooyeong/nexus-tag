@@ -8,5 +8,5 @@ export type LabelClass = {
   name: string;
   type: LabelClassType.OBJECT | LabelClassType.SEMANTIC;
   color: string;
-  annotationCount: number;
+  description?: string;
 };

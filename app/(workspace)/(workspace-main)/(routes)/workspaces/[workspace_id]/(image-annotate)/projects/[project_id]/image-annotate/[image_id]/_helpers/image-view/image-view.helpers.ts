@@ -46,7 +46,7 @@ const calculatePositionLimits = (
 export const getClampedPosition = (
   stage: Konva.Stage,
   { x, y }: { x: number; y: number },
-  imageData = { width: 1920, height: 1080 },
+  imageData = { width: 1, height: 1 },
 ) => {
   const scale = stage.scale();
   if (scale === undefined) return { x, y };

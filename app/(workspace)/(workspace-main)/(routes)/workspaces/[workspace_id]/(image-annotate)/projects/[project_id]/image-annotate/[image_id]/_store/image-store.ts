@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand';
-import {
-  imageDataFromImage,
-  imageDataFromUrl,
-} from '../_helpers/image-view/image-view.helpers';
+import { imageDataFromUrl } from '../_helpers/image-view/image-view.helpers';
 import {
   getMaskOptimisationMultiplier,
   getScaledImageData,

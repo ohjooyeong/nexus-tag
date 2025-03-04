@@ -141,7 +141,7 @@ const AddMemberSheet = ({
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a verified email to display" />
+                        <SelectValue placeholder="Select a verified role to display" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent className="text-sm">
