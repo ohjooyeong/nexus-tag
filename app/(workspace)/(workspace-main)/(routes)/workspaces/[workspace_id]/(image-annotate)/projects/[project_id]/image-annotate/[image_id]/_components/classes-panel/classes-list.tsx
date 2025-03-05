@@ -47,11 +47,11 @@ const ClassesList = ({ filteredClassLabels = [] }: DatasetCardProps) => {
   };
 
   const filteredObjectLabels = filteredClassLabels?.filter(
-    (label) => label.type === 'OBJECT' && !isHideObjectClasses,
+    (label) => label.type === 'OBJECT',
   );
 
   const filteredSemanticLabels = filteredClassLabels?.filter(
-    (label) => label.type === 'SEMANTIC' && !isHideSemanticClasses,
+    (label) => label.type === 'SEMANTIC',
   );
 
   return (

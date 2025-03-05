@@ -1,18 +1,36 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { DiameterIcon } from 'lucide-react';
+import {
+  DiameterIcon,
+  Edit2Icon,
+  EyeIcon,
+  EyeOffIcon,
+  Trash,
+} from 'lucide-react';
 import { LabelClass } from '../../_types/label-class';
+import { useState } from 'react';
+import UpdateClassLabelDialog from '../dialog/update-classes-dialog';
+import { cn } from '@/lib/utils';
 
 type ClassesCardProps = {
   label: LabelClass;
 };
 
 const ClassesCard = ({ label }: ClassesCardProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isHide, setIsHide] = useState(false);
+  const [showLabelDialog, setShowLabelDialog] = useState(false);
+
   return (
     <div
-      className="flex relative items-center min-h-9 hover:bg-black hover:bg-opacity-5
-        cursor-pointer"
+      className={cn(
+        `flex relative items-center min-h-9 hover:bg-black hover:bg-opacity-5
+        cursor-pointer`,
+        isHide && 'opacity-60',
+      )}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <Button
         variant="ghost"
@@ -27,15 +45,60 @@ const ClassesCard = ({ label }: ClassesCardProps) => {
         style={{ background: `${label.color}` }}
       />
       <div className="flex-1 ml-2">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center relative">
           <div className="w-40 flex items-center">
             <p className="text-xs font-normal overflow-hidden text-ellipsis whitespace-nowrap">
               {label.name}
             </p>
           </div>
-          <p className="text-xs text-gray-400 mr-1">{`(0 labels)`}</p>
+          {isHovered ? (
+            <div className="absolute flex items-center right-2">
+              <Button
+                variant={'ghost'}
+                className="w-6 h-6 text-gray-400 hover:text-blue-500"
+                size={'icon'}
+                onClick={() => {
+                  setIsHide((prev) => !prev);
+                }}
+              >
+                {isHide ? (
+                  <EyeIcon className="w-4 h-4" />
+                ) : (
+                  <EyeOffIcon className="w-4 h-4" />
+                )}
+              </Button>
+              <Button
+                variant={'ghost'}
+                className="w-6 h-6 text-gray-400 hover:text-blue-500"
+                size={'icon'}
+                onClick={() => {
+                  setShowLabelDialog(true);
+                }}
+              >
+                <Edit2Icon className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={'ghost'}
+                className="w-6 h-6 text-gray-400 hover:text-blue-500"
+                size={'icon'}
+              >
+                <Trash className="w-4 h-4" />
+              </Button>
+            </div>
+          ) : (
+            <p className="text-xs text-gray-400 mr-1">{`(0 labels)`}</p>
+          )}
         </div>
       </div>
+      {showLabelDialog && (
+        <UpdateClassLabelDialog
+          isOpen={showLabelDialog}
+          onClose={() => {
+            setShowLabelDialog(false);
+          }}
+          currentLabel={label}
+        />
+      )}
     </div>
   );
 };
