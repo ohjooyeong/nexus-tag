@@ -22,7 +22,7 @@ export default function useCreateClassLabel() {
       projectId,
     }: CreateClassLabel) => {
       const { data } = await axiosInstance.post(
-        `/workspaces/${workspaceId}/projects/${projectId}/labels`,
+        `/workspaces/${workspaceId}/projects/${projectId}/class-labels`,
         {
           name,
           description,

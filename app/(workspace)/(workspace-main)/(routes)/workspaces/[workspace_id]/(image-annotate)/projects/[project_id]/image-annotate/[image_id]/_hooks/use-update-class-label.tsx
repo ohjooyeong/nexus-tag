@@ -9,7 +9,7 @@ type UpdateClassLabel = {
   color: string;
   workspaceId: string;
   projectId: string;
-  labelId: string;
+  classLabelId: string;
 };
 
 export default function useUpdateClassLabel() {
@@ -21,10 +21,10 @@ export default function useUpdateClassLabel() {
       color,
       workspaceId,
       projectId,
-      labelId,
+      classLabelId,
     }: UpdateClassLabel) => {
       const { data } = await axiosInstance.put(
-        `/workspaces/${workspaceId}/projects/${projectId}/labels/${labelId}`,
+        `/workspaces/${workspaceId}/projects/${projectId}/class-labels/${classLabelId}`,
         {
           name,
           description,

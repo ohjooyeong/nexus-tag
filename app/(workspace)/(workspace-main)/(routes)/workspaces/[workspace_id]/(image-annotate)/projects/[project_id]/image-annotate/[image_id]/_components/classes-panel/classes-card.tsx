@@ -12,6 +12,7 @@ import { LabelClass } from '../../_types/label-class';
 import { useState } from 'react';
 import UpdateClassLabelDialog from '../dialog/update-classes-dialog';
 import { cn } from '@/lib/utils';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 type ClassesCardProps = {
   label: LabelClass;
@@ -21,6 +22,11 @@ const ClassesCard = ({ label }: ClassesCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isHide, setIsHide] = useState(false);
   const [showLabelDialog, setShowLabelDialog] = useState(false);
+
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwnerOrManager =
+    currentMyRole === 'OWNER' || currentMyRole === 'MANAGER';
 
   return (
     <div
@@ -67,23 +73,27 @@ const ClassesCard = ({ label }: ClassesCardProps) => {
                   <EyeOffIcon className="w-4 h-4" />
                 )}
               </Button>
-              <Button
-                variant={'ghost'}
-                className="w-6 h-6 text-gray-400 hover:text-blue-500"
-                size={'icon'}
-                onClick={() => {
-                  setShowLabelDialog(true);
-                }}
-              >
-                <Edit2Icon className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={'ghost'}
-                className="w-6 h-6 text-gray-400 hover:text-blue-500"
-                size={'icon'}
-              >
-                <Trash className="w-4 h-4" />
-              </Button>
+              {isMyRoleOwnerOrManager && (
+                <>
+                  <Button
+                    variant={'ghost'}
+                    className="w-6 h-6 text-gray-400 hover:text-blue-500"
+                    size={'icon'}
+                    onClick={() => {
+                      setShowLabelDialog(true);
+                    }}
+                  >
+                    <Edit2Icon className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    variant={'ghost'}
+                    className="w-6 h-6 text-gray-400 hover:text-blue-500"
+                    size={'icon'}
+                  >
+                    <Trash className="w-4 h-4" />
+                  </Button>
+                </>
+              )}
             </div>
           ) : (
             <p className="text-xs text-gray-400 mr-1">{`(0 labels)`}</p>
@@ -96,7 +106,7 @@ const ClassesCard = ({ label }: ClassesCardProps) => {
           onClose={() => {
             setShowLabelDialog(false);
           }}
-          currentLabel={label}
+          currentClassLabel={label}
         />
       )}
     </div>

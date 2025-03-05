@@ -2,12 +2,12 @@
 'use client';
 
 import React, { useLayoutEffect, useMemo, useRef } from 'react';
-import { MyRBush } from '../../_helpers/image-view/data.helpers';
 import Konva from 'konva';
 import { Group, Layer } from 'react-konva';
 import { useCanvasDimensions } from '../_provider/canvas-dimensions-context-provider';
 import { ImageLabel } from '../_types/image-label';
 import Label from './label';
+import { MyRBush } from '../_helpers/image-view/data.helpers';
 
 type LabelsProps = {
   processedLabelsTree: MyRBush;
@@ -31,7 +31,7 @@ const Labels = ({ processedLabelsTree, groupRef }: LabelsProps) => {
     () =>
       processedLabelsTree
         .all()
-        .filter((label) => label.classId)
+        .filter((label) => label.classLabelId)
         .sort((a, b) => (a.zIndex > b.zIndex ? 1 : -1)),
     [processedLabelsTree],
   );

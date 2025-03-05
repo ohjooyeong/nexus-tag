@@ -13,7 +13,7 @@ export default function useClassLabels() {
     queryKey: classLabelQueries.list(projectId),
     queryFn: async () => {
       const { data } = await axiosInstance.get(
-        `/workspaces/${workspaceId}/projects/${projectId}/labels`,
+        `/workspaces/${workspaceId}/projects/${projectId}/class-labels`,
       );
 
       return data.data;
