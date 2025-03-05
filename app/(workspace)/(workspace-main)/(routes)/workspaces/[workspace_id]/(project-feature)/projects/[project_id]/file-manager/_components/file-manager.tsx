@@ -14,6 +14,7 @@ import { Dataset } from '@/app/(workspace)/(workspace-main)/_types';
 import DatasetCardAll from './dataset-card-all';
 import useDatasetStats from '../_hooks/use-dataset-stats';
 import DataItemList from './data-item-list';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 const FileManager = () => {
   const [query, setQuery] = useState('');
@@ -21,6 +22,10 @@ const FileManager = () => {
 
   const { data } = useDatasetList();
   const { data: datsetStats } = useDatasetStats();
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwnerOrManager =
+    currentMyRole === 'OWNER' || currentMyRole === 'MANAGER';
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -41,13 +46,15 @@ const FileManager = () => {
           <div className="flex flex-row justify-between items-center mb-4">
             <h2 className="text-xl font-bold">Datasets</h2>
 
-            <Button
-              className="p-1 text-xs px-4 h-8"
-              onClick={() => setShowNewDatasetDialog(true)}
-            >
-              <Plus />
-              Create New
-            </Button>
+            {isMyRoleOwnerOrManager && (
+              <Button
+                className="p-1 text-xs px-4 h-8"
+                onClick={() => setShowNewDatasetDialog(true)}
+              >
+                <Plus />
+                Create New
+              </Button>
+            )}
           </div>
           <div className="flex flex-row items-center mb-4">
             <div className="flex-1 relative">

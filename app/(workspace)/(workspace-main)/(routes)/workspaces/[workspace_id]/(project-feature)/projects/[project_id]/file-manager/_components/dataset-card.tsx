@@ -5,6 +5,7 @@ import { useState } from 'react';
 import DeleteDatasetDialog from './dialog/delete-dataset-dialog';
 import UpdateDatasetDialog from './dialog/update-dataset-dialog';
 import { cn } from '@/lib/utils';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 interface DatasetCardProps {
   dataset: Dataset;
@@ -16,6 +17,11 @@ const DatasetCard = ({ dataset }: DatasetCardProps) => {
   const { workspace_id: workspaceId, project_id: projectId } = useParams();
   const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwnerOrManager =
+    currentMyRole === 'OWNER' || currentMyRole === 'MANAGER';
 
   const datasetId = searchParams.get('datasetId');
 
@@ -58,18 +64,22 @@ const DatasetCard = ({ dataset }: DatasetCardProps) => {
           </div>
 
           <div className="flex flex-row w-1/5">
-            <button
-              className="p-2 hover:bg-slate-200"
-              onClick={handleOpenDeleteDialog}
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-            <button
-              className="p-2 hover:bg-slate-200"
-              onClick={handleOpenUpdateDialog}
-            >
-              <MoreVertical className="w-4 h-4" />
-            </button>
+            {isMyRoleOwnerOrManager && (
+              <>
+                <button
+                  className="p-2 hover:bg-slate-200"
+                  onClick={handleOpenDeleteDialog}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+                <button
+                  className="p-2 hover:bg-slate-200"
+                  onClick={handleOpenUpdateDialog}
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/pagination';
 import DeleteDataItemDialog from './dialog/delete-data-item.dialog';
 import { cn } from '@/lib/utils';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 const DataItemList = () => {
   const searchParams = useSearchParams();
@@ -35,6 +36,11 @@ const DataItemList = () => {
   const [limit, setLimit] = useState(20);
 
   const [showDeleteItems, setShowDeleteItems] = useState<boolean>(false);
+
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwnerOrManager =
+    currentMyRole === 'OWNER' || currentMyRole === 'MANAGER';
 
   const datasetId = searchParams.get('datasetId');
 
@@ -104,29 +110,34 @@ const DataItemList = () => {
   return (
     <div className="flex-1 ml-8">
       <div className="flex items-center sticky mb-2 px-2 z-50">
-        <div className="flex items-center justify-center h-8 w-8">
-          <Checkbox
-            className="w-4 h-4"
-            checked={
-              selectedItems.length !== 0 &&
-              selectedItems.length === items.length
-            }
-            indeterminate={
-              selectedItems.length > 0 && selectedItems.length < items.length
-            }
-            onCheckedChange={handleSelectAll}
-          />
-        </div>
-        <div className="flex items-center justify-center h-8 w-8">
-          <TrashIcon
-            className={`w-4 h-4 ${
-              selectedItems.length > 0
-                ? 'cursor-pointer text-red-500'
-                : 'text-gray-400'
-              }`}
-            onClick={handleDeleteItems}
-          />
-        </div>
+        {isMyRoleOwnerOrManager && (
+          <>
+            <div className="flex items-center justify-center h-8 w-8">
+              <Checkbox
+                className="w-4 h-4"
+                checked={
+                  selectedItems.length !== 0 &&
+                  selectedItems.length === items.length
+                }
+                indeterminate={
+                  selectedItems.length > 0 &&
+                  selectedItems.length < items.length
+                }
+                onCheckedChange={handleSelectAll}
+              />
+            </div>
+            <div className="flex items-center justify-center h-8 w-8">
+              <TrashIcon
+                className={`w-4 h-4 ${
+                selectedItems.length > 0
+                    ? 'cursor-pointer text-red-500'
+                    : 'text-gray-400'
+                }`}
+                onClick={handleDeleteItems}
+              />
+            </div>
+          </>
+        )}
         <div className="flex flex-row ml-auto">
           <div className="flex flex-row items-center">
             <p className="text-sm mr-3">Items per page:</p>

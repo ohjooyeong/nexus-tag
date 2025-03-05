@@ -4,12 +4,18 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import NewUploadImagesSheet from './sheet/new-upload-images-sheet';
 import { useSearchParams } from 'next/navigation';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 const NoResultDataItem = () => {
   const searchParams = useSearchParams();
 
   const [showNewUploadImagesSheet, setShowNewUploadImagesSheet] =
     useState(false);
+
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwnerOrManager =
+    currentMyRole === 'OWNER' || currentMyRole === 'MANAGER';
 
   const datasetId = searchParams.get('datasetId');
 
@@ -103,15 +109,19 @@ const NoResultDataItem = () => {
         <h3 className="text-xl text-center font-bold mt-4">
           No file in this dataset
         </h3>
-        <p className="text-xs mt-4 text-center">
-          Upload files in easily in this dataset and start working
-        </p>
-        <Button
-          onClick={() => setShowNewUploadImagesSheet(true)}
-          className="mt-4"
-        >
-          Upload images
-        </Button>
+        {isMyRoleOwnerOrManager && (
+          <>
+            <p className="text-xs mt-4 text-center">
+              Upload files in easily in this dataset and start working
+            </p>
+            <Button
+              onClick={() => setShowNewUploadImagesSheet(true)}
+              className="mt-4"
+            >
+              Upload images
+            </Button>
+          </>
+        )}
       </div>
       {showNewUploadImagesSheet && (
         <NewUploadImagesSheet

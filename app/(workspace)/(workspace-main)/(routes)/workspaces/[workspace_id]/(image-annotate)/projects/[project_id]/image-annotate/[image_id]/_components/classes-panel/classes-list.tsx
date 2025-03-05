@@ -17,6 +17,7 @@ import ClassesCard from './classes-card';
 import { LabelClass, LabelClassType } from '../../_types/label-class';
 import { cn } from '@/lib/utils';
 import NewClassLabelDialog from '../dialog/new-classes-dialog';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 interface DatasetCardProps {
   filteredClassLabels: LabelClass[];
@@ -31,6 +32,11 @@ const ClassesList = ({ filteredClassLabels = [] }: DatasetCardProps) => {
   const [LabelType, setLabelType] = useState<LabelClassType>(
     LabelClassType.OBJECT,
   );
+
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwnerOrManager =
+    currentMyRole === 'OWNER' || currentMyRole === 'MANAGER';
 
   const toggleHideObjectClasses = () => {
     setIsHideObjectClasses((prev) => !prev);
@@ -84,23 +90,27 @@ const ClassesList = ({ filteredClassLabels = [] }: DatasetCardProps) => {
                         : 'Hide all object classes'}
                     </TooltipContent>
                   </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant={'ghost'}
-                        className="w-6 h-6"
-                        size={'icon'}
-                        onClick={() => {
-                          setShowNewLabelDialog(true);
-                          setLabelType(LabelClassType.OBJECT);
-                        }}
-                      >
-                        <PlusIcon className="w-4 h-4 text-gray-600" />
-                        <span className="sr-only">Create new object class</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Create new object class</TooltipContent>
-                  </Tooltip>
+                  {isMyRoleOwnerOrManager && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant={'ghost'}
+                          className="w-6 h-6"
+                          size={'icon'}
+                          onClick={() => {
+                            setShowNewLabelDialog(true);
+                            setLabelType(LabelClassType.OBJECT);
+                          }}
+                        >
+                          <PlusIcon className="w-4 h-4 text-gray-600" />
+                          <span className="sr-only">
+                            Create new object class
+                          </span>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Create new object class</TooltipContent>
+                    </Tooltip>
+                  )}
 
                   <CollapsibleTrigger asChild>
                     <Button
@@ -161,25 +171,27 @@ const ClassesList = ({ filteredClassLabels = [] }: DatasetCardProps) => {
                         : 'Hide all semantic classes'}
                     </TooltipContent>
                   </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant={'ghost'}
-                        className="w-6 h-6"
-                        size={'icon'}
-                        onClick={() => {
-                          setShowNewLabelDialog(true);
-                          setLabelType(LabelClassType.SEMANTIC);
-                        }}
-                      >
-                        <PlusIcon className="w-4 h-4 text-gray-600" />
-                        <span className="sr-only">
-                          Create new semantic class
-                        </span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Create new semantic class</TooltipContent>
-                  </Tooltip>
+                  {isMyRoleOwnerOrManager && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant={'ghost'}
+                          className="w-6 h-6"
+                          size={'icon'}
+                          onClick={() => {
+                            setShowNewLabelDialog(true);
+                            setLabelType(LabelClassType.SEMANTIC);
+                          }}
+                        >
+                          <PlusIcon className="w-4 h-4 text-gray-600" />
+                          <span className="sr-only">
+                            Create new semantic class
+                          </span>
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Create new semantic class</TooltipContent>
+                    </Tooltip>
+                  )}
 
                   <CollapsibleTrigger asChild>
                     <Button

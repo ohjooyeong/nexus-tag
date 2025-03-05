@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import UpdateDataItemDialog from './dialog/update-data-item-dialog';
+import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 
 interface DataItemCardProps {
   dataItem: DataItem;
@@ -26,6 +27,11 @@ const DataItemCard = ({
 
   const [isHover, setIsHover] = useState(false);
   const [showUpdateDialog, setShowUpdateDialog] = useState<boolean>(false);
+
+  const { data: currentMyRole } = useWorkspaceMyRole();
+
+  const isMyRoleOwnerOrManager =
+    currentMyRole === 'OWNER' || currentMyRole === 'MANAGER';
 
   const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${dataItem?.fileUrl}`;
 
@@ -60,7 +66,7 @@ const DataItemCard = ({
             <CheckSquareIcon className="w-3 h-3 hover:text-blue-500" />
           </div>
         )}
-        {isHover && !isSelected && (
+        {isMyRoleOwnerOrManager && isHover && !isSelected && (
           <div className="absolute top-2 left-2 w-3 h-3 bg-white">
             <SquareIcon className="w-3 h-3 hover:text-blue-500" />
           </div>
@@ -90,7 +96,7 @@ const DataItemCard = ({
         >
           {dataItem?.name}
         </p>
-        {isHover && (
+        {isMyRoleOwnerOrManager && isHover && (
           <Edit2
             className="flex w-3 h-3 ml-1 cursor-pointer"
             onClick={handleOpenUpdateDialog}
