@@ -27,7 +27,8 @@ import { KonvaStageContextProvider } from '../../_provider/konva-stage-context-p
 import { ImageClampingContextProvider } from '../../_provider/image-clamping-context-provider';
 import Labels from '../../_labels/labels';
 import { useImageStore } from '../../_store/image-store';
-import { useEditorStore } from '../../_store/editor-store';
+import { useZoomStore } from '../../_store/zoom-store';
+import { usePanningStore } from '../../_store/panning-store';
 
 type ImageViewProps = {
   labels: ImageLabel[];
@@ -43,8 +44,10 @@ const ImageView = ({
   containerHeight,
 }: ImageViewProps) => {
   const { getImageData, getObject } = useImageStore();
-  const { setZoom, getZoom } = useEditorStore();
+  const { setZoom, getZoom } = useZoomStore();
   const currentZoom = getZoom();
+  const { getEnabledPanning, setEnabledPanning } = usePanningStore();
+  const panningEnabled = getEnabledPanning();
 
   const imageData = useMemo(
     () => getImageData() || { width: 1, height: 1 },
@@ -274,6 +277,25 @@ const ImageView = ({
     redrawStageOnZoom();
   }, [imageLoaded, redrawStageOnZoom, setPosition, updateZoom]);
 
+  const handleMouseMove = useCallback(
+    ({ evt }: Konva.KonvaEventObject<MouseEvent>) => {
+      if (!panningEnabled) return;
+
+      const stage = stageRef.current;
+      if (!stage) return;
+
+      const newPosition = {
+        x: stage.x() + evt.movementX,
+        y: stage.y() + evt.movementY,
+      };
+
+      stage.position(getClampedPosition(stage, newPosition, imageData));
+
+      redrawStage(evt);
+    },
+    [panningEnabled, redrawStage, imageData],
+  );
+
   const handleWheel = useCallback(
     ({ evt }: Konva.KonvaEventObject<WheelEvent>) => {
       if (!imageLoaded) return;
@@ -290,6 +312,29 @@ const ImageView = ({
     [imageLoaded, redrawStage, zoom],
   );
 
+  const handleMiddleMouseButton = useCallback(
+    ({ evt }: Konva.KonvaEventObject<MouseEvent>) => {
+      // 마우스 가운데 휠 버튼
+      if (evt.button === 1) {
+        setEnabledPanning(true);
+      }
+    },
+    [],
+  );
+
+  const handleMiddleMouseButtonUp = useCallback(
+    ({ evt }: Konva.KonvaEventObject<MouseEvent>) => {
+      if (evt.button === 1) {
+        setEnabledPanning(false);
+      }
+    },
+    [],
+  );
+
+  const handleMiddleMouseButtonLeave = useCallback(() => {
+    if (panningEnabled) setEnabledPanning(false);
+  }, [panningEnabled]);
+
   const processedLabelsTree = useMemo(() => {
     stageRef.current?.getStage().batchDraw();
     const tree = new MyRBush();
@@ -302,6 +347,7 @@ const ImageView = ({
     <div className="flex">
       <Stage
         className="flex flex-col relative overscroll-x-none touch-none p-[6px] bg-slate-300"
+        draggable={panningEnabled}
         ref={stageRef}
         width={width || 0}
         height={height || 0}
@@ -309,6 +355,10 @@ const ImageView = ({
         y={y || 0}
         onWheel={handleWheel}
         dragBoundFunc={handleDragBound}
+        onMouseDown={handleMiddleMouseButton}
+        onMouseUp={handleMiddleMouseButtonUp}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMiddleMouseButtonLeave}
       >
         {stageRef.current ? (
           <KonvaStageContextProvider stage={stageRef.current.getStage()}>
@@ -322,7 +372,6 @@ const ImageView = ({
                   strokeWidth={3}
                   stroke={'#2E6FF2'}
                   strokeScaleEnabled={false}
-                  alt=""
                 />
               </Layer>
               <Labels

@@ -8,7 +8,7 @@ import { useImageStore } from '../../_store/image-store';
 import { useEffect, useState } from 'react';
 import useDataItem from '../../_hooks/use-data-item';
 import { useParams } from 'next/navigation';
-import { useEditorStore } from '../../_store/editor-store';
+import { useZoomStore } from '../../_store/zoom-store';
 
 const ImageViewContainer = () => {
   const [imageObjectId, setImageObjectId] = useState(0);
@@ -17,7 +17,7 @@ const ImageViewContainer = () => {
 
   const { data: dataItem } = useDataItem();
 
-  const { setZoom } = useEditorStore();
+  const { setZoom } = useZoomStore();
   const { processAndStoreImage } = useImageStore();
 
   const handleResetStore = () => {
