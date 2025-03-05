@@ -66,31 +66,44 @@ export function ProjectNavActions() {
   return (
     <div className="flex items-center gap-2 text-sm">
       <div className="mr-8">
-        <Tooltip>
-          <TooltipTrigger>
-            <Button
-              variant="default"
-              size="sm"
-              className="h-10 mx-2 text-sm bg-gradient-to-br from-blue-500 to-purple-600 text-white
-                hover:opacity-80 transition"
-              disabled={!datsetStats?.totalItems}
-              asChild={datsetStats?.totalItems} // shadcn button asChild 일땐 disabled가 true인 상태 작동이 안되서 이렇게 해줌
+        {/* Tooltip trigger에서도 button 엘리먼트를 생성하기 때문에 분리함. */}
+        {datsetStats?.totalItems ? (
+          <Button
+            variant="default"
+            size="sm"
+            className="h-10 mx-2 text-sm bg-gradient-to-br from-blue-500 to-purple-600 text-white
+              hover:opacity-80 transition"
+            asChild
+          >
+            <Link
+              className="flex items-center gap-2"
+              href={`/workspaces/${workspaceId}/projects/${projectId}/image-annotate`}
             >
-              <Link
-                className="flex items-center gap-2"
-                href={`/workspaces/${workspaceId}/projects/${projectId}/image-annotate`}
-              >
-                <span>Start Annotating</span>
-                <PlayIcon className="h-4 w-4" />
-              </Link>
-            </Button>
-          </TooltipTrigger>
-          {!datsetStats?.totalItems && (
+              <span>Start Annotating</span>
+              <PlayIcon className="h-4 w-4" />
+            </Link>
+          </Button>
+        ) : (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div>
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="h-10 mx-2 text-sm bg-gradient-to-br from-blue-500 to-purple-600 text-white
+                    hover:opacity-80 transition opacity-50 cursor-not-allowed"
+                  disabled
+                >
+                  <span>Start Annotating</span>
+                  <PlayIcon className="h-4 w-4 ml-2" />
+                </Button>
+              </div>
+            </TooltipTrigger>
             <TooltipContent>
               Upload at least one image to start annotating
             </TooltipContent>
-          )}
-        </Tooltip>
+          </Tooltip>
+        )}
       </div>
       {/* <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full">
         <BellIcon />
