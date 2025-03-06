@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useLabelsStore } from '../_store/labels-store';
 import { labelsQueries } from '@/constants/querykey-factory';
 import { useParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 export const useInitialLabels = () => {
   const initializeLabels = useLabelsStore((state) => state.initializeLabels);
@@ -21,10 +22,13 @@ export const useInitialLabels = () => {
       return data.data;
     },
   });
+
   // React Query에서 받아온 데이터를 Zustand로 처리
-  if (data) {
-    initializeLabels(data);
-  }
+  useEffect(() => {
+    if (data) {
+      initializeLabels(data);
+    }
+  }, [data]);
 
   return {
     isLoading,

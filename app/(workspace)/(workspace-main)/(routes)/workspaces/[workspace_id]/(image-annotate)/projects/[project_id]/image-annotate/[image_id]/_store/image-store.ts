@@ -6,10 +6,13 @@ import {
   getScaledImageData,
 } from '../_utils/store-utils';
 
-interface ImageStore {
+interface State {
   imageData: (ImageData | null)[];
   objectStorage: (any | null)[];
   currentImageObjectId: number | null;
+}
+
+interface Actions {
   getImageData: (index?: number) => ImageData | null;
   getObject: (id: number) => any | null;
   saveImageData: (data: ImageData, index?: number) => void;
@@ -18,6 +21,8 @@ interface ImageStore {
   releaseObject: (id: number) => void;
   processAndStoreImage: (imageUrl: string) => Promise<number>;
 }
+
+type ImageStore = State & Actions;
 
 export const useImageStore = create<ImageStore>((set, get) => ({
   imageData: [null, null],

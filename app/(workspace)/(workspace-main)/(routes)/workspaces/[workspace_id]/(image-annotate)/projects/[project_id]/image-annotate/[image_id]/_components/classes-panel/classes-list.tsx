@@ -21,9 +21,13 @@ import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-wo
 
 interface DatasetCardProps {
   filteredClassLabels: LabelClass[];
+  isLoading: boolean;
 }
 
-const ClassesList = ({ filteredClassLabels = [] }: DatasetCardProps) => {
+const ClassesList = ({
+  filteredClassLabels = [],
+  isLoading,
+}: DatasetCardProps) => {
   const [isHideObjectClasses, setIsHideObjectClasses] = useState(false);
   const [isHideSemanticClasses, setIsHideSemanticClasses] = useState(false);
   const [isObjectOpen, setIsObjectOpen] = useState(true);
@@ -128,15 +132,16 @@ const ClassesList = ({ filteredClassLabels = [] }: DatasetCardProps) => {
               </div>
             </div>
             <CollapsibleContent className="py-2 max-h-80 overflow-auto z-50">
-              {filteredObjectLabels?.length === 0 ? (
-                <div className="flex justify-center text-sm text-gray-500 p-1 bg-slate-100 rounded-sm">
-                  {'No Labels'}
-                </div>
-              ) : (
-                filteredObjectLabels.map((label) => (
-                  <ClassesCard key={label.id} label={label} />
-                ))
-              )}
+              {!isLoading &&
+                (filteredObjectLabels?.length === 0 ? (
+                  <div className="flex justify-center text-sm text-gray-500 p-1 bg-slate-100 rounded-sm">
+                    {'No Labels'}
+                  </div>
+                ) : (
+                  filteredObjectLabels.map((label) => (
+                    <ClassesCard key={label.id} label={label} />
+                  ))
+                ))}
             </CollapsibleContent>
           </Collapsible>
           <Collapsible
@@ -209,15 +214,16 @@ const ClassesList = ({ filteredClassLabels = [] }: DatasetCardProps) => {
               </div>
             </div>
             <CollapsibleContent className="py-2 max-h-80 overflow-auto z-50">
-              {filteredSemanticLabels?.length === 0 ? (
-                <div className="flex justify-center text-sm text-gray-500 p-1 bg-slate-100 rounded-sm">
-                  {'No Labels'}
-                </div>
-              ) : (
-                filteredSemanticLabels.map((label) => (
-                  <ClassesCard key={label.id} label={label} />
-                ))
-              )}
+              {!isLoading &&
+                (filteredSemanticLabels?.length === 0 ? (
+                  <div className="flex justify-center text-sm text-gray-500 p-1 bg-slate-100 rounded-sm">
+                    {'No Labels'}
+                  </div>
+                ) : (
+                  filteredSemanticLabels.map((label) => (
+                    <ClassesCard key={label.id} label={label} />
+                  ))
+                ))}
             </CollapsibleContent>
           </Collapsible>
         </div>

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 const ClassesPanel = () => {
   const [query, setQuery] = useState('');
 
-  const { data: classLabels } = useClassLabels();
+  const { data: classLabels, isLoading } = useClassLabels();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -50,7 +50,10 @@ const ClassesPanel = () => {
               )}
             </div>
             <div>
-              <ClassesList filteredClassLabels={filteredClassLabels} />
+              <ClassesList
+                filteredClassLabels={filteredClassLabels}
+                isLoading={isLoading}
+              />
             </div>
           </section>
         </div>

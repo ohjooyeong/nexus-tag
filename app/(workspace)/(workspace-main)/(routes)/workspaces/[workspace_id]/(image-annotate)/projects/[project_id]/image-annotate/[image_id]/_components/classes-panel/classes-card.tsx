@@ -13,6 +13,7 @@ import { useState } from 'react';
 import UpdateClassLabelDialog from '../dialog/update-classes-dialog';
 import { cn } from '@/lib/utils';
 import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
+import { useClassLabelStore } from '../../_store/class-label-store';
 
 type ClassesCardProps = {
   label: LabelClass;
@@ -22,6 +23,7 @@ const ClassesCard = ({ label }: ClassesCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isHide, setIsHide] = useState(false);
   const [showLabelDialog, setShowLabelDialog] = useState(false);
+  const { setActiveClassLabel, getActiveClassLabelId } = useClassLabelStore();
 
   const { data: currentMyRole } = useWorkspaceMyRole();
 
@@ -41,7 +43,13 @@ const ClassesCard = ({ label }: ClassesCardProps) => {
       <Button
         variant="ghost"
         size="icon"
-        className="w-7 h-7 rounded-none hover:bg-blue-600 hover:bg-opacity-20"
+        className={cn(
+          'w-7 h-7 rounded-none hover:bg-blue-600 hover:bg-opacity-20',
+          getActiveClassLabelId() === label.id && 'bg-blue-600 bg-opacity-20',
+        )}
+        onClick={() => {
+          setActiveClassLabel(label);
+        }}
       >
         <DiameterIcon className="w-3 h-3" />
       </Button>
