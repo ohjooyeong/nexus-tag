@@ -9,11 +9,14 @@ import { useEffect, useState } from 'react';
 import useDataItem from '../../_hooks/use-data-item';
 import { useParams } from 'next/navigation';
 import { useZoomStore } from '../../_store/zoom-store';
+import { useInitialLabels } from '../../_hooks/use-labels';
 
 const ImageViewContainer = () => {
   const [imageObjectId, setImageObjectId] = useState(0);
   const { width, height, ref } = useResizeDetector({});
   const { image_id: imageId } = useParams();
+
+  useInitialLabels();
 
   const { data: dataItem } = useDataItem();
 

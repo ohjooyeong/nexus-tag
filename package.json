@@ -49,10 +49,12 @@
     "react-konva": "^18.2.10",
     "react-mobile-picker": "^1.0.1",
     "react-resize-detector": "^12.0.1",
+    "shortid": "^2.2.17",
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.24.1",
+    "zundo": "^2.3.0",
     "zustand": "^5.0.1"
   },
   "devDependencies": {
@@ -62,6 +64,7 @@
     "@types/rbush": "^4.0.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/shortid": "^2.2.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.18",
     "eslint-config-prettier": "^9.1.0",

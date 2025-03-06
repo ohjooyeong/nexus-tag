@@ -29,6 +29,10 @@ import Labels from '../../_labels/labels';
 import { useImageStore } from '../../_store/image-store';
 import { useZoomStore } from '../../_store/zoom-store';
 import { usePanningStore } from '../../_store/panning-store';
+import {
+  CanvasDimensions,
+  CanvasDimensionsContextProvider,
+} from '../../_provider/canvas-dimensions-context-provider';
 
 type ImageViewProps = {
   labels: ImageLabel[];
@@ -343,6 +347,27 @@ const ImageView = ({
     return tree;
   }, []);
 
+  const canvasDimensions = useMemo<CanvasDimensions>(
+    () => ({
+      originalImageWidth: imageData.width,
+      originalImageHeight: imageData.height,
+      imageWidth,
+      imageHeight,
+      absoluteScale,
+      containerWidth: width,
+      containerHeight: height,
+    }),
+    [
+      absoluteScale,
+      height,
+      imageData.height,
+      imageData.width,
+      imageHeight,
+      imageWidth,
+      width,
+    ],
+  );
+
   return (
     <div className="flex">
       <Stage
@@ -362,23 +387,28 @@ const ImageView = ({
       >
         {stageRef.current ? (
           <KonvaStageContextProvider stage={stageRef.current.getStage()}>
-            <ImageClampingContextProvider>
-              <Layer>
-                <Image
-                  ref={imageRef}
-                  image={imageObject}
-                  width={imageWidth}
-                  height={imageHeight}
-                  strokeWidth={3}
-                  stroke={'#2E6FF2'}
-                  strokeScaleEnabled={false}
-                />
-              </Layer>
-              <Labels
-                processedLabelsTree={processedLabelsTree}
-                groupRef={groupRef}
-              />
-            </ImageClampingContextProvider>
+            <CanvasDimensionsContextProvider sizes={canvasDimensions}>
+              <ImageClampingContextProvider>
+                <Layer>
+                  <Image
+                    ref={imageRef}
+                    image={imageObject}
+                    width={imageWidth}
+                    height={imageHeight}
+                    strokeWidth={3}
+                    stroke={'#2E6FF2'}
+                    strokeScaleEnabled={false}
+                    alt="image"
+                  />
+                </Layer>
+                {imageLoaded && (
+                  <Labels
+                    processedLabelsTree={processedLabelsTree}
+                    groupRef={groupRef}
+                  />
+                )}
+              </ImageClampingContextProvider>
+            </CanvasDimensionsContextProvider>
           </KonvaStageContextProvider>
         ) : null}
       </Stage>

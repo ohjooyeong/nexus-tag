@@ -50,3 +50,8 @@ export const classLabelQueries = {
   default: () => ['classLabels'],
   list: (id: string) => [...classLabelQueries.default(), 'list', id],
 };
+
+export const labelsQueries = {
+  default: () => ['labels'],
+  list: (id: string) => [...labelsQueries.default(), 'list', id],
+};

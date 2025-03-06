@@ -1,5 +1,5 @@
 import { getBbox, getLabelType } from '../_utils/utils';
-import { Bbox, Label, Mask, Polygon } from './types';
+import { Label } from './types';
 
 export enum LabelType {
   BBOX = 'BBOX',
@@ -9,34 +9,36 @@ export enum LabelType {
 
 export interface ApiLabel {
   id: string;
-  client_id?: string;
+  clientId?: string;
   labelType: LabelType;
-  data: {
-    polygon: Label['polygon'];
-    mask: Label['mask'];
-    bbox: Label['bbox'];
-  };
+  classLabelId: string;
+  polygon: Label['polygon'];
+  mask: Label['mask'];
+  bbox: Label['bbox'];
   dataItem: {
     id: string;
   };
   zIndex: number;
+  isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
 const fromBackendLabel = ({
-  data,
+  polygon,
+  mask,
+  bbox,
   updatedAt,
   createdAt,
   ...entry
 }: ApiLabel) => ({
+  ...entry,
   updatedAt: updatedAt,
   createdAt: createdAt,
-  polygon: data.polygon,
-  mask: data.mask,
-  bbox: getBbox(data.bbox, data.mask, data.polygon),
-  type: getLabelType({ polygon: data.polygon, mask: data.mask }),
-  ...entry,
+  polygon: polygon,
+  mask: mask,
+  bbox: getBbox(bbox, mask, polygon),
+  type: getLabelType({ polygon, mask }),
 });
 
 export type ImageLabel = ReturnType<typeof fromBackendLabel>;
