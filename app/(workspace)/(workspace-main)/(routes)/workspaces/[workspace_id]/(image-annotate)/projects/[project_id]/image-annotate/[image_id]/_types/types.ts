@@ -8,3 +8,11 @@ export type Label = {
   mask: Mask | null;
   polygon: Polygon | null;
 };
+
+export enum Tool {
+  Selection = 'selection',
+  Pan = 'pan',
+  Mask = 'mask',
+  Bbox = 'bbox',
+  Polygon = 'polygon',
+}

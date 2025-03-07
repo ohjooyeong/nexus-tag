@@ -9,7 +9,7 @@ export enum LabelType {
 
 export interface ApiLabel {
   id: string;
-  clientId?: string;
+  clientId: string | null;
   labelType: LabelType;
   classLabelId: string;
   polygon: Label['polygon'];

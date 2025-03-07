@@ -28,11 +28,14 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { useParams } from 'next/navigation';
+import { useToolStore } from '../_store/tool-store';
+import { Tool } from '../_types/types';
 
 export function AnnotateSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const { project_id: projectId, workspace_id: workspaceId } = useParams();
+  const { setToolId } = useToolStore();
 
   const data = React.useMemo(
     () => ({
@@ -46,12 +49,14 @@ export function AnnotateSidebar({
               url: '#',
               icon: HandIcon,
               isDisable: false,
+              event: () => setToolId(Tool.Pan),
             },
             {
               title: 'Select & Drag',
               url: '#',
               icon: MousePointer,
               isDisable: false,
+              event: () => setToolId(Tool.Selection),
             },
           ],
         },
@@ -76,18 +81,21 @@ export function AnnotateSidebar({
               url: '#',
               icon: Pentagon,
               isDisable: false,
+              event: () => setToolId(Tool.Polygon),
             },
             {
               title: 'Bounding Box',
               url: '#',
               icon: Square,
               isDisable: false,
+              event: () => setToolId(Tool.Bbox),
             },
             {
               title: 'Brush',
               url: '#',
               icon: BrushIcon,
               isDisable: false,
+              event: () => setToolId(Tool.Mask),
             },
           ],
         },
@@ -140,6 +148,11 @@ export function AnnotateSidebar({
                         <SidebarMenuButton
                           className="w-full h-10 flex items-center justify-center border rounded-lg"
                           disabled={item.isDisable}
+                          onClick={() => {
+                            if ('event' in item) {
+                              item.event();
+                            }
+                          }}
                         >
                           <item.icon className="w-full h-10" />
                         </SidebarMenuButton>

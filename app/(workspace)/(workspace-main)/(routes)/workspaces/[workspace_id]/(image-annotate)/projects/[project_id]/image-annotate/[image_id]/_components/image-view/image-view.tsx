@@ -33,6 +33,9 @@ import {
   CanvasDimensions,
   CanvasDimensionsContextProvider,
 } from '../../_provider/canvas-dimensions-context-provider';
+import { useToolStore } from '../../_store/tool-store';
+import { Tool } from '../../_types/types';
+import BboxTool from '../../_tools/bbox-tool/bbox-tool';
 
 type ImageViewProps = {
   labels: ImageLabel[];
@@ -50,6 +53,8 @@ const ImageView = ({
   const { getImageData, getObject } = useImageStore();
   const { setZoom, getZoom } = useZoomStore();
   const currentZoom = getZoom();
+  const { getToolId } = useToolStore();
+  const toolId = getToolId();
   const { getEnabledPanning, setEnabledPanning } = usePanningStore();
   const panningEnabled = getEnabledPanning();
 
@@ -406,6 +411,9 @@ const ImageView = ({
                     processedLabelsTree={processedLabelsTree}
                     groupRef={groupRef}
                   />
+                )}
+                {toolId === Tool.Bbox && (
+                  <BboxTool width={width} height={height} />
                 )}
               </ImageClampingContextProvider>
             </CanvasDimensionsContextProvider>
