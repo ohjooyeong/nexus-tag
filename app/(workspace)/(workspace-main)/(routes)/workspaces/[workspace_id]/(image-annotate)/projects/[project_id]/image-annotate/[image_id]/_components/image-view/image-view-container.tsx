@@ -1,7 +1,7 @@
 'use client';
 
 import { useResizeDetector } from 'react-resize-detector';
-import ImageViewNavbar from './image-sub-toolbar';
+import ImageSubToolbar from './image-sub-toolbar';
 
 import ImageView from './image-view';
 import { useImageStore } from '../../_store/image-store';
@@ -47,7 +47,7 @@ const ImageViewContainer = () => {
 
   return (
     <>
-      <ImageViewNavbar />
+      <ImageSubToolbar />
       <div className="flex flex-1 flex-col h-full overflow-hidden">
         <div className="flex flex-1 h-full overflow-hidden relative">
           <div className="flex-1 overflow-hidden bg-slate-300" ref={ref}>
