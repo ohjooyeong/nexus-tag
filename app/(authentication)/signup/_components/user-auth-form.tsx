@@ -24,9 +24,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   const {
     register,
-
     watch,
-
+    handleSubmit,
     formState: { errors },
   } = useForm<SignUpFormData>({
     defaultValues: {
@@ -47,7 +46,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
-      <GenericForm onSubmit={onSubmit}>
+      <GenericForm onSubmit={handleSubmit(onSubmit) as any}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label htmlFor="email" className="ml-1 text-neutral-500">
@@ -55,8 +54,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             </Label>
             <Input
               id="email"
-              placeholder=""
-              type="email"
+              placeholder="Enter your email"
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"

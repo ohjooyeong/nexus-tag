@@ -1,8 +1,44 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import Pointer from '../_components/pointer';
-import { motion } from 'motion/react';
+import GenericForm from '@/components/generic-form';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+
+type SignUpFormData = {
+  email: string;
+};
 
 const Heroes = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
+
+  const {
+    register,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpFormData>({
+    defaultValues: {
+      email: '',
+    },
+  });
+
+  const email = watch('email');
+
+  async function onSubmit() {
+    setIsLoading(true);
+
+    setTimeout(() => {
+      router.push(`/signup/additional-info?email=${email}`);
+      setIsLoading(false);
+    }, 2000);
+  }
+
   return (
     <section className="py-24">
       <div className="container mx-auto relative">
@@ -30,20 +66,47 @@ const Heroes = () => {
           <br />
           The new standard in data labeling—achieve more with less effort.
         </p>
-        <form className="flex border border-black/15 rounded-full p-2 mt-8 max-w-lg mx-auto">
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className="bg-transparent px-4 flex-1 outline-none"
-          />
-          <Button
-            type="submit"
-            className="whitespace-nowrap rounded-full px-6"
-            size={'sm'}
+        <GenericForm
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onSubmit={
+            handleSubmit(onSubmit, () => {
+              // Error handler
+              if (errors.email) {
+                toast.error(errors.email.message);
+              }
+            }) as any
+          }
+        >
+          <div
+            className={cn(
+              'flex border border-black/15 rounded-full p-2 mt-8 max-w-lg mx-auto',
+              errors.email && 'border-red-500',
+            )}
           >
-            Sign Up
-          </Button>
-        </form>
+            <input
+              placeholder="Enter your email"
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect="off"
+              className="bg-transparent px-4 flex-1 outline-none"
+              {...register('email', {
+                pattern: {
+                  value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
+                  message: 'Invalid email or password. Please try again.',
+                },
+                required: 'Email must be provided.',
+              })}
+            />
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="whitespace-nowrap rounded-full px-6"
+              size={'sm'}
+            >
+              Sign Up
+            </Button>
+          </div>
+        </GenericForm>
       </div>
     </section>
   );
