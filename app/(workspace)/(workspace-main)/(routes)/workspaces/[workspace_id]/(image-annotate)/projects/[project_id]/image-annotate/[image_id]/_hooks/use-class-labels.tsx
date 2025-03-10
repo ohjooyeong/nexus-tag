@@ -7,7 +7,7 @@ import { useClassLabelStore } from '../_store/class-label-store';
 
 export default function useClassLabels() {
   const params = useParams();
-  const { setActiveClassLabel } = useClassLabelStore();
+  const { setActiveClassLabel, initializeClassLabels } = useClassLabelStore();
 
   const workspaceId = params.workspace_id as string;
   const projectId = params.project_id as string;
@@ -29,6 +29,13 @@ export default function useClassLabels() {
       setActiveClassLabel(data[0]);
     }
   }, [data, setActiveClassLabel]);
+
+  // React Query에서 받아온 데이터를 Zustand로 처리
+  useEffect(() => {
+    if (data) {
+      initializeClassLabels(data);
+    }
+  }, [data, initializeClassLabels]);
 
   return { isLoading, isError, data };
 }

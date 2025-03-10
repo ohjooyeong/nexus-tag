@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { temporal } from 'zundo';
 import { devtools } from 'zustand/middleware';
 import shortid from 'shortid';
-import { ImageLabel } from '../_types/image-label';
+import { ImageLabel } from '../../_types/image-label';
 import { useLabelSyncStore } from './label-sync-store';
 
 // State 타입
@@ -21,6 +21,10 @@ interface Actions {
     undoGroup?: string,
   ) => void;
   setCurrentGroup: (group?: string) => void;
+  getLabels: () => ImageLabel[];
+  getAvaliableLabels: () => ImageLabel[];
+  getLabelsMap: () => Record<string, ImageLabel>;
+  getVisibleLabels: () => ImageLabel[];
 }
 
 // 전체 Store 타입
@@ -127,7 +131,28 @@ export const useLabelsStore = create<LabelsState>()(
             return { labels: newLabels };
           });
         },
+
+        getLabels: () => {
+          return Object.values(get().labels);
+        },
+
+        getAvaliableLabels: () => {
+          return Object.values(get().labels).filter(
+            (label) => !label.isDeleted,
+          );
+        },
+
+        getLabelsMap: () => {
+          return get().labels;
+        },
+
+        getVisibleLabels: () => {
+          return Object.values(get().labels)
+            .filter((label) => !label.isDeleted)
+            .sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+        },
       }),
+
       {
         partialize: (state: LabelsState): State => ({
           labels: state.labels,

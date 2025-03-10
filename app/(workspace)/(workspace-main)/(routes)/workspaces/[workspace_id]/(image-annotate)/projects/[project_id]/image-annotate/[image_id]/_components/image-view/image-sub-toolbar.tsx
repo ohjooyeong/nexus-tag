@@ -13,21 +13,10 @@ const ImageSubToolbar = () => {
     setToolId(Tool.Selection);
   };
 
-  const renderBboxToolbar = () => (
-    <Button
-      className="w-8 h-8 text-gray-800 hover:text-blue-500"
-      variant={'ghost'}
-      size={'icon'}
-      onClick={handleBackToSelection}
-    >
-      <ChevronLeft className="w-8 h-8" />
-    </Button>
-  );
-
   const renderToolbarContent = () => {
     switch (currentTool) {
       case Tool.Bbox:
-        return renderBboxToolbar();
+        return null;
       default:
         return null;
     }
@@ -35,6 +24,16 @@ const ImageSubToolbar = () => {
 
   return (
     <div className="h-[52px] flex items-center overflow-hidden relative px-2">
+      {currentTool !== Tool.Selection && (
+        <Button
+          className="w-8 h-8 text-gray-800 hover:text-blue-500"
+          variant={'ghost'}
+          size={'icon'}
+          onClick={handleBackToSelection}
+        >
+          <ChevronLeft className="w-8 h-8" />
+        </Button>
+      )}
       {renderToolbarContent()}
     </div>
   );

@@ -1,6 +1,6 @@
 import axiosInstance from '@/config/axios-instance';
 import { useQuery } from '@tanstack/react-query';
-import { useLabelsStore } from '../_store/labels-store';
+import { useLabelsStore } from '../_store/label-collection/labels-store';
 import { labelsQueries } from '@/constants/querykey-factory';
 import { useParams } from 'next/navigation';
 import { useEffect } from 'react';

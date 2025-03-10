@@ -103,7 +103,7 @@ const ImageView = ({
     if (scale === undefined) return;
 
     setZoom(scale);
-  }, []);
+  }, [setZoom]);
 
   useEffect(() => {
     minScaleRef.current = getMinScale();
@@ -328,7 +328,7 @@ const ImageView = ({
         setEnabledPanning(true);
       }
     },
-    [],
+    [setEnabledPanning],
   );
 
   const handleMiddleMouseButtonUp = useCallback(
@@ -337,20 +337,20 @@ const ImageView = ({
         setEnabledPanning(false);
       }
     },
-    [],
+    [setEnabledPanning],
   );
 
   const handleMiddleMouseButtonLeave = useCallback(() => {
     if (panningEnabled) setEnabledPanning(false);
-  }, [panningEnabled]);
+  }, [panningEnabled, setEnabledPanning]);
 
   const processedLabelsTree = useMemo(() => {
     stageRef.current?.getStage().batchDraw();
     const tree = new MyRBush();
-    // TO DO: 라벨에 대한 트리구조를 만들어서 반환하도록 추가해야함
+    tree.load(labels);
 
     return tree;
-  }, []);
+  }, [labels]);
 
   const canvasDimensions = useMemo<CanvasDimensions>(
     () => ({

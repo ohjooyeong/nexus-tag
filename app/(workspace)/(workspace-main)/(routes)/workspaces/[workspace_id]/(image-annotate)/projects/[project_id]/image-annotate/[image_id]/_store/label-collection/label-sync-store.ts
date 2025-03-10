@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { ImageLabel } from '../_types/image-label';
+import { ImageLabel } from '../../_types/image-label';
 import { useLabelsStore } from './labels-store';
 import axiosInstance from '@/config/axios-instance';
 

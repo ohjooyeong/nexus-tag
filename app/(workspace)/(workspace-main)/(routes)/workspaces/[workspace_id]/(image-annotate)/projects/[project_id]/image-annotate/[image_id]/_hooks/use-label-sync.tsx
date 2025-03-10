@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useLabelSyncStore } from '../_store/label-sync-store';
+import { useLabelSyncStore } from '../_store/label-collection/label-sync-store';
 import { useEffect } from 'react';
 
 export default function useLabelSync() {

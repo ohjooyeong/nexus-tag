@@ -9,7 +9,7 @@ import { usePanningStore } from '../../_store/panning-store';
 import { useImageClamping } from '../../_provider/image-clamping-context-provider';
 import { getStagePointerCoordinatesSnappedToPixel } from '../../_helpers/image-view/common.helpers';
 import { Bbox } from '../../_types/types';
-import { useLabelsStore } from '../../_store/labels-store';
+import { useLabelsStore } from '../../_store/label-collection/labels-store';
 import { v4 as uuidv4 } from 'uuid';
 import { useClassLabelStore } from '../../_store/class-label-store';
 import { KonvaEventObject } from 'konva/lib/Node';
@@ -187,7 +187,7 @@ const BboxTool = ({ width, height }: BboxToolProps) => {
           fill={`${BBOX_FILL_COLOR}33`}
           stroke={BBOX_STROKE_COLOR}
           strokeWidth={2}
-          dash={[10, 10]}
+          dash={[7, 3]}
         />
       )}
     </Layer>

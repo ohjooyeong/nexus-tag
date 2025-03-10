@@ -10,6 +10,7 @@ import useDataItem from '../../_hooks/use-data-item';
 import { useParams } from 'next/navigation';
 import { useZoomStore } from '../../_store/zoom-store';
 import { useInitialLabels } from '../../_hooks/use-labels';
+import { useLabelsStore } from '../../_store/label-collection/labels-store';
 
 const ImageViewContainer = () => {
   const [imageObjectId, setImageObjectId] = useState(0);
@@ -22,6 +23,9 @@ const ImageViewContainer = () => {
 
   const { setZoom } = useZoomStore();
   const { processAndStoreImage } = useImageStore();
+  const { getLabels } = useLabelsStore();
+
+  const labels = getLabels();
 
   const handleResetStore = () => {
     setZoom(1);
@@ -56,7 +60,7 @@ const ImageViewContainer = () => {
                 containerWidth={width}
                 containerHeight={height}
                 imageObjectId={imageObjectId}
-                labels={[]}
+                labels={labels}
               />
             )}
           </div>
