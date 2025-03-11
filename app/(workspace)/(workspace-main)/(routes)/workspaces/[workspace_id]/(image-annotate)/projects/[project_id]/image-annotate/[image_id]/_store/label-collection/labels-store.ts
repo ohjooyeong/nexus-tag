@@ -25,6 +25,7 @@ interface Actions {
   getAvaliableLabels: () => ImageLabel[];
   getLabelsMap: () => Record<string, ImageLabel>;
   getVisibleLabels: () => ImageLabel[];
+  getLabelCountByClassId: (classId: string) => number;
 }
 
 // 전체 Store 타입
@@ -150,6 +151,13 @@ export const useLabelsStore = create<LabelsState>()(
           return Object.values(get().labels)
             .filter((label) => !label.isDeleted)
             .sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+        },
+
+        getLabelCountByClassId: (classId: string) => {
+          const labels = Object.values(get().labels);
+          return labels.filter(
+            (label) => !label.isDeleted && label.classLabelId === classId,
+          ).length;
         },
       }),
 

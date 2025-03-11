@@ -41,6 +41,7 @@ import {
   alwaysOnTopLayerName,
 } from '../always-on-top/always-on-top';
 import { useSelectedLabelsStore } from '../../_store/label-collection/selected-labels-store';
+import { MID_BLUE } from '../../_constants/colors';
 
 type ImageViewProps = {
   labels: ImageLabel[];
@@ -410,7 +411,7 @@ const ImageView = ({
                       resetSelection();
                     }}
                     strokeWidth={3}
-                    stroke={'#2E6FF2'}
+                    stroke={MID_BLUE}
                     strokeScaleEnabled={false}
                     alt="image"
                   />

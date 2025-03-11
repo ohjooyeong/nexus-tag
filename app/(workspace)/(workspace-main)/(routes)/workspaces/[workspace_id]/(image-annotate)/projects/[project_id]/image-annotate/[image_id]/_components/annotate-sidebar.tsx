@@ -30,12 +30,14 @@ import {
 import { useParams } from 'next/navigation';
 import { useToolStore } from '../_store/tool-store';
 import { Tool } from '../_types/types';
+import { cn } from '@/lib/utils';
 
 export function AnnotateSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const { project_id: projectId, workspace_id: workspaceId } = useParams();
-  const { setToolId } = useToolStore();
+  const { setToolId, getToolId } = useToolStore();
+  const activeToolId = getToolId();
 
   const data = React.useMemo(
     () => ({
@@ -49,6 +51,7 @@ export function AnnotateSidebar({
               url: '#',
               icon: HandIcon,
               isDisable: false,
+              keyword: Tool.Pan,
               event: () => setToolId(Tool.Pan),
             },
             {
@@ -56,6 +59,7 @@ export function AnnotateSidebar({
               url: '#',
               icon: MousePointer,
               isDisable: false,
+              keyword: Tool.Selection,
               event: () => setToolId(Tool.Selection),
             },
           ],
@@ -80,6 +84,7 @@ export function AnnotateSidebar({
               title: 'Polygon',
               url: '#',
               icon: Pentagon,
+              keyword: Tool.Polygon,
               isDisable: false,
               event: () => setToolId(Tool.Polygon),
             },
@@ -87,6 +92,7 @@ export function AnnotateSidebar({
               title: 'Bounding Box',
               url: '#',
               icon: Square,
+              keyword: Tool.Bbox,
               isDisable: false,
               event: () => setToolId(Tool.Bbox),
             },
@@ -94,6 +100,7 @@ export function AnnotateSidebar({
               title: 'Brush',
               url: '#',
               icon: BrushIcon,
+              keyword: Tool.Mask,
               isDisable: false,
               event: () => setToolId(Tool.Mask),
             },
@@ -146,15 +153,36 @@ export function AnnotateSidebar({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <SidebarMenuButton
-                          className="w-full h-10 flex items-center justify-center border rounded-lg"
+                          className={cn(
+                            'w-full h-10 flex items-center justify-center border rounded-lg',
+                            'keyword' in item &&
+                              item.keyword === activeToolId &&
+                              'bg-slate-200 hover:bg-slate-200',
+                          )}
                           disabled={item.isDisable}
                           onClick={() => {
+                            if (
+                              'keyword' in item &&
+                              activeToolId === item.keyword
+                            ) {
+                              setToolId(Tool.Selection);
+                              return;
+                            }
+
                             if ('event' in item) {
                               item.event();
+                              return;
                             }
                           }}
                         >
-                          <item.icon className="w-full h-10" />
+                          <item.icon
+                            className={cn(
+                              'w-full h-10',
+                              'keyword' in item &&
+                                item.keyword === activeToolId &&
+                                'text-blue-600',
+                            )}
+                          />
                         </SidebarMenuButton>
                       </TooltipTrigger>
                       <TooltipContent side="right">{item.title}</TooltipContent>

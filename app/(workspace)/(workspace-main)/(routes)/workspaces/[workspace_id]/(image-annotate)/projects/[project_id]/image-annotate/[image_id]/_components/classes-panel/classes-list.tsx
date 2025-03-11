@@ -50,11 +50,11 @@ const ClassesList = ({
     setIsHideSemanticClasses((prev) => !prev);
   };
 
-  const filteredObjectLabels = filteredClassLabels?.filter(
+  const filteredObjectClassLabels = filteredClassLabels?.filter(
     (label) => label.type === 'OBJECT',
   );
 
-  const filteredSemanticLabels = filteredClassLabels?.filter(
+  const filteredSemanticClassLabels = filteredClassLabels?.filter(
     (label) => label.type === 'SEMANTIC',
   );
 
@@ -133,13 +133,13 @@ const ClassesList = ({
             </div>
             <CollapsibleContent className="py-2 max-h-80 overflow-auto z-50">
               {!isLoading &&
-                (filteredObjectLabels?.length === 0 ? (
+                (filteredObjectClassLabels?.length === 0 ? (
                   <div className="flex justify-center text-sm text-gray-500 p-1 bg-slate-100 rounded-sm">
                     {'No Labels'}
                   </div>
                 ) : (
-                  filteredObjectLabels.map((label) => (
-                    <ClassesCard key={label.id} label={label} />
+                  filteredObjectClassLabels.map((classLabel) => (
+                    <ClassesCard key={classLabel.id} classLabel={classLabel} />
                   ))
                 ))}
             </CollapsibleContent>
@@ -215,13 +215,13 @@ const ClassesList = ({
             </div>
             <CollapsibleContent className="py-2 max-h-80 overflow-auto z-50">
               {!isLoading &&
-                (filteredSemanticLabels?.length === 0 ? (
+                (filteredSemanticClassLabels?.length === 0 ? (
                   <div className="flex justify-center text-sm text-gray-500 p-1 bg-slate-100 rounded-sm">
                     {'No Labels'}
                   </div>
                 ) : (
-                  filteredSemanticLabels.map((label) => (
-                    <ClassesCard key={label.id} label={label} />
+                  filteredSemanticClassLabels.map((classLabel) => (
+                    <ClassesCard key={classLabel.id} classLabel={classLabel} />
                   ))
                 ))}
             </CollapsibleContent>

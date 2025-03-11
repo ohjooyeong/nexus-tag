@@ -17,15 +17,16 @@ const ImageViewContainer = () => {
   const { width, height, ref } = useResizeDetector({});
   const { image_id: imageId } = useParams();
 
+  // 라벨 초기화
   useInitialLabels();
 
   const { data: dataItem } = useDataItem();
 
   const { setZoom } = useZoomStore();
   const { processAndStoreImage } = useImageStore();
-  const { getLabels } = useLabelsStore();
+  const { getAvaliableLabels } = useLabelsStore();
 
-  const labels = getLabels();
+  const labels = getAvaliableLabels();
 
   const handleResetStore = () => {
     setZoom(1);

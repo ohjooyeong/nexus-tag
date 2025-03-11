@@ -14,16 +14,19 @@ import UpdateClassLabelDialog from '../dialog/update-classes-dialog';
 import { cn } from '@/lib/utils';
 import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 import { useClassLabelStore } from '../../_store/class-label-store';
+import { useLabelsStore } from '../../_store/label-collection/labels-store';
 
 type ClassesCardProps = {
-  label: LabelClass;
+  classLabel: LabelClass;
 };
 
-const ClassesCard = ({ label }: ClassesCardProps) => {
+const ClassesCard = ({ classLabel }: ClassesCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isHide, setIsHide] = useState(false);
   const [showLabelDialog, setShowLabelDialog] = useState(false);
   const { setActiveClassLabel, getActiveClassLabelId } = useClassLabelStore();
+  const { getLabelCountByClassId } = useLabelsStore();
+  const labelCount = getLabelCountByClassId(classLabel.id);
 
   const { data: currentMyRole } = useWorkspaceMyRole();
 
@@ -45,10 +48,11 @@ const ClassesCard = ({ label }: ClassesCardProps) => {
         size="icon"
         className={cn(
           'w-7 h-7 rounded-none hover:bg-blue-600 hover:bg-opacity-20',
-          getActiveClassLabelId() === label.id && 'bg-blue-600 bg-opacity-20',
+          getActiveClassLabelId() === classLabel.id &&
+            'bg-blue-600 bg-opacity-20',
         )}
         onClick={() => {
-          setActiveClassLabel(label);
+          setActiveClassLabel(classLabel);
         }}
       >
         <DiameterIcon className="w-3 h-3" />
@@ -56,13 +60,13 @@ const ClassesCard = ({ label }: ClassesCardProps) => {
       <label
         aria-label="classes color"
         className={'ml-2 w-4 h-4 rounded-[4px] relative opacity-60'}
-        style={{ background: `${label.color}` }}
+        style={{ background: `${classLabel.color}` }}
       />
       <div className="flex-1 ml-2">
         <div className="flex justify-between items-center relative">
           <div className="w-40 flex items-center">
             <p className="text-xs font-normal overflow-hidden text-ellipsis whitespace-nowrap">
-              {label.name}
+              {classLabel.name}
             </p>
           </div>
           {isHovered ? (
@@ -104,7 +108,11 @@ const ClassesCard = ({ label }: ClassesCardProps) => {
               )}
             </div>
           ) : (
-            <p className="text-xs text-gray-400 mr-1">{`(0 labels)`}</p>
+            <p className="text-xs text-gray-400 mr-1">
+              {`(`}
+              {labelCount}
+              {labelCount === 1 ? ` label)` : ` labels)`}
+            </p>
           )}
         </div>
       </div>
@@ -114,7 +122,7 @@ const ClassesCard = ({ label }: ClassesCardProps) => {
           onClose={() => {
             setShowLabelDialog(false);
           }}
-          currentClassLabel={label}
+          currentClassLabel={classLabel}
         />
       )}
     </div>
