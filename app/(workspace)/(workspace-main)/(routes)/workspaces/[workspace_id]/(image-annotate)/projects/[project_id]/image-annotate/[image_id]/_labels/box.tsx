@@ -7,7 +7,7 @@ import { ImageLabel } from '../_types/image-label';
 import { useKonvaStage } from '../_provider/konva-stage-context-provider';
 import { useCanvasDimensions } from '../_provider/canvas-dimensions-context-provider';
 import { useLabelsStore } from '../_store/label-collection/labels-store';
-import CursorCrosshair from './cursor-crosshair';
+import CursorCrosshair from '../_components/cursor/cursor-crosshair';
 
 type BoxProps = {
   absoluteScale: number;
@@ -58,7 +58,8 @@ const Box = ({
   useEffect(() => {
     if (resizable && bboxRef.current && transformRef.current) {
       transformRef.current.attachTo(bboxRef.current);
-      transformRef.current?.getLayer()?.batchDraw();
+
+      transformRef.current.getLayer()?.batchDraw();
     } else {
       transformRef.current?.detach();
     }

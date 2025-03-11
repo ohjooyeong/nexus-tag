@@ -9,7 +9,7 @@ import {
 } from 'react';
 import debounce from 'lodash/debounce';
 import { Stage as StageType } from 'konva/lib/Stage';
-import { Image, Layer, Stage } from 'react-konva';
+import { Group, Image, Layer, Stage } from 'react-konva';
 import Konva from 'konva';
 
 import { MyRBush } from '../../_helpers/image-view/data.helpers';
@@ -36,6 +36,11 @@ import {
 import { useToolStore } from '../../_store/tool-store';
 import { Tool } from '../../_types/types';
 import BboxTool from '../../_tools/bbox-tool/bbox-tool';
+import {
+  alwaysOnTopGroupName,
+  alwaysOnTopLayerName,
+} from '../always-on-top/always-on-top';
+import { useSelectedLabelsStore } from '../../_store/label-collection/selected-labels-store';
 
 type ImageViewProps = {
   labels: ImageLabel[];
@@ -56,6 +61,7 @@ const ImageView = ({
   const { getToolId } = useToolStore();
   const toolId = getToolId();
   const { getEnabledPanning, setEnabledPanning } = usePanningStore();
+  const { resetSelection } = useSelectedLabelsStore();
   const panningEnabled = getEnabledPanning();
 
   const imageData = useMemo(
@@ -400,6 +406,9 @@ const ImageView = ({
                     image={imageObject}
                     width={imageWidth}
                     height={imageHeight}
+                    onClick={() => {
+                      resetSelection();
+                    }}
                     strokeWidth={3}
                     stroke={'#2E6FF2'}
                     strokeScaleEnabled={false}
@@ -412,6 +421,10 @@ const ImageView = ({
                     groupRef={groupRef}
                   />
                 )}
+                {/* 라벨 선택 시 하얀 라인 위로 올리게 하는 레이어 */}
+                <Layer name={alwaysOnTopLayerName}>
+                  <Group name={alwaysOnTopGroupName} />
+                </Layer>
                 {toolId === Tool.Bbox && (
                   <BboxTool width={width} height={height} />
                 )}

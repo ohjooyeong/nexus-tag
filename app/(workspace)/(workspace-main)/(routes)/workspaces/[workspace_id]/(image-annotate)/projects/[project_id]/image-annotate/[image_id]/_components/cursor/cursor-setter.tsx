@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useKonvaStage } from '../_provider/konva-stage-context-provider';
-import { builtInCursors, customCursors } from '../_constants/cursors';
+import { useKonvaStage } from '../../_provider/konva-stage-context-provider';
+import { builtInCursors, customCursors } from '../../_constants/cursors';
 
 type CustomCursorKey = keyof typeof customCursors;
 

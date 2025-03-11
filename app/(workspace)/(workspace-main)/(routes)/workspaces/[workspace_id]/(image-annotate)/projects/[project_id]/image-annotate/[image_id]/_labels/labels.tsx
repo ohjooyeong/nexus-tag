@@ -20,8 +20,6 @@ type LabelsProps = {
 };
 
 const Labels = ({ processedLabelsTree, groupRef }: LabelsProps) => {
-  const layerRef = useRef<any>(null);
-
   const { absoluteScale, imageHeight, imageWidth } = useCanvasDimensions();
 
   const { classLabels, isClassLabelHidden } = useClassLabelStore();
@@ -29,6 +27,7 @@ const Labels = ({ processedLabelsTree, groupRef }: LabelsProps) => {
 
   const labelsMap = getLabelsMap();
 
+  const layerRef = useRef<any>(null);
   const lastDragPositionStartRef = useRef({ x: 0, y: 0 });
 
   useLayoutEffect(() => {
@@ -66,9 +65,6 @@ const Labels = ({ processedLabelsTree, groupRef }: LabelsProps) => {
   const handleDragEnd = useCallback(
     (e: KonvaEventObject<MouseEvent | TouchEvent>) => {
       if (!e.evt) {
-        // When the draggable prop changes, Konva does something weird:
-        // it cleanups the drag events and calls dragend even if there was no drag
-        // causing polygon's bbox and points to be out of sync and show in the wrong position.
         return;
       }
 

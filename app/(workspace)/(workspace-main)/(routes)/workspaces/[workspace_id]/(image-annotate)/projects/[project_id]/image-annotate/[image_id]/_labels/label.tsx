@@ -21,8 +21,9 @@ import Konva from 'konva';
 import { getBboxDimensions } from '../_helpers/image-view/common.helpers';
 import Box from './box';
 import { DRAG_DISTANCE } from '../_constants/constants';
-import CursorSetter from './cursor-setter';
+import CursorSetter from '../_components/cursor/cursor-setter';
 import chroma from 'chroma-js';
+import AlwaysOnTop from '../_components/always-on-top/always-on-top';
 
 type LabelProps = {
   label: ImageLabel;
@@ -54,9 +55,12 @@ const Label = ({ label, labelClass, onDragStart, onDragEnd }: LabelProps) => {
   const panningEnabled = getEnabledPanning();
   const isSelection = activeToolId === Tool.Selection;
   const selected = isLabelSelected(label.id);
-  const draggable = activeToolId !== Tool.Pan && !panningEnabled && !selected;
-  const classLabelHovered = isClassLabelHovered(label.classLabelId!);
   const exclusivelySelected = isLabelSingleSelected(label.id);
+  const draggable =
+    activeToolId !== Tool.Pan &&
+    !panningEnabled &&
+    (exclusivelySelected || !selected);
+  const classLabelHovered = isClassLabelHovered(label.classLabelId!);
 
   const timeoutRef = useRef<number | null>(null);
 
@@ -183,8 +187,14 @@ const Label = ({ label, labelClass, onDragStart, onDragEnd }: LabelProps) => {
 
   return (
     <>
-      {hovered ? <CursorSetter cursor="pointer" /> : null}
-      {LabelComponent}
+      <AlwaysOnTop
+        name={`aot_${label.id}`}
+        key={`aot_${label.id}`}
+        enabled={(selected && isDragged) || exclusivelySelected}
+      >
+        {hovered ? <CursorSetter cursor="pointer" /> : null}
+        {LabelComponent}
+      </AlwaysOnTop>
     </>
   );
 };

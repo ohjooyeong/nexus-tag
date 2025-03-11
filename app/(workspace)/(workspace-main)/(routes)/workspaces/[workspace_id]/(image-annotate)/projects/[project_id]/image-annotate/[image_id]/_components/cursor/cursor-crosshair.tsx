@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Line } from 'react-konva';
-import { useKonvaStage } from '../_provider/konva-stage-context-provider';
-import { useCanvasDimensions } from '../_provider/canvas-dimensions-context-provider';
-import { getStagePointerCoordinatesSnappedToPixel } from '../_helpers/image-view/common.helpers';
-import { StageScaleProvider } from '../_provider/stage-scale-provider';
+import { useKonvaStage } from '../../_provider/konva-stage-context-provider';
+import { useCanvasDimensions } from '../../_provider/canvas-dimensions-context-provider';
+import { getStagePointerCoordinatesSnappedToPixel } from '../../_helpers/image-view/common.helpers';
+import { StageScaleProvider } from '../../_provider/stage-scale-provider';
 
 const CursorCrosshair = () => {
   const { imageHeight, imageWidth, absoluteScale } = useCanvasDimensions();
