@@ -42,6 +42,7 @@ import {
 } from '../always-on-top/always-on-top';
 import { useSelectedLabelsStore } from '../../_store/label-collection/selected-labels-store';
 import { MID_BLUE } from '../../_constants/colors';
+import Panning from '../../_tools/panning/panning';
 
 type ImageViewProps = {
   labels: ImageLabel[];
@@ -429,6 +430,7 @@ const ImageView = ({
                 {toolId === Tool.Bbox && (
                   <BboxTool width={width} height={height} />
                 )}
+                {panningEnabled && <Panning width={width} height={height} />}
               </ImageClampingContextProvider>
             </CanvasDimensionsContextProvider>
           </KonvaStageContextProvider>
