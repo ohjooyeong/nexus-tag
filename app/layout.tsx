@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${pretendard.className}`}>
+      <body className={`${pretendard.className}`} suppressHydrationWarning>
         <ReactQueryProviders>
           <ThemeProvider
             attribute="class"

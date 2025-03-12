@@ -43,6 +43,7 @@ import {
 import { useSelectedLabelsStore } from '../../_store/label-collection/selected-labels-store';
 import { MID_BLUE } from '../../_constants/colors';
 import Panning from '../../_tools/panning/panning';
+import Selection from '../../_tools/selection/selection';
 
 type ImageViewProps = {
   labels: ImageLabel[];
@@ -417,6 +418,14 @@ const ImageView = ({
                     alt="image"
                   />
                 </Layer>
+                {toolId === Tool.Selection && (
+                  <Selection
+                    width={width}
+                    height={height}
+                    labels={labels}
+                    processedLabelsTree={processedLabelsTree}
+                  />
+                )}
                 {imageLoaded && (
                   <Labels
                     processedLabelsTree={processedLabelsTree}

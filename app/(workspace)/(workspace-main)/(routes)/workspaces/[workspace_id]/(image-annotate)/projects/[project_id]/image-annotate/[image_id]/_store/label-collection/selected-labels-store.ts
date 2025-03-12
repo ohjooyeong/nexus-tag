@@ -3,16 +3,18 @@ import { ImageLabel } from '../../_types/image-label';
 
 interface State {
   selectedLabelIds: Set<string>;
+  selectedLabelIdsArray: string[];
 }
 
 interface Actions {
   deselectLabels: (labelIds: string[]) => void;
   setSelectedLabelIds: (labelIds: string[]) => void;
+  getSelectedLabelIds: () => string[];
+
   toggleLabelSelection: (labelId: string) => void;
 
   selectAllLabels: (labels: Record<string, ImageLabel>) => void;
   resetSelection: () => void;
-  getSelectedLabelIds: () => string[];
   isLabelSelected: (labelId: string) => boolean;
   isLabelSingleSelected: (labelId: string) => boolean;
 }
@@ -22,6 +24,7 @@ type SelectedLabelsState = State & Actions;
 export const useSelectedLabelsStore = create<SelectedLabelsState>(
   (set, get) => ({
     selectedLabelIds: new Set<string>(),
+    selectedLabelIdsArray: [],
 
     deselectLabels: (labelIds) => {
       set((state) => {
@@ -36,10 +39,13 @@ export const useSelectedLabelsStore = create<SelectedLabelsState>(
         if (state.selectedLabelIds.size === 0 && labelIds.length === 0) {
           return state;
         }
-        return { selectedLabelIds: new Set(labelIds) };
+        const newSet = new Set(labelIds);
+        return {
+          selectedLabelIds: newSet,
+          selectedLabelIdsArray: Array.from(newSet),
+        };
       });
     },
-
     toggleLabelSelection: (labelId) => {
       set((state) => {
         const newSelectedLabelIds = new Set(state.selectedLabelIds);
@@ -63,8 +69,10 @@ export const useSelectedLabelsStore = create<SelectedLabelsState>(
       set({ selectedLabelIds: new Set() });
     },
 
+    // 값을 가져올 때 Array.from으로 매번 변환하는 건 비효율적이고,
+    // useEffect에 사용 후 값을 deps에 넣을 때 무한 렌더링이 발생해서 수정
     getSelectedLabelIds: () => {
-      return Array.from(get().selectedLabelIds);
+      return get().selectedLabelIdsArray;
     },
 
     isLabelSelected: (labelId) => {

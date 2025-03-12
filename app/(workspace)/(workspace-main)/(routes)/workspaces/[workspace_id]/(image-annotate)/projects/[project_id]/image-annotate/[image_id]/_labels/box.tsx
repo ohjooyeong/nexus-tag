@@ -57,11 +57,10 @@ const Box = ({
 
   useEffect(() => {
     if (resizable && bboxRef.current && transformRef.current) {
-      transformRef.current.attachTo(bboxRef.current);
-
+      transformRef.current.nodes([bboxRef.current]); // attachTo 대신 nodes 사용
       transformRef.current.getLayer()?.batchDraw();
     } else {
-      transformRef.current?.detach();
+      transformRef.current?.nodes([]); // detach 대신 빈 배열 전달
     }
   }, [resizable, x, y, width, height]);
 
