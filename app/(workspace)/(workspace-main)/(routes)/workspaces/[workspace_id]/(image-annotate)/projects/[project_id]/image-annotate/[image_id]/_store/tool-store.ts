@@ -6,8 +6,9 @@ interface State {
 }
 
 interface Actions {
-  setToolId: (toolId: Tool) => void;
-  getToolId: () => Tool;
+  getActiveTool: () => Tool;
+  setActiveTool: (toolId: Tool) => void;
+  resetActiveTool: () => void;
 }
 
 type ToolState = State & Actions;
@@ -15,11 +16,15 @@ type ToolState = State & Actions;
 export const useToolStore = create<ToolState>((set, get) => ({
   toolId: Tool.Selection,
 
-  getToolId: () => {
+  getActiveTool: () => {
     return get().toolId;
   },
 
-  setToolId: (toolId: Tool) => {
+  setActiveTool: (toolId: Tool) => {
     set({ toolId });
+  },
+
+  resetActiveTool: () => {
+    set({ toolId: Tool.Selection });
   },
 }));

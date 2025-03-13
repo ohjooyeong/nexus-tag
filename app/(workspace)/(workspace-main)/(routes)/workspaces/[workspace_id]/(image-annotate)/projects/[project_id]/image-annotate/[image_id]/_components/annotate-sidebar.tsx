@@ -36,8 +36,8 @@ export function AnnotateSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
   const { project_id: projectId, workspace_id: workspaceId } = useParams();
-  const { setToolId, getToolId } = useToolStore();
-  const activeToolId = getToolId();
+  const { setActiveTool, getActiveTool } = useToolStore();
+  const activeToolId = getActiveTool();
 
   const data = React.useMemo(
     () => ({
@@ -52,7 +52,7 @@ export function AnnotateSidebar({
               icon: HandIcon,
               isDisable: false,
               keyword: Tool.Pan,
-              event: () => setToolId(Tool.Pan),
+              event: () => setActiveTool(Tool.Pan),
             },
             {
               title: 'Select & Drag',
@@ -60,7 +60,7 @@ export function AnnotateSidebar({
               icon: MousePointer,
               isDisable: false,
               keyword: Tool.Selection,
-              event: () => setToolId(Tool.Selection),
+              event: () => setActiveTool(Tool.Selection),
             },
           ],
         },
@@ -86,7 +86,7 @@ export function AnnotateSidebar({
               icon: Pentagon,
               keyword: Tool.Polygon,
               isDisable: false,
-              event: () => setToolId(Tool.Polygon),
+              event: () => setActiveTool(Tool.Polygon),
             },
             {
               title: 'Bounding Box',
@@ -94,7 +94,7 @@ export function AnnotateSidebar({
               icon: Square,
               keyword: Tool.Bbox,
               isDisable: false,
-              event: () => setToolId(Tool.Bbox),
+              event: () => setActiveTool(Tool.Bbox),
             },
             {
               title: 'Brush',
@@ -102,7 +102,7 @@ export function AnnotateSidebar({
               icon: BrushIcon,
               keyword: Tool.Mask,
               isDisable: false,
-              event: () => setToolId(Tool.Mask),
+              event: () => setActiveTool(Tool.Mask),
             },
           ],
         },
@@ -165,7 +165,7 @@ export function AnnotateSidebar({
                               'keyword' in item &&
                               activeToolId === item.keyword
                             ) {
-                              setToolId(Tool.Selection);
+                              setActiveTool(Tool.Selection);
                               return;
                             }
 

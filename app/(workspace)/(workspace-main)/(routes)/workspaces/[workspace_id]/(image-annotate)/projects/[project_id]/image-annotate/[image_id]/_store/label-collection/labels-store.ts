@@ -182,6 +182,8 @@ type TemporalState = {
     undo: () => void;
     redo: () => void;
     clear: () => void;
+    pastStates: unknown[];
+    futureStates: unknown[];
   };
 };
 
@@ -192,5 +194,7 @@ export const useLabelsHistory = () => {
     undo: temporal.undo,
     redo: temporal.redo,
     clear: temporal.clear,
+    canUndo: () => temporal.pastStates?.length > 0,
+    canRedo: () => temporal.futureStates?.length > 0,
   };
 };

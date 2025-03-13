@@ -8,10 +8,10 @@ import { useSelectedLabelsStore } from '../../_store/label-collection/selected-l
 import { useLabelsStore } from '../../_store/label-collection/labels-store';
 
 const ImageSubToolbar = () => {
-  const { setToolId, getToolId } = useToolStore();
+  const { setActiveTool, getActiveTool } = useToolStore();
   const { deleteLabels } = useLabelsStore();
   const { getSelectedLabelIds, resetSelection } = useSelectedLabelsStore();
-  const currentTool = getToolId();
+  const currentTool = getActiveTool();
   const selectedLabels = getSelectedLabelIds();
   const lenSelectedLabels = selectedLabels.length;
 
@@ -21,7 +21,7 @@ const ImageSubToolbar = () => {
   };
 
   const handleBackToSelection = () => {
-    setToolId(Tool.Selection);
+    setActiveTool(Tool.Selection);
   };
 
   const renderToolbarContent = () => {

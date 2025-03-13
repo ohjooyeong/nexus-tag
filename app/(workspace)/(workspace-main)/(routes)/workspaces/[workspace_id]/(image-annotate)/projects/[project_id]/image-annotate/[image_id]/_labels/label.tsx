@@ -34,7 +34,7 @@ type LabelProps = {
 
 const Label = ({ label, labelClass, onDragStart, onDragEnd }: LabelProps) => {
   const { absoluteScale } = useCanvasDimensions();
-  const { getToolId } = useToolStore();
+  const { getActiveTool } = useToolStore();
   const { getEnabledPanning } = usePanningStore();
   const {
     isLabelSelected,
@@ -51,7 +51,7 @@ const Label = ({ label, labelClass, onDragStart, onDragEnd }: LabelProps) => {
   const color = chroma(labelClass?.color ?? '#000000')
     .alpha(0.55)
     .hex();
-  const activeToolId = getToolId();
+  const activeToolId = getActiveTool();
   const panningEnabled = getEnabledPanning();
   const isSelection = activeToolId === Tool.Selection;
   const selected = isLabelSelected(label.id);

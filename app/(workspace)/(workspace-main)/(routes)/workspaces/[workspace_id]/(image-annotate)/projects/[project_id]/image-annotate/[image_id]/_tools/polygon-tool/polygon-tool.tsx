@@ -8,7 +8,10 @@ import {
 import { useCanvasDimensions } from '../../_provider/canvas-dimensions-context-provider';
 import { useKonvaStage } from '../../_provider/konva-stage-context-provider';
 import { useClassLabelStore } from '../../_store/class-label-store';
-import { useLabelsStore } from '../../_store/label-collection/labels-store';
+import {
+  useLabelsHistory,
+  useLabelsStore,
+} from '../../_store/label-collection/labels-store';
 import { usePanningStore } from '../../_store/panning-store';
 import { Polygon } from '../../_types/types';
 import { useLatest, useStateWithHistory, usePrevious } from 'react-use';
@@ -29,6 +32,8 @@ import {
   POTENTIAL_LABEL_FILL_COLOR,
   POTENTIAL_LABEL_STROKE_COLOR,
 } from '../../_constants/constants';
+import { HotkeysProvider, useHotkeys } from 'react-hotkeys-hook';
+import { useToolStore } from '../../_store/tool-store';
 
 type PolygonToolProps = {
   width: number;
@@ -49,6 +54,8 @@ const PolygonTool = ({ width, height }: PolygonToolProps) => {
   const { addLabels } = useLabelsStore();
   const { getActiveClassLabelId } = useClassLabelStore();
   const { getImageId } = useImageStore();
+  const { resetActiveTool } = useToolStore();
+  const { undo, redo, canUndo, canRedo } = useLabelsHistory();
 
   const activeClassLabelId = getActiveClassLabelId();
   const panningEnabled = getEnabledPanning();
@@ -191,54 +198,122 @@ const PolygonTool = ({ width, height }: PolygonToolProps) => {
     setValidVertexHoveredIndex(null);
   }, []);
 
+  useHotkeys(
+    'esc',
+    () => {
+      if (vertices.length) {
+        setVertices([]);
+      } else {
+        resetActiveTool();
+      }
+    },
+    { scopes: 'polygon-tool' },
+  );
+
+  useHotkeys(
+    'enter',
+    () => {
+      if (isPolygonValid(vertices)) {
+        doSubmit();
+      }
+    },
+    { scopes: 'polygon-tool' },
+  );
+
+  useHotkeys(
+    ['del', 'backspace'],
+    () => {
+      setVertices(
+        vertices.length ? vertices.slice(0, vertices.length - 1) : vertices,
+      );
+    },
+    { scopes: 'polygon-tool' },
+  );
+
+  useHotkeys(
+    'a',
+    () => {
+      addVertex();
+    },
+    { scopes: 'polygon-tool' },
+  );
+
+  useHotkeys(
+    ['mod+z', 'ctrl+z'],
+    () => {
+      if (verticesHistory.position === 0 && canUndo()) {
+        undo();
+      } else {
+        verticesHistory.back();
+      }
+    },
+    { scopes: 'polygon-tool' },
+  );
+
+  useHotkeys(
+    ['shift+mod+z', 'shift+ctrl+z'],
+    () => {
+      if (
+        verticesHistory.position === verticesHistory.history.length - 1 &&
+        canRedo()
+      ) {
+        redo();
+      } else {
+        verticesHistory.forward();
+      }
+    },
+    { scopes: 'polygon-tool' },
+  );
+
   return (
-    <Layer>
-      <Rect width={width} height={height} />
-      <CursorSetter cursor={panningEnabled ? 'grab' : 'edit'} />
-      <StageScaleProvider>
-        {(scale) => (
-          <>
-            {vertices.map((vertex, i) => (
-              <Circle
-                data-testid={`unfinishedPolygonPoint-${i}`}
-                onClick={(e) => handleVertexClick(i, e)}
-                onTap={(e) => handleVertexClick(i, e)}
-                onMouseEnter={() => handleVertexMouseEnter(i)}
-                onMouseLeave={handleVertexMouseLeave}
-                x={vertex[0] * absoluteScale}
-                y={vertex[1] * absoluteScale}
-                key={i}
-                radius={5 / scale}
-                fill={
-                  i === validVertexHoveredIndex
-                    ? EDIT_FILL_COLOR
-                    : POTENTIAL_LABEL_FILL_COLOR
-                }
-                stroke="white"
-                strokeWidth={2 / scale}
-              />
-            ))}
-            {vertices.length > 0 && showPotentialPoints && (
-              <Line
-                dash={[3 / scale, 3 / scale]}
-                points={potentialLinePoints.map((n) => n * absoluteScale)}
-                stroke={POTENTIAL_LABEL_STROKE_COLOR}
-                strokeWidth={1 / scale}
-              />
-            )}
-            {vertices.length > 1 && (
-              <Line
-                dash={[3 / scale, 3 / scale]}
-                points={polygonLinePoints.map((n) => n * absoluteScale)}
-                stroke={POTENTIAL_LABEL_STROKE_COLOR}
-                strokeWidth={1 / scale}
-              />
-            )}
-          </>
-        )}
-      </StageScaleProvider>
-      {showCrosshairs && !panningEnabled && <CursorCrosshair />}
-    </Layer>
+    <HotkeysProvider initiallyActiveScopes={['polygon-tool']}>
+      <Layer>
+        <Rect width={width} height={height} />
+        <CursorSetter cursor={panningEnabled ? 'grab' : 'edit'} />
+        <StageScaleProvider>
+          {(scale) => (
+            <>
+              {vertices.map((vertex, i) => (
+                <Circle
+                  data-testid={`unfinishedPolygonPoint-${i}`}
+                  onClick={(e) => handleVertexClick(i, e)}
+                  onMouseEnter={() => handleVertexMouseEnter(i)}
+                  onMouseLeave={handleVertexMouseLeave}
+                  x={vertex[0] * absoluteScale}
+                  y={vertex[1] * absoluteScale}
+                  key={i}
+                  radius={5 / scale}
+                  fill={
+                    i === validVertexHoveredIndex
+                      ? EDIT_FILL_COLOR
+                      : POTENTIAL_LABEL_FILL_COLOR
+                  }
+                  stroke="white"
+                  strokeWidth={2 / scale}
+                />
+              ))}
+              {vertices.length > 0 && showPotentialPoints && (
+                <Line
+                  dash={[3 / scale, 3 / scale]}
+                  points={potentialLinePoints.map((n) => n * absoluteScale)}
+                  stroke={POTENTIAL_LABEL_STROKE_COLOR}
+                  strokeWidth={1 / scale}
+                />
+              )}
+              {vertices.length > 1 && (
+                <Line
+                  dash={[3 / scale, 3 / scale]}
+                  points={polygonLinePoints.map((n) => n * absoluteScale)}
+                  stroke={POTENTIAL_LABEL_STROKE_COLOR}
+                  strokeWidth={1 / scale}
+                />
+              )}
+            </>
+          )}
+        </StageScaleProvider>
+        {showCrosshairs && !panningEnabled && <CursorCrosshair />}
+      </Layer>
+    </HotkeysProvider>
   );
 };
 
