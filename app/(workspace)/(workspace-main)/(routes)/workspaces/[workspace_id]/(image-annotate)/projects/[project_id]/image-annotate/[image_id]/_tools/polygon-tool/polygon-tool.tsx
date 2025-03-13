@@ -32,8 +32,9 @@ import {
   POTENTIAL_LABEL_FILL_COLOR,
   POTENTIAL_LABEL_STROKE_COLOR,
 } from '../../_constants/constants';
-import { HotkeysProvider, useHotkeys } from 'react-hotkeys-hook';
+import { HotkeysProvider } from 'react-hotkeys-hook';
 import { useToolStore } from '../../_store/tool-store';
+import { usePolygonToolShortcuts } from './use-polygon-tool-shortcuts';
 
 type PolygonToolProps = {
   width: number;
@@ -198,72 +199,18 @@ const PolygonTool = ({ width, height }: PolygonToolProps) => {
     setValidVertexHoveredIndex(null);
   }, []);
 
-  useHotkeys(
-    'esc',
-    () => {
-      if (vertices.length) {
-        setVertices([]);
-      } else {
-        resetActiveTool();
-      }
-    },
-    { scopes: 'polygon-tool' },
-  );
-
-  useHotkeys(
-    'enter',
-    () => {
-      if (isPolygonValid(vertices)) {
-        doSubmit();
-      }
-    },
-    { scopes: 'polygon-tool' },
-  );
-
-  useHotkeys(
-    ['del', 'backspace'],
-    () => {
-      setVertices(
-        vertices.length ? vertices.slice(0, vertices.length - 1) : vertices,
-      );
-    },
-    { scopes: 'polygon-tool' },
-  );
-
-  useHotkeys(
-    'a',
-    () => {
-      addVertex();
-    },
-    { scopes: 'polygon-tool' },
-  );
-
-  useHotkeys(
-    ['mod+z', 'ctrl+z'],
-    () => {
-      if (verticesHistory.position === 0 && canUndo()) {
-        undo();
-      } else {
-        verticesHistory.back();
-      }
-    },
-    { scopes: 'polygon-tool' },
-  );
-
-  useHotkeys(
-    ['shift+mod+z', 'shift+ctrl+z'],
-    () => {
-      if (
-        verticesHistory.position === verticesHistory.history.length - 1 &&
-        canRedo()
-      ) {
-        redo();
-      } else {
-        verticesHistory.forward();
-      }
-    },
-    { scopes: 'polygon-tool' },
-  );
+  usePolygonToolShortcuts({
+    vertices,
+    setVertices,
+    verticesHistory,
+    resetActiveTool,
+    doSubmit,
+    addVertex,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+  });
 
   return (
     <HotkeysProvider initiallyActiveScopes={['polygon-tool']}>
