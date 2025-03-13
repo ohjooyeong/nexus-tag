@@ -10,6 +10,7 @@ interface State {
   imageData: (ImageData | null)[];
   objectStorage: (any | null)[];
   currentImageObjectId: number | null;
+  imageId: string | null;
 }
 
 interface Actions {
@@ -20,6 +21,8 @@ interface Actions {
   clearStorage: () => void;
   releaseObject: (id: number) => void;
   processAndStoreImage: (imageUrl: string) => Promise<number>;
+  setImageId: (imageId: string) => void;
+  getImageId: () => string | null;
 }
 
 type ImageStore = State & Actions;
@@ -28,6 +31,15 @@ export const useImageStore = create<ImageStore>((set, get) => ({
   imageData: [null, null],
   objectStorage: [null],
   currentImageObjectId: null,
+  imageId: null,
+
+  setImageId: (imageId: string) => {
+    set({ imageId });
+  },
+
+  getImageId: () => {
+    return get().imageId;
+  },
 
   getImageData: (index = 0) => {
     return get().imageData[index] || null;

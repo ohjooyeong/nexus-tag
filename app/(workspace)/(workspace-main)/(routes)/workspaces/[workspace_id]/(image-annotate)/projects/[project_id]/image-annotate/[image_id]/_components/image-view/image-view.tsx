@@ -44,6 +44,7 @@ import { useSelectedLabelsStore } from '../../_store/label-collection/selected-l
 import { MID_BLUE } from '../../_constants/colors';
 import Panning from '../../_tools/panning/panning';
 import Selection from '../../_tools/selection/selection';
+import PolygonTool from '../../_tools/polygon-tool/polygon-tool';
 
 type ImageViewProps = {
   labels: ImageLabel[];
@@ -436,6 +437,9 @@ const ImageView = ({
                 <Layer name={alwaysOnTopLayerName}>
                   <Group name={alwaysOnTopGroupName} />
                 </Layer>
+                {toolId === Tool.Polygon && (
+                  <PolygonTool width={width} height={height} />
+                )}
                 {toolId === Tool.Bbox && (
                   <BboxTool width={width} height={height} />
                 )}

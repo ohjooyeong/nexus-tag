@@ -23,7 +23,7 @@ const ImageViewContainer = () => {
   const { data: dataItem } = useDataItem();
 
   const { setZoom } = useZoomStore();
-  const { processAndStoreImage } = useImageStore();
+  const { processAndStoreImage, setImageId } = useImageStore();
   const { getAvaliableLabels } = useLabelsStore();
 
   const labels = getAvaliableLabels();
@@ -49,6 +49,12 @@ const ImageViewContainer = () => {
 
     loadImage();
   }, [dataItem, processAndStoreImage, imageId]);
+
+  useEffect(() => {
+    if (imageId) {
+      setImageId(imageId as string);
+    }
+  }, [imageId, setImageId]);
 
   return (
     <>
