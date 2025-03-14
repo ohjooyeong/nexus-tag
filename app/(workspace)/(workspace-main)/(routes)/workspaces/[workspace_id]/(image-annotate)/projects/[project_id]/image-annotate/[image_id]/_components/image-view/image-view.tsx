@@ -45,6 +45,7 @@ import { MID_BLUE } from '../../_constants/colors';
 import Panning from '../../_tools/panning/panning';
 import Selection from '../../_tools/selection/selection';
 import PolygonTool from '../../_tools/polygon-tool/polygon-tool';
+import MaskTool from '../../_tools/mask-tool/mask-tool';
 
 type ImageViewProps = {
   labels: ImageLabel[];
@@ -59,14 +60,15 @@ const ImageView = ({
   containerWidth,
   containerHeight,
 }: ImageViewProps) => {
-  const { getImageData, getObject } = useImageStore();
+  const { getImageData, getObject, getImageId } = useImageStore();
   const { setZoom, getZoom } = useZoomStore();
-  const currentZoom = getZoom();
   const { getActiveTool } = useToolStore();
-  const toolId = getActiveTool();
   const { getEnabledPanning, setEnabledPanning } = usePanningStore();
   const { resetSelection } = useSelectedLabelsStore();
+  const toolId = getActiveTool();
+  const currentZoom = getZoom();
   const panningEnabled = getEnabledPanning();
+  const imageId = getImageId();
 
   const imageData = useMemo(
     () => getImageData() || { width: 1, height: 1 },
@@ -439,6 +441,14 @@ const ImageView = ({
                 </Layer>
                 {toolId === Tool.Polygon && (
                   <PolygonTool width={width} height={height} />
+                )}
+                {toolId === Tool.Mask && (
+                  <MaskTool
+                    key={imageId}
+                    width={imageWidth}
+                    height={imageHeight}
+                    labels={labels}
+                  />
                 )}
                 {toolId === Tool.Bbox && (
                   <BboxTool width={width} height={height} />

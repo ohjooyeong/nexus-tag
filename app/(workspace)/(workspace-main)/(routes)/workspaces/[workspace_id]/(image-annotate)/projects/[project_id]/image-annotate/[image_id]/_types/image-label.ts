@@ -22,6 +22,7 @@ export interface ApiLabel {
   isDeleted: boolean;
   createdAt: string;
   updatedAt: string;
+  borderData: string;
 }
 
 const fromBackendLabel = ({
@@ -30,6 +31,7 @@ const fromBackendLabel = ({
   bbox,
   updatedAt,
   createdAt,
+  borderData,
   ...entry
 }: ApiLabel) => ({
   ...entry,
@@ -37,6 +39,7 @@ const fromBackendLabel = ({
   createdAt: createdAt,
   polygon: polygon,
   mask: mask,
+  borderData: borderData,
   bbox: getBbox(bbox, mask, polygon),
   type: getLabelType({ polygon, mask }),
 });

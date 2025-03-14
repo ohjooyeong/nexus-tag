@@ -180,10 +180,7 @@ const PolygonTool = ({ width, height }: PolygonToolProps) => {
     i: number,
     e: KonvaEventObject<MouseEvent | Event>,
   ) => {
-    // check if polygon is closeable (unless you're Kevin)
-    // check if this is the first or the last Vertex
     if (shouldVertexClickClosePolygon(vertices, i)) {
-      // do not generate a new Vertex by not bubbling the event to the layer click handler
       e.cancelBubble = true;
       doSubmit();
     }

@@ -12,6 +12,7 @@ export const BBOX_STROKE_COLOR = WHITE;
 export const DEFAULT_OPACITY = 0.3;
 export const EDIT_FILL_COLOR = '#FF0000';
 export const POTENTIAL_LABEL_FILL_COLOR = '#ffa500';
+export const POTENTIAL_LABEL_FILL_COLOR_WITH_OPACITY = `${POTENTIAL_LABEL_FILL_COLOR}55`;
 export const POTENTIAL_LABEL_STROKE_COLOR = WHITE;
 
 // Label 관련 상수
@@ -21,3 +22,14 @@ export const BORDER_OPACITY_HIGH_OVERRIDE = 0.5;
 export const FILL_OPACITY_THRESHOLD = 0.25;
 export const DRAG_DISTANCE = 10;
 export const LABEL_DASH = [7, 3];
+
+// Mask 관련 상수
+export const BRUSH_SIZE_VALUES = {
+  MIN: 1,
+  MAX: 200,
+};
+export const BRUSH_SIZE_SLIDER_PARAMS = {
+  max: BRUSH_SIZE_VALUES.MAX,
+  min: BRUSH_SIZE_VALUES.MIN,
+};
+export const UNDO_REDO_STACK_LIMIT = 20;

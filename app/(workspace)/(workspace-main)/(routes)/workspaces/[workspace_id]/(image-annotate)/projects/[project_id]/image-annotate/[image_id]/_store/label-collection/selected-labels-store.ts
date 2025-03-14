@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { ImageLabel } from '../../_types/image-label';
+import { useLabelsStore } from './labels-store';
 
 interface State {
   selectedLabelIds: Set<string>;
@@ -17,6 +18,8 @@ interface Actions {
   resetSelection: () => void;
   isLabelSelected: (labelId: string) => boolean;
   isLabelSingleSelected: (labelId: string) => boolean;
+  getEditedMaskLabel: () => ImageLabel | null;
+  isEditingMask: () => boolean;
 }
 
 type SelectedLabelsState = State & Actions;
@@ -83,6 +86,22 @@ export const useSelectedLabelsStore = create<SelectedLabelsState>(
       return (
         get().selectedLabelIds.size === 1 && get().selectedLabelIds.has(labelId)
       );
+    },
+
+    // 단일 선택된 마스크 라벨을 반환하는 함수
+    getEditedMaskLabel: () => {
+      const selectedIds = get().selectedLabelIdsArray;
+      if (selectedIds.length === 1) {
+        const labels = useLabelsStore.getState().getLabelsMap();
+        const label = labels[selectedIds[0]];
+        if (label?.mask) return label;
+      }
+      return null;
+    },
+
+    // 마스크 편집 중인지 확인하는 함수
+    isEditingMask: () => {
+      return !!get().getEditedMaskLabel();
     },
   }),
 );
