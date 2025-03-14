@@ -24,6 +24,7 @@ import { DRAG_DISTANCE } from '../_constants/constants';
 import CursorSetter from '../_components/cursor/cursor-setter';
 import chroma from 'chroma-js';
 import AlwaysOnTop from '../_components/always-on-top/always-on-top';
+import Polygon from './polygon/polygon';
 
 type LabelProps = {
   label: ImageLabel;
@@ -162,6 +163,28 @@ const Label = ({ label, labelClass, onDragStart, onDragEnd }: LabelProps) => {
   useEffect(() => resetHover, [resetHover]);
 
   let LabelComponent;
+
+  if (label.polygon)
+    LabelComponent = (
+      <Polygon
+        absoluteScale={absoluteScale}
+        isDragged={isDragged}
+        draggable={draggable}
+        dragDistance={DRAG_DISTANCE}
+        edited={isSelection ? exclusivelySelected : false}
+        onClick={handleClick}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        dragBoundFunc={handleDragBound}
+        label={label}
+        onMouseOver={handleOnMouseOver}
+        onMouseOut={handleOnMouseOut}
+        fill={fill}
+        stroke={stroke}
+        dash={dash}
+        strokeWidth={strokeWidth}
+      />
+    );
 
   if (!label.polygon && !label.mask)
     LabelComponent = (

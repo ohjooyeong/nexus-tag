@@ -63,3 +63,28 @@ export const getClampedCoordinates = (
 
   return coordinates;
 };
+
+export const prevIndex = (i: number, all: Polygon) =>
+  i ? i - 1 : all.length - 1;
+export const nextIndex = (i: number, all: Polygon) =>
+  i < all.length - 1 ? i + 1 : 0;
+
+export const prevVertex = (i: number, all: Polygon) => all[prevIndex(i, all)];
+export const nextVertex = (i: number, all: Polygon) => all[nextIndex(i, all)];
+
+export const addDividingPoints = (list: Polygon) =>
+  list
+    .map((vertex, index, all) => {
+      const lineStartingVertex = vertex;
+      const lineEndingVertex = nextVertex(index, all);
+      // at the middle of line, add a vertex that will be draggable
+
+      return [
+        vertex,
+        [
+          (lineStartingVertex[0] + lineEndingVertex[0]) / 2,
+          (lineStartingVertex[1] + lineEndingVertex[1]) / 2,
+        ],
+      ];
+    })
+    .flat() as Polygon;

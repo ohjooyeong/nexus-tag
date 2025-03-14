@@ -15,6 +15,7 @@ const CursorCrosshair = () => {
       stage,
       absoluteScale,
     );
+
     if (coords) {
       setCursorPosition(coords);
     }

@@ -1,6 +1,10 @@
 import { LabelType } from '../_types/image-label';
 import { Bbox, Label } from '../_types/types';
 
+export const getWidth = ([x1, , x2]: Bbox) => x2 - x1;
+
+export const getHeight = ([, y1, , y2]: Bbox) => y2 - y1;
+
 export const getLabelType = ({
   polygon,
   mask,
