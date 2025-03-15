@@ -62,7 +62,7 @@ export const usePolygonToolShortcuts = ({
 
   // Delete/Backspace - Remove last vertex
   useHotkeys(
-    ['del', 'backspace'],
+    ['del', 'backspace', 'delete'],
     () => {
       setVertices(
         vertices.length ? vertices.slice(0, vertices.length - 1) : vertices,

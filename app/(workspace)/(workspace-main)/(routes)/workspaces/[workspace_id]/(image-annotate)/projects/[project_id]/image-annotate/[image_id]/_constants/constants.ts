@@ -1,3 +1,4 @@
+import { Tool } from '../_types/types';
 import { WHITE } from './colors';
 
 export const STAGE_INTERNAL_PADDING = 30;
@@ -21,3 +22,26 @@ export const BORDER_OPACITY_HIGH_OVERRIDE = 0.5;
 export const FILL_OPACITY_THRESHOLD = 0.25;
 export const DRAG_DISTANCE = 10;
 export const LABEL_DASH = [7, 3];
+
+export const ToolKey = {
+  Pan: 'pan',
+  Selection: 'selection',
+  Polygon: 'polygon',
+  Bbox: 'bbox',
+  Mask: 'mask',
+  Copy: 'copy',
+};
+
+export const TOOL_HOTKEY_OVERRIDES = {
+  [ToolKey.Polygon]: {
+    undoRedo: true,
+    escape: true,
+  },
+  [ToolKey.Mask]: {
+    e: true,
+    b: true,
+    undoRedo: true,
+    escape: true,
+  },
+  [ToolKey.Bbox]: { escape: true },
+};

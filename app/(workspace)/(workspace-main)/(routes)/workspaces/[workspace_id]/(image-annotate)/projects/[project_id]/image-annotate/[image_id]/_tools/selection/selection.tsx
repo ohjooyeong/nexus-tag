@@ -20,6 +20,7 @@ import CursorSetter from '../../_components/cursor/cursor-setter';
 import { WHITE } from '../../_constants/colors';
 import AlwaysOnTop from '../../_components/always-on-top/always-on-top';
 import { DRAG_DISTANCE } from '../../_constants/constants';
+import { HotkeysProvider, useHotkeys } from 'react-hotkeys-hook';
 
 type SelectionProps = {
   labels: ImageLabel[];
@@ -47,9 +48,14 @@ const Selection = ({
   const stage = useKonvaStage();
 
   const { getEnabledPanning } = usePanningStore();
-  const { getSelectedLabelIds, setSelectedLabelIds, toggleLabelSelection } =
-    useSelectedLabelsStore();
-  const { getLabelsMap, updateLabels } = useLabelsStore();
+  const {
+    getSelectedLabelIds,
+    setSelectedLabelIds,
+    toggleLabelSelection,
+    selectAllLabels,
+    resetSelection,
+  } = useSelectedLabelsStore();
+  const { getLabelsMap, updateLabels, deleteLabels } = useLabelsStore();
 
   const panningEnabled = getEnabledPanning();
   const selectedLabelsIds = getSelectedLabelIds();
@@ -83,6 +89,19 @@ const Selection = ({
       }),
     [restrictEntityToImage],
   );
+
+  const handleDeleteLabels = useCallback(() => {
+    if (
+      selectedLabelsIds.length === 1 &&
+      labelsMap[selectedLabelsIds[0]]?.polygon
+    ) {
+      return;
+    }
+    if (selectedLabelsIds.length > 0) {
+      deleteLabels(selectedLabelsIds);
+      resetSelection();
+    }
+  }, [labelsMap, selectedLabelsIds, deleteLabels, resetSelection]);
 
   // 마우스 클릭 시 선택 영역 시작점 설정
   const handleMouseDown = useCallback(
@@ -168,7 +187,8 @@ const Selection = ({
         if (!isEqual(resultSelectedLabelsIds, selectedLabelsIds)) {
           if (multiSelecting) {
             setSelectedLabelIds([
-              ...[...resultSelectedLabelsIds, ...selectedLabelsIds],
+              ...resultSelectedLabelsIds,
+              ...selectedLabelsIds,
             ]);
           } else {
             setSelectedLabelIds(resultSelectedLabelsIds);
@@ -467,56 +487,101 @@ const Selection = ({
     return 'auto';
   };
 
+  useHotkeys(
+    ['mod+a', 'ctrl+a'],
+    (event) => {
+      event?.preventDefault();
+      selectAllLabels(labelsMap);
+    },
+    { scopes: 'selection' },
+  );
+
+  useHotkeys(
+    ['del', 'backspace', 'delete'],
+    () => {
+      handleDeleteLabels();
+    },
+    {
+      scopes: 'selection',
+    },
+  );
+
+  // useHotkeys(
+  //   ['shift'],
+  //   (event) => {
+  //     event.preventDefault();
+  //     setMultiSelecting(true);
+  //   },
+  //   {
+  //     scopes: 'selection',
+  //     keydown: true,
+  //   },
+  // );
+
+  // useHotkeys(
+  //   ['shift'],
+  //   (event) => {
+  //     event.preventDefault();
+  //     setMultiSelecting(false);
+  //   },
+  //   {
+  //     scopes: 'selection',
+  //     keyup: true,
+  //   },
+  // );
+
   return (
-    <Layer key={selectedLabelsIds.join('/')}>
-      <CursorSetter cursor={getCursor()} />
-      <Rect
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        width={width}
-        height={height}
-      />
-      <Line
-        ref={selectionRef}
-        perfectDrawEnabled={false}
-        points={selection}
-        strokeScaleEnabled={false}
-        shadowForStrokeEnabled={false}
-        stroke={WHITE}
-        visible={false}
-      />
-      {selectedLabelsIds.length > 1 ? (
-        <AlwaysOnTop enabled name="aot_selection">
-          <Rect
-            {...selectionBbox}
-            draggable
-            dragDistance={DRAG_DISTANCE}
-            onClick={handleClick}
-            onTap={handleClick}
-            onMouseDown={handleSelectionMouseDown}
-            onDragStart={handleSelectionDragStart}
-            onDragEnd={handleSelectionDragEnd}
-            onDragMove={handleSelectionDragMove}
-            onMouseEnter={handleSelectionMouseEnter}
-            onMouseLeave={handleSelectionMouseLeave}
-            onMouseMove={handleSelectionMouseMove}
-            dragBoundFunc={handleDragBound}
-            strokeScaleEnabled={false}
-            stroke="white"
-            isDragged={isDragged}
-          />
-        </AlwaysOnTop>
-      ) : null}
-      {marqueeInitialCoordinates && (
+    <HotkeysProvider initiallyActiveScopes={['selection']}>
+      <Layer key={selectedLabelsIds.join('/')}>
+        <CursorSetter cursor={getCursor()} />
         <Rect
-          ref={marqueeRef}
-          strokeScaleEnabled={false}
-          fill="yellow"
-          opacity={0.25}
-          listening={false}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          width={width}
+          height={height}
         />
-      )}
-    </Layer>
+        <Line
+          ref={selectionRef}
+          perfectDrawEnabled={false}
+          points={selection}
+          strokeScaleEnabled={false}
+          shadowForStrokeEnabled={false}
+          stroke={WHITE}
+          visible={false}
+        />
+        {selectedLabelsIds.length > 1 ? (
+          <AlwaysOnTop enabled name="aot_selection">
+            <Rect
+              {...selectionBbox}
+              draggable
+              dragDistance={DRAG_DISTANCE}
+              onClick={handleClick}
+              onTap={handleClick}
+              onMouseDown={handleSelectionMouseDown}
+              onDragStart={handleSelectionDragStart}
+              onDragEnd={handleSelectionDragEnd}
+              onDragMove={handleSelectionDragMove}
+              onMouseEnter={handleSelectionMouseEnter}
+              onMouseLeave={handleSelectionMouseLeave}
+              onMouseMove={handleSelectionMouseMove}
+              dragBoundFunc={handleDragBound}
+              strokeScaleEnabled={false}
+              stroke="white"
+              isDragged={isDragged}
+            />
+          </AlwaysOnTop>
+        ) : null}
+        {marqueeInitialCoordinates && (
+          <Rect
+            ref={marqueeRef}
+            strokeScaleEnabled={false}
+            fill="yellow"
+            opacity={0.25}
+            listening={false}
+          />
+        )}
+      </Layer>
+    </HotkeysProvider>
   );
 };
 

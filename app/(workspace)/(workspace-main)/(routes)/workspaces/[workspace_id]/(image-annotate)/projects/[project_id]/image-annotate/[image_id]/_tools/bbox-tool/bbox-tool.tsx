@@ -2,7 +2,7 @@
 
 import { Layer, Rect } from 'react-konva';
 import { useCanvasDimensions } from '../../_provider/canvas-dimensions-context-provider';
-import { act, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Konva from 'konva';
 import { useKonvaStage } from '../../_provider/konva-stage-context-provider';
 import { usePanningStore } from '../../_store/panning-store';
@@ -14,6 +14,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { useClassLabelStore } from '../../_store/class-label-store';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { BBOX_FILL_COLOR, BBOX_STROKE_COLOR } from '../../_constants/constants';
+import { HotkeysProvider, useHotkeys } from 'react-hotkeys-hook';
+import { useToolStore } from '../../_store/tool-store';
 
 type BboxToolProps = {
   width: number;
@@ -25,6 +27,7 @@ const BboxTool = ({ width, height }: BboxToolProps) => {
   const stage = useKonvaStage();
   const { getEnabledPanning } = usePanningStore();
   const { addLabels } = useLabelsStore();
+  const { resetActiveTool } = useToolStore();
   const { getActiveClassLabelId } = useClassLabelStore();
   const activeClassLabelId = getActiveClassLabelId();
   const panningEnabled = getEnabledPanning();
@@ -176,21 +179,35 @@ const BboxTool = ({ width, height }: BboxToolProps) => {
     panningEnabled,
   ]);
 
+  useHotkeys(
+    'esc',
+    () => {
+      if (bboxInitialCoordinates) {
+        setBboxInitialCoordinates(undefined);
+      } else {
+        resetActiveTool();
+      }
+    },
+    { scopes: 'bbox-tool' },
+  );
+
   return (
-    <Layer ref={layerRef}>
-      <Rect width={width} height={height} />
-      {bboxInitialCoordinates && (
-        <Rect
-          ref={bboxRef}
-          listening={false}
-          strokeScaleEnabled={false}
-          fill={`${BBOX_FILL_COLOR}33`}
-          stroke={BBOX_STROKE_COLOR}
-          strokeWidth={2}
-          dash={[7, 3]}
-        />
-      )}
-    </Layer>
+    <HotkeysProvider initiallyActiveScopes={['bbox-tool']}>
+      <Layer ref={layerRef}>
+        <Rect width={width} height={height} />
+        {bboxInitialCoordinates && (
+          <Rect
+            ref={bboxRef}
+            listening={false}
+            strokeScaleEnabled={false}
+            fill={`${BBOX_FILL_COLOR}33`}
+            stroke={BBOX_STROKE_COLOR}
+            strokeWidth={2}
+            dash={[7, 3]}
+          />
+        )}
+      </Layer>
+    </HotkeysProvider>
   );
 };
 
