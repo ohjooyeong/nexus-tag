@@ -1,5 +1,3 @@
-'use client';
-
 import GeneralForm from './_components/general-form';
 
 const GeneralPage = () => {

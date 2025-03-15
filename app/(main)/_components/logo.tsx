@@ -1,8 +1,9 @@
 import { Cloud } from 'lucide-react';
+import Link from 'next/link';
 
 const Logo = () => {
   return (
-    <div className="flex items-center">
+    <Link href={'/'} className="flex items-center">
       <Cloud className="h-10 w-10 mr-3 text-blue-600" />
       <h1
         className="text-xl font-bold bg-gradient-to-br from-blue-500 to-purple-600 text-transparent
@@ -10,7 +11,7 @@ const Logo = () => {
       >
         Nexus Tag
       </h1>
-    </div>
+    </Link>
   );
 };
 

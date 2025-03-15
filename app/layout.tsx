@@ -13,7 +13,10 @@ const pretendard = localFont({
 
 export const metadata: Metadata = {
   title: 'Nexus Tag',
-  description: '데이터를 연결하다',
+  description: 'Connecting Data',
+  icons: {
+    icon: '/logo/favicon.ico',
+  },
 };
 
 export default function RootLayout({
