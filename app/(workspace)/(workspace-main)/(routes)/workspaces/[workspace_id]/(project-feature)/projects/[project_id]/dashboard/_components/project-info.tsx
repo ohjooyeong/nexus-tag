@@ -1,6 +1,12 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import useDashboardInfo from '../../_hooks/use-dashboard-info';
+import dayjs from 'dayjs';
 
 const ProjectInfo = () => {
+  const { data } = useDashboardInfo();
+
   return (
     <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       <Card>
@@ -21,7 +27,9 @@ const ProjectInfo = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">brb1111</div>
+          <div className="text-2xl font-bold truncate">
+            {data?.workspaceName || '-'}
+          </div>
         </CardContent>
       </Card>
       <Card>
@@ -42,7 +50,7 @@ const ProjectInfo = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">3</div>
+          <div className="text-2xl font-bold">{data?.datasetsCount || 0}</div>
         </CardContent>
       </Card>
       <Card>
@@ -63,7 +71,7 @@ const ProjectInfo = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">800</div>
+          <div className="text-2xl font-bold">{data?.dataItemsCount || 0}</div>
         </CardContent>
       </Card>
       <Card>
@@ -84,7 +92,7 @@ const ProjectInfo = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">10</div>
+          <div className="text-2xl font-bold">{data?.membersCount || 0}</div>
         </CardContent>
       </Card>
       <Card>
@@ -126,7 +134,9 @@ const ProjectInfo = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">2024-12-03</div>
+          <div className="text-2xl font-bold">
+            {data?.createdAt ? dayjs(data.createdAt).format('YYYY-MM-DD') : '-'}
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -55,3 +55,9 @@ export const labelsQueries = {
   default: () => ['labels'],
   list: (id: string) => [...labelsQueries.default(), 'list', id],
 };
+
+export const dashboardQueries = {
+  default: () => ['dashboard'],
+  overview: (id: string) => [...dashboardQueries.default(), 'overview', id],
+  info: (id: string) => [...dashboardQueries.default(), 'info', id],
+};
