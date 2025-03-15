@@ -101,7 +101,7 @@ export function AnnotateSidebar({
               url: '#',
               icon: BrushIcon,
               keyword: Tool.Mask,
-              isDisable: false,
+              isDisable: true,
               event: () => setActiveTool(Tool.Mask),
             },
           ],
