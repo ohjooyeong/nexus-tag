@@ -8,7 +8,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ['localhost'],
+    domains: ['localhost', 'www.nexus-tag.shop', 'nexus-tag.shop'],
   },
 };
 
