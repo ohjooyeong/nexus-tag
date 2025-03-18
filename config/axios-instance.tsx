@@ -5,6 +5,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
+import { getAuthToken } from '@/lib/auth';
 
 const axiosInstance = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}`,
@@ -25,11 +26,21 @@ export const onError = (status: number, message: string) => {
 const onRequest = (
   config: AxiosRequestConfig,
 ): Promise<InternalAxiosRequestConfig> => {
-  const { method, url, headers = {} } = config;
+  const { method, url } = config;
+  const token = getAuthToken();
+
+  if (token) {
+    // 헤더 설정을 올바르게 수정
+    config.headers = {
+      ...config.headers,
+      Authorization: `Bearer ${token}`,
+    };
+  }
 
   logOnDev(`[API] ${method?.toUpperCase()} ${url} | Request`);
 
-  return Promise.resolve({ ...config, headers } as InternalAxiosRequestConfig);
+  // 전체 config를 반환
+  return Promise.resolve(config as InternalAxiosRequestConfig);
 };
 
 const onErrorRequest = (error: AxiosError<AxiosRequestConfig>) => {
@@ -70,7 +81,7 @@ const onErrorResponse = (error: AxiosError | Error) => {
     if (status === 401) {
       const authCookie = document.cookie
         .split('; ')
-        .find((row) => row.startsWith('Authentication='));
+        .find((row) => row.startsWith('auth_token='));
 
       if (!authCookie) {
         if (typeof window !== 'undefined') {

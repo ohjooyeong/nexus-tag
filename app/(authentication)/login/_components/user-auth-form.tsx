@@ -14,6 +14,7 @@ import useLogin from '../_hooks/use-login';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
+import { setAuthToken } from '@/lib/auth';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -46,10 +47,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setIsLoading(true);
     setLoginError(null); // 이전 에러 초기화
     try {
-      await loginMutation.mutateAsync({
+      const data = await loginMutation.mutateAsync({
         email: context.email,
         password: context.password,
       });
+      setAuthToken(data);
 
       const redirect = searchParams.get('redirect');
 
@@ -64,8 +66,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         // AxiosError인 경우 처리
         const { status, data } = error.response;
         if (status === 450) {
-          setLoginError(data?.message || 'Email Verification Required');
-          // router.push(`/email-verify?email=${data.data}`);
+          toast.error(data?.message || 'Email Verification Required');
         } else {
           setLoginError(
             data?.message || 'Invalid email or password. Please try again.',
@@ -75,9 +76,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         console.error(`Error ${status}:`, data);
       } else {
         // 기타 에러 처리
-
         setLoginError(null); // 이전 에러 초기화
-        toast('An unknown error occurred.');
+        toast('Login failed');
         console.error(error);
       }
     } finally {
