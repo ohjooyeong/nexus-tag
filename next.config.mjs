@@ -13,7 +13,7 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '3000',
+        port: '8080',
         pathname: '/uploads/**',
       },
       {
@@ -25,6 +25,11 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'www.nexus-tag.shop',
         pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'nexus-tag.shop',
+        pathname: '/**', // 모든 경로 허용
       },
     ],
   },
