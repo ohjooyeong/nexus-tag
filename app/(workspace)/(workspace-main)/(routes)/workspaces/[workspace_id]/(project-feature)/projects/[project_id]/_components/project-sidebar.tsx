@@ -73,7 +73,7 @@ export function ProjectSidebar({
           items: [
             {
               title: 'Project Setup',
-              url: '#',
+              url: `/workspaces/${workspaceId}/projects/${projectId}/project-setup`,
               icon: Pickaxe,
               keyword: 'setup',
             },

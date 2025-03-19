@@ -15,37 +15,39 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useParams } from 'next/navigation';
-import useWorkspaceInfo from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-info';
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/icons';
 import DangerZone from './danger-zone';
-import useUpdateWorkspace from '../_hooks/use-update-workspace';
+import useUpdateProject from '../_hooks/use-update-project';
 import { toast } from 'sonner';
 import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
-import { workspaceQueries } from '@/constants/querykey-factory';
-import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
+import { projectQueries } from '@/constants/querykey-factory';
+import useProjectMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
+import useProjectInfo from '../../../../../_hooks/use-project-info';
 
-const workspaceFormSchema = z.object({
+const projectFormSchema = z.object({
   name: z.string().min(4, {
-    message: 'Workspace name must be at least 4 characters long',
+    message: 'Project name must be at least 4 characters long',
   }),
   description: z.string(),
 });
 
-type WorkspaceFormValues = z.infer<typeof workspaceFormSchema>;
+type ProjectFormValues = z.infer<typeof projectFormSchema>;
 
-const GeneralForm = () => {
+const ProjectSetupForm = () => {
   const queryClient = useQueryClient();
-  const { workspace_id: workspaceId } = useParams();
-  const { data: currentWorkspace } = useWorkspaceInfo(workspaceId as string);
-  const { data: currentMyRole } = useWorkspaceMyRole();
+  const { workspace_id: workspaceId, project_id: projectId } = useParams();
+  const { data: currentProject } = useProjectInfo(projectId as string);
+  const { data: currentMyRole } = useProjectMyRole();
 
-  const isMyRoleOwner = currentMyRole === 'OWNER';
+  const isMyRoleOwnerOrManager =
+    currentMyRole === 'OWNER' || currentMyRole === 'MANAGER';
 
-  const form = useForm<WorkspaceFormValues>({
-    resolver: zodResolver(workspaceFormSchema),
+  const form = useForm<ProjectFormValues>({
+    resolver: zodResolver(projectFormSchema),
     defaultValues: {
       name: '',
       description: '',
@@ -55,18 +57,19 @@ const GeneralForm = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isChanged, setIsChanged] = useState(false);
 
-  const updateWorkspaceMutation = useUpdateWorkspace();
+  const updateProjectMutation = useUpdateProject();
 
-  const onSubmit = async (data: WorkspaceFormValues) => {
+  const onSubmit = async (data: ProjectFormValues) => {
     setIsLoading(true);
     try {
-      const response = await updateWorkspaceMutation.mutateAsync({
+      const response = await updateProjectMutation.mutateAsync({
         name: data.name,
         workspaceId: workspaceId as string,
+        projectId: projectId as string,
         description: data.description,
       });
       toast.success(response.message);
-      queryClient.invalidateQueries({ queryKey: workspaceQueries.default() });
+      queryClient.invalidateQueries({ queryKey: projectQueries.default() });
       setIsChanged(false);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -87,21 +90,21 @@ const GeneralForm = () => {
   useEffect(() => {
     const subscription = form.watch((values) => {
       const isModified =
-        values.name !== currentWorkspace?.name ||
-        values.description !== currentWorkspace?.description;
+        values.name !== currentProject?.name ||
+        values.description !== currentProject?.description;
       setIsChanged(isModified);
     });
     return () => subscription.unsubscribe();
-  }, [form, currentWorkspace]);
+  }, [form, currentProject]);
 
   useEffect(() => {
-    if (currentWorkspace) {
+    if (currentProject) {
       form.reset({
-        name: currentWorkspace.name,
-        description: currentWorkspace.description,
+        name: currentProject.name,
+        description: currentProject.description,
       });
     }
-  }, [currentWorkspace, form]);
+  }, [currentProject, form]);
 
   return (
     <Form {...form}>
@@ -111,21 +114,21 @@ const GeneralForm = () => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Workspace Name</FormLabel>
+              <FormLabel>Project Name</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Please write the name of the workspace"
+                  placeholder="Please write the name of the project"
                   {...field}
                   disabled={isLoading}
                   autoComplete="off"
                   autoCorrect="off"
                   spellCheck="false"
                   autoCapitalize="none"
-                  readOnly={!isMyRoleOwner}
+                  readOnly={!isMyRoleOwnerOrManager}
                 />
               </FormControl>
               <FormDescription>
-                This is your public display workspace name.
+                This is your public display project name.
               </FormDescription>
 
               <FormMessage />
@@ -140,25 +143,25 @@ const GeneralForm = () => {
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Please write the description of the workspace"
+                  placeholder="Please write the description of the project"
                   {...field}
                   autoComplete="off"
                   autoCorrect="off"
                   spellCheck="false"
                   autoCapitalize="none"
                   disabled={isLoading}
-                  readOnly={!isMyRoleOwner}
+                  readOnly={!isMyRoleOwnerOrManager}
                 />
               </FormControl>
               <FormDescription>
-                This is a description of the workspace.
+                This is a description of the project.
               </FormDescription>
 
               <FormMessage />
             </FormItem>
           )}
         />
-        {isMyRoleOwner && (
+        {isMyRoleOwnerOrManager && (
           <div className="flex gap-4 justify-end">
             <Button
               type="submit"
@@ -168,14 +171,14 @@ const GeneralForm = () => {
               {isLoading && (
                 <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
               )}
-              Update workspace
+              Update project
             </Button>
           </div>
         )}
       </form>
-      {isMyRoleOwner && <DangerZone />}
+      {isMyRoleOwnerOrManager && <DangerZone />}
     </Form>
   );
 };
 
-export default GeneralForm;
+export default ProjectSetupForm;

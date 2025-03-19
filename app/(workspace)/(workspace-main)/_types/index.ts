@@ -42,6 +42,7 @@ export interface Project {
   name: string;
   description: string;
   content_type: Content_Type;
+  totalImages: number;
   createdAt: string;
   updatedAt: string;
 }
