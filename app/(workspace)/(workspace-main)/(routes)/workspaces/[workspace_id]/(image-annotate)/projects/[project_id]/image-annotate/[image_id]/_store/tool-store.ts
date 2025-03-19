@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { Tool } from '../_types/types';
+import { usePanningStore } from './panning-store';
 
 interface State {
   toolId: Tool;
@@ -21,6 +22,13 @@ export const useToolStore = create<ToolState>((set, get) => ({
   },
 
   setActiveTool: (toolId: Tool) => {
+    const setEnabledPanning = usePanningStore.getState().setEnabledPanning;
+
+    if (toolId === Tool.Pan) {
+      setEnabledPanning(true);
+    } else {
+      setEnabledPanning(false);
+    }
     set({ toolId });
   },
 
