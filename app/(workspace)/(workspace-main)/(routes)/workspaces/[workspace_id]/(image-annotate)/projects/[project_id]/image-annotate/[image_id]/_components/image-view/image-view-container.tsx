@@ -38,9 +38,7 @@ const ImageViewContainer = () => {
 
       try {
         // fileUrl이 이미 전체 URL인 경우와 상대 경로인 경우를 처리
-        const imageUrl = dataItem.fileUrl.startsWith('http')
-          ? dataItem.fileUrl
-          : `${process.env.NEXT_PUBLIC_API_URL}${dataItem.fileUrl}`;
+        const imageUrl = dataItem.fileUrl;
         const id = await processAndStoreImage(imageUrl);
 
         setImageObjectId(id);
