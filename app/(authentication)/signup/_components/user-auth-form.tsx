@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import GenericForm from '@/components/generic-form';
 import { twMerge } from 'tailwind-merge';
+import OauthLoginButtonSection from '../../_components/oauth-login-button-section';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -99,14 +100,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
-        {isLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.google className="mr-2 h-4 w-4" />
-        )}{' '}
-        Google
-      </Button>
+      <OauthLoginButtonSection isLoading={isLoading} />
     </div>
   );
 }

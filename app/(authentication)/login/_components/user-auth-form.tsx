@@ -15,6 +15,8 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 import { setAuthToken } from '@/lib/auth';
+import Link from 'next/link';
+import OauthLoginButtonSection from '../../_components/oauth-login-button-section';
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>;
 
@@ -178,14 +180,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
-        {isLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.google className="mr-2 h-4 w-4" />
-        )}{' '}
-        Google
-      </Button>
+      <OauthLoginButtonSection isLoading={isLoading} />
     </div>
   );
 }
