@@ -51,11 +51,11 @@ import {
 const UpdateClassLabelDialog = ({
   isOpen,
   onClose,
-  currentClassLabel,
+  classLabel,
 }: {
   isOpen: boolean;
   onClose: () => void;
-  currentClassLabel: LabelClass;
+  classLabel: LabelClass;
 }) => {
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -72,7 +72,7 @@ const UpdateClassLabelDialog = ({
         })
         .refine(
           (name) =>
-            name.toLowerCase() === currentClassLabel.name.toLowerCase() ||
+            name.toLowerCase() === classLabel.name.toLowerCase() ||
             !classLabels?.some(
               (label) => label.name.toLowerCase() === name.toLowerCase(),
             ),
@@ -93,10 +93,10 @@ const UpdateClassLabelDialog = ({
   const form = useForm<ClassLabelFormValues>({
     resolver: zodResolver(classLabelFormSchema),
     defaultValues: {
-      name: currentClassLabel.name,
-      description: currentClassLabel.description,
-      color: currentClassLabel.color,
-      type: currentClassLabel.type,
+      name: classLabel.name,
+      description: classLabel.description,
+      color: classLabel.color,
+      type: classLabel.type,
     },
   });
 
@@ -112,7 +112,7 @@ const UpdateClassLabelDialog = ({
         type: data.type,
         projectId: projectId as string,
         workspaceId: workspaceId as string,
-        classLabelId: currentClassLabel.id,
+        classLabelId: classLabel.id,
       });
       toast.success(response.message);
       queryClient.invalidateQueries({ queryKey: classLabelQueries.default() });
@@ -177,7 +177,7 @@ const UpdateClassLabelDialog = ({
                   <FormLabel>Class Type</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={currentClassLabel.type}
+                    defaultValue={classLabel.type}
                   >
                     <FormControl>
                       <SelectTrigger>
