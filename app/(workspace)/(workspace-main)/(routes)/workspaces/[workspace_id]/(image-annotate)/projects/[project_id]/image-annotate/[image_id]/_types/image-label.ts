@@ -38,7 +38,7 @@ const fromBackendLabel = ({
   polygon: polygon,
   mask: mask,
   bbox: getBbox(bbox, mask, polygon),
-  type: getLabelType({ polygon, mask }),
+  labelType: getLabelType({ polygon, mask }),
 });
 
 export type ImageLabel = ReturnType<typeof fromBackendLabel>;

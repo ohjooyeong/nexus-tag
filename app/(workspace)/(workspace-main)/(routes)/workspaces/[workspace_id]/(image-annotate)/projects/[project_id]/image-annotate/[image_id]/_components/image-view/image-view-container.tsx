@@ -11,11 +11,15 @@ import { useParams } from 'next/navigation';
 import { useZoomStore } from '../../_store/zoom-store';
 import { useInitialLabels } from '../../_hooks/use-labels';
 import { useLabelsStore } from '../../_store/label-collection/labels-store';
+import useLabelSync from '../../_hooks/use-label-sync';
 
 const ImageViewContainer = () => {
   const [imageObjectId, setImageObjectId] = useState(0);
   const { width, height, ref } = useResizeDetector({});
   const { image_id: imageId } = useParams();
+
+  // 라벨 싱크
+  useLabelSync();
 
   // 라벨 초기화
   useInitialLabels();
