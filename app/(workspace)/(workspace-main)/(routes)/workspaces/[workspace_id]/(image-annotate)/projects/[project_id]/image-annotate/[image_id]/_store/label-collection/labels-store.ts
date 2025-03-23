@@ -129,6 +129,7 @@ export const useLabelsStore = create(
 
           return { labels: newLabels };
         });
+        useLabelSyncStore.getState().markAsDirty();
       },
 
       getLabels: () => {
