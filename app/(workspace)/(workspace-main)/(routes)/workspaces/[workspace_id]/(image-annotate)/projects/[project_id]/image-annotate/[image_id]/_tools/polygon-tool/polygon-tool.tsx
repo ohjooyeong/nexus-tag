@@ -134,7 +134,6 @@ const PolygonTool = ({ width, height }: PolygonToolProps) => {
         classLabelId: activeClassLabelId ?? undefined,
         polygon: vertices,
         bbox: calculateBbox(vertices.flat()),
-        type: LabelType.POLYGON,
       },
     ]);
     resetData();
