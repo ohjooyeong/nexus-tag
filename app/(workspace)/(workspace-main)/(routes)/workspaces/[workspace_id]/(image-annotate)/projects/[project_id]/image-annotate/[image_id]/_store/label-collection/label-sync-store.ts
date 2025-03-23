@@ -84,8 +84,6 @@ export const useLabelSyncStore = create<LabelSyncState>()(
             })),
         ];
 
-        console.log(dirtyLabels);
-
         if (dirtyLabels.length > 0) {
           await axiosInstance.post(
             `/workspaces/${workspaceId}/projects/${projectId}/items/${imageId}/labels/sync`,

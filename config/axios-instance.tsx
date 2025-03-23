@@ -83,12 +83,7 @@ const onErrorResponse = (error: AxiosError | Error) => {
         .split('; ')
         .find((row) => row.startsWith('auth_token='));
 
-      if (!authCookie) {
-        if (typeof window !== 'undefined') {
-          const currentPath = window.location.pathname + window.location.search;
-          window.location.href = `/login?redirect=${encodeURIComponent(currentPath)}`;
-        }
-      }
+      // TODO 401인데 쿠키 없을 때 로그아웃 처리 (로그인, 회원가입때 제외)
     }
   } else if (error instanceof Error && error.name === 'TimeoutError') {
     logOnDev(`[API] | TimeoutError ${error.toString()}`);
