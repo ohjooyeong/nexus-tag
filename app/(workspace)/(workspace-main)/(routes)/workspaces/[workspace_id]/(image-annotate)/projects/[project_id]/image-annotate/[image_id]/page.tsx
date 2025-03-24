@@ -3,6 +3,7 @@ import { AnnotateSidebar } from './_components/annotate-sidebar';
 import AnnotateImageInfo from './_components/annotate-image-info';
 import { AnnotateNavActions } from './_components/annotate-nav-actions';
 import AnnotateMain from './_components/annotate-main';
+import AnnotateAction from './_components/annotate-action';
 
 const ImageAnnotatePage = () => {
   return (
@@ -16,11 +17,14 @@ const ImageAnnotatePage = () => {
     >
       <AnnotateSidebar />
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-          <div className="flex flex-1 items-center">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b justify-between">
+          <div className="flex items-center">
             <AnnotateImageInfo />
           </div>
-          <div className="ml-auto px-6">
+          <div className="flex items-center">
+            <AnnotateAction />
+          </div>
+          <div className="px-6">
             <AnnotateNavActions />
           </div>
         </header>
