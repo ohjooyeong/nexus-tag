@@ -158,18 +158,23 @@ export const useLabelsStore = create(
       },
     }),
 
-    // {
-    //   partialize: (state: LabelsState): State => ({
-    //     labels: state.labels,
-    //     currentGroup: state.currentGroup,
-    //   }),
-    //   equality: (prev: State, next: State) => {
-    //     return (
-    //       prev.currentGroup === next.currentGroup &&
-    //       JSON.stringify(prev.labels) === JSON.stringify(next.labels)
-    //     );
-    //   },
-    // },
+    {
+      partialize: (state: LabelsState): LabelsState => {
+        useLabelSyncStore.getState().markAsDirty();
+
+        return {
+          ...state,
+          currentGroup: state.currentGroup,
+          labels: state.labels,
+        };
+      },
+      equality: (prev: State, next: State) => {
+        return (
+          prev.currentGroup === next.currentGroup &&
+          JSON.stringify(prev.labels) === JSON.stringify(next.labels)
+        );
+      },
+    },
   ),
 );
 
