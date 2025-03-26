@@ -3,6 +3,7 @@ import { temporal, TemporalState } from 'zundo';
 import shortid from 'shortid';
 import { ImageLabel } from '../../_types/image-label';
 import { useLabelSyncStore } from './label-sync-store';
+import { devtools } from 'zustand/middleware';
 
 // State 타입
 interface State {
@@ -31,150 +32,154 @@ interface Actions {
 type LabelsState = State & Actions;
 
 export const useLabelsStore = create(
-  temporal<LabelsState>(
-    (set, get) => ({
-      labels: {},
-      currentGroup: undefined,
+  devtools(
+    temporal<LabelsState>(
+      (set, get) => ({
+        labels: {},
+        currentGroup: undefined,
 
-      setCurrentGroup: (group?: string) => {
-        set({ currentGroup: group });
-      },
+        setCurrentGroup: (group?: string) => {
+          set({ currentGroup: group });
+        },
 
-      initializeLabels: (labels) => {
-        const labelsMap = labels.reduce(
-          (acc, label) => {
-            acc[label.id] = label;
-            return acc;
-          },
-          {} as Record<string, ImageLabel>,
-        );
+        initializeLabels: (labels) => {
+          const labelsMap = labels.reduce(
+            (acc, label) => {
+              acc[label.id] = label;
+              return acc;
+            },
+            {} as Record<string, ImageLabel>,
+          );
 
-        set({ labels: labelsMap });
-        useLabelSyncStore.getState().initializeLabels(labelsMap);
-      },
+          set({ labels: labelsMap });
+          useLabelSyncStore.getState().initializeLabels(labelsMap);
+        },
 
-      addLabels: (newLabels) => {
-        const currentState = get().labels;
-        const availableLabels = Object.values(currentState).filter(
-          (label) => !label.isDeleted,
-        );
-        const zIndex =
-          availableLabels.length === 0
-            ? 0
-            : Math.max(...availableLabels.map((label) => label.zIndex || 0)) +
-              1;
+        addLabels: (newLabels) => {
+          const currentState = get().labels;
+          const availableLabels = Object.values(currentState).filter(
+            (label) => !label.isDeleted,
+          );
+          const zIndex =
+            availableLabels.length === 0
+              ? 0
+              : Math.max(...availableLabels.map((label) => label.zIndex || 0)) +
+                1;
 
-        const labelsToAdd = newLabels.map((label) => ({
-          ...label,
-          clientId: shortid(),
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          zIndex: label.zIndex ?? zIndex,
-        }));
+          const labelsToAdd = newLabels.map((label) => ({
+            ...label,
+            clientId: shortid(),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            zIndex: label.zIndex ?? zIndex,
+          }));
 
-        set((state) => ({
-          labels: {
-            ...state.labels,
-            ...labelsToAdd.reduce(
-              (acc, label) => {
-                acc[label.id] = label as ImageLabel;
-                return acc;
-              },
-              {} as Record<string, ImageLabel>,
-            ),
-          },
-        }));
-        useLabelSyncStore.getState().markAsDirty();
-      },
+          set((state) => ({
+            labels: {
+              ...state.labels,
+              ...labelsToAdd.reduce(
+                (acc, label) => {
+                  acc[label.id] = label as ImageLabel;
+                  return acc;
+                },
+                {} as Record<string, ImageLabel>,
+              ),
+            },
+          }));
+          useLabelSyncStore.getState().markAsDirty();
+        },
 
-      deleteLabels: (labelIds) => {
-        set((state) => {
-          const newLabels = { ...state.labels };
-          labelIds.forEach((id) => {
-            if (newLabels[id]) {
-              newLabels[id] = {
-                ...newLabels[id],
-                isDeleted: true,
-                clientId: shortid(),
-                updatedAt: new Date().toISOString(),
-              };
-            }
+        deleteLabels: (labelIds) => {
+          set((state) => {
+            const newLabels = { ...state.labels };
+            labelIds.forEach((id) => {
+              if (newLabels[id]) {
+                newLabels[id] = {
+                  ...newLabels[id],
+                  isDeleted: true,
+                  clientId: shortid(),
+                  updatedAt: new Date().toISOString(),
+                };
+              }
+            });
+
+            return { labels: newLabels };
           });
+          useLabelSyncStore.getState().markAsDirty();
+        },
 
-          return { labels: newLabels };
-        });
-        useLabelSyncStore.getState().markAsDirty();
-      },
+        updateLabels: (updates, undoGroup) => {
+          const currentGroup = get().currentGroup;
 
-      updateLabels: (updates, undoGroup) => {
-        const currentGroup = get().currentGroup;
+          // 새로운 그룹이 시작되면 현재 상태를 저장
+          if (undoGroup && undoGroup !== currentGroup) {
+            set({ currentGroup: undoGroup });
+          }
 
-        // 새로운 그룹이 시작되면 현재 상태를 저장
-        if (undoGroup && undoGroup !== currentGroup) {
-          set({ currentGroup: undoGroup });
-        }
+          set((state) => {
+            const newLabels = { ...state.labels };
+            updates.forEach(({ id, changes }) => {
+              if (newLabels[id]) {
+                newLabels[id] = {
+                  ...newLabels[id],
+                  ...changes,
+                  clientId: shortid(),
+                  updatedAt: new Date().toISOString(),
+                };
+              }
+            });
 
-        set((state) => {
-          const newLabels = { ...state.labels };
-          updates.forEach(({ id, changes }) => {
-            if (newLabels[id]) {
-              newLabels[id] = {
-                ...newLabels[id],
-                ...changes,
-                clientId: shortid(),
-                updatedAt: new Date().toISOString(),
-              };
-            }
+            return { labels: newLabels };
           });
+          useLabelSyncStore.getState().markAsDirty();
+        },
 
-          return { labels: newLabels };
-        });
-        useLabelSyncStore.getState().markAsDirty();
-      },
+        getLabels: () => {
+          return Object.values(get().labels);
+        },
 
-      getLabels: () => {
-        return Object.values(get().labels);
-      },
+        getAvaliableLabels: () => {
+          return Object.values(get().labels).filter(
+            (label) => !label.isDeleted,
+          );
+        },
 
-      getAvaliableLabels: () => {
-        return Object.values(get().labels).filter((label) => !label.isDeleted);
-      },
+        getLabelsMap: () => {
+          return get().labels;
+        },
 
-      getLabelsMap: () => {
-        return get().labels;
-      },
+        getVisibleLabels: () => {
+          return Object.values(get().labels)
+            .filter((label) => !label.isDeleted)
+            .sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
+        },
 
-      getVisibleLabels: () => {
-        return Object.values(get().labels)
-          .filter((label) => !label.isDeleted)
-          .sort((a, b) => (a.zIndex || 0) - (b.zIndex || 0));
-      },
+        getLabelCountByClassId: (classId: string) => {
+          const labels = Object.values(get().labels);
+          return labels.filter(
+            (label) => !label.isDeleted && label.classLabelId === classId,
+          ).length;
+        },
+      }),
 
-      getLabelCountByClassId: (classId: string) => {
-        const labels = Object.values(get().labels);
-        return labels.filter(
-          (label) => !label.isDeleted && label.classLabelId === classId,
-        ).length;
-      },
-    }),
+      {
+        partialize: (state: LabelsState): LabelsState => {
+          useLabelSyncStore.getState().markAsDirty();
 
-    {
-      partialize: (state: LabelsState): LabelsState => {
-        useLabelSyncStore.getState().markAsDirty();
-
-        return {
-          ...state,
-          currentGroup: state.currentGroup,
-          labels: state.labels,
-        };
+          return {
+            ...state,
+            currentGroup: state.currentGroup,
+            labels: state.labels,
+          };
+        },
+        equality: (prev: State, next: State) => {
+          return (
+            prev.currentGroup === next.currentGroup &&
+            JSON.stringify(prev.labels) === JSON.stringify(next.labels)
+          );
+        },
       },
-      equality: (prev: State, next: State) => {
-        return (
-          prev.currentGroup === next.currentGroup &&
-          JSON.stringify(prev.labels) === JSON.stringify(next.labels)
-        );
-      },
-    },
+    ),
   ),
 );
 

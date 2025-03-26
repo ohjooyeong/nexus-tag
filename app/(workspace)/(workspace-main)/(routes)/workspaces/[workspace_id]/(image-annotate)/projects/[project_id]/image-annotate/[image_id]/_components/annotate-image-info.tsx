@@ -13,9 +13,11 @@ const AnnotateImageInfo = () => {
   return (
     <Tooltip>
       <TooltipTrigger>
-        <span className="pl-4 text-sm font-normal text-gray-700">
-          {data?.name || '-'}
-        </span>
+        <div className="w-[200px] flex items-center">
+          <span className="pl-4 text-sm font-normal text-gray-700 truncate max-w-[180px]">
+            {data?.name || '-'}
+          </span>
+        </div>
       </TooltipTrigger>
       <TooltipContent side="bottom">
         <div className="flex flex-col gap-4 p-2">

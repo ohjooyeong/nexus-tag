@@ -1,6 +1,13 @@
 'use client';
 
-import { Loader2, FileText, Check, CheckCircle2 } from 'lucide-react';
+import {
+  Loader2,
+  FileText,
+  Check,
+  CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import useLabelSync from '../_hooks/use-label-sync';
 import {
   Tooltip,
@@ -8,12 +15,25 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import useDataItemNavigation from '../_hooks/use-data-item-navigation';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 const AnnotateAction = () => {
+  const router = useRouter();
   const { stage } = useLabelSync();
+  const { data } = useDataItemNavigation();
+
+  const navigation = data?.navigation;
+
+  const handleNavigation = (itemId: string) => {
+    const currentPath = window.location.pathname;
+    const newPath = currentPath.replace(/\/[^/]+$/, `/${itemId}`);
+    router.push(newPath);
+  };
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-4">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
@@ -49,6 +69,33 @@ const AnnotateAction = () => {
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
+      <div className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          disabled={!navigation?.previousId}
+          onClick={() =>
+            navigation.previousId && handleNavigation(navigation.previousId)
+          }
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+
+        <span className="text-sm text-muted-foreground min-w-[80px] text-center">
+          {navigation?.currentPage || ' '} / {navigation?.totalItems || ' '}
+        </span>
+
+        <Button
+          variant="ghost"
+          size="icon"
+          disabled={!navigation?.nextId}
+          onClick={() =>
+            navigation.nextId && handleNavigation(navigation.nextId)
+          }
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 };

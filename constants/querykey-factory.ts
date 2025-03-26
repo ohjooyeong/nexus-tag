@@ -44,6 +44,7 @@ export const datasetQueries = {
 export const dataItemQueries = {
   default: () => ['dataItems'],
   detail: (id: string) => [...dataItemQueries.default(), id],
+  info: (id: string) => [...dataItemQueries.default(), 'info', id],
 };
 
 export const classLabelQueries = {
