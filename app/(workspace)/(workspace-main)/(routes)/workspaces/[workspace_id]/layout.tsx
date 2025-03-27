@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import WorkspaceLayoutClient from '../../../_components/workspace-layout-client';
 
 export const metadata: Metadata = {
-  title: 'Nexus Tag | Workspace',
+  title: 'Workspace',
   description: 'Workspace management and configuration.',
 };
 

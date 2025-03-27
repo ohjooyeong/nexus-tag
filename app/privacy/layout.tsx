@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Nexus Tag | Privacy Policy',
+  title: 'Privacy Policy',
 };
 
 const Layout = ({ children }: { children: React.ReactNode }) => {

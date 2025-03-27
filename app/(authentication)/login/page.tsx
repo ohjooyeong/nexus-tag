@@ -9,7 +9,7 @@ import EtcLink from '../_components/etc-link';
 import AuthenticationImage from '../_components/authentication-image';
 
 export const metadata: Metadata = {
-  title: 'Nexus Tag | Login',
+  title: 'Login',
   description: 'Login',
 };
 
