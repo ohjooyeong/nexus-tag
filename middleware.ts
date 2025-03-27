@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export const publicRoutes = ['/', '/login', '/signup'];
-export const protectedRoutes = [/^\/workspaces(\/.*)?$/, /^\/settings(\/.*)?$/];
+export const protectedRoutes = [/^\/workspaces(\/.*)?$/, /^\/accounts(\/.*)?$/];
 
 function redirectToLogin(request: NextRequest, redirectPath: string) {
   const loginUrl = new URL('/login', request.url);

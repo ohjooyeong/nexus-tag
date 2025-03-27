@@ -21,11 +21,13 @@ import {
 import { Separator } from '@/components/ui/separator';
 import useProfile from '@/app/(workspace)/(workspace-main)/_hooks/use-profile';
 import { useLogout } from '@/app/(workspace)/(workspace-main)/_hooks/use-logout';
+import { useRouter } from 'next/navigation';
 
 export function AnnotateNavActions() {
   const [isOpen, setIsOpen] = React.useState(false);
   const { data: profile } = useProfile();
   const { logout } = useLogout();
+  const router = useRouter();
 
   const menuItems = React.useMemo(
     () => [
@@ -34,8 +36,7 @@ export function AnnotateNavActions() {
           label: 'My Account',
           icon: User,
           onClick: () => {
-            // Add my account action here
-            console.log('My Account clicked');
+            router.push('/accounts/profile');
           },
         },
         {

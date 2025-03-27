@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useLogout } from '@/app/(workspace)/(workspace-main)/_hooks/use-logout';
 import useProfile from '@/app/(workspace)/(workspace-main)/_hooks/use-profile';
 
@@ -36,6 +36,7 @@ export function ProjectNavActions() {
   const { workspace_id: workspaceId, project_id: projectId } = useParams();
   const { data: profile } = useProfile();
   const { logout } = useLogout();
+  const router = useRouter();
 
   const { data: datsetStats } = useDatasetStats();
 
@@ -46,8 +47,7 @@ export function ProjectNavActions() {
           label: 'My Account',
           icon: User,
           onClick: () => {
-            // Add my account action here
-            console.log('My Account clicked');
+            router.push('/accounts/profile');
           },
         },
         {
