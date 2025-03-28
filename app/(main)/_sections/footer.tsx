@@ -2,9 +2,9 @@ import Link from 'next/link';
 import Logo from '../_components/logo';
 
 const footerLinks = [
-  { href: '#', label: 'Contact' },
-  { href: '#', label: 'Privacy Policy' },
-  { href: '#', label: 'Terms & Conditions' },
+  { href: 'mailto:brb1111@naver.com', label: 'Contact' },
+  { href: '/privacy', label: 'Privacy Policy' },
+  { href: '/terms', label: 'Terms & Conditions' },
 ];
 
 const Footer = () => {

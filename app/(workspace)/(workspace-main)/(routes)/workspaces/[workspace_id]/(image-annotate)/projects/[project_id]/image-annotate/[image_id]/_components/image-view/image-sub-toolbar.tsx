@@ -57,7 +57,7 @@ const ImageSubToolbar = () => {
 
   return (
     <div className="h-[52px] flex items-center overflow-hidden relative px-2">
-      {currentTool !== Tool.Selection && (
+      {currentTool !== Tool.Selection && currentTool !== Tool.Pan && (
         <Button
           className="w-8 h-8 text-gray-800 hover:text-blue-500"
           variant={'ghost'}

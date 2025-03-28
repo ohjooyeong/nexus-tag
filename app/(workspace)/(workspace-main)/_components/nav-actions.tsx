@@ -23,8 +23,10 @@ import { useMemo, useState } from 'react';
 import useWorkspaceMyRole from '../_hooks/use-workspace-my-role';
 import useProfile from '../_hooks/use-profile';
 import { useLogout } from '../_hooks/use-logout';
+import { useRouter } from 'next/navigation';
 
 const NavActions = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [showNewProjectDialog, setShowNewProjectDialog] = useState(false);
   const { data: currentMyRole } = useWorkspaceMyRole();
@@ -37,8 +39,7 @@ const NavActions = () => {
           label: 'My Account',
           icon: User,
           onClick: () => {
-            // Add my account action here
-            console.log('My Account clicked');
+            router.push('/accounts/profile');
           },
         },
         {

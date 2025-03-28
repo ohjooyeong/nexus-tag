@@ -80,7 +80,7 @@ export function WorkspaceSidebar({
             // },
             {
               title: 'Contact us',
-              url: `#`,
+              url: `mailto:brb1111@naver.com`,
               icon: PhoneCall,
               keyword: 'contact',
             },

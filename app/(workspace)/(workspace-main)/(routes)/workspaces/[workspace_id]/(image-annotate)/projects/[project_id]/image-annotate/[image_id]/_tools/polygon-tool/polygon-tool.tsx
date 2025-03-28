@@ -56,7 +56,11 @@ const PolygonTool = ({ width, height }: PolygonToolProps) => {
   const { getActiveClassLabelId } = useClassLabelStore();
   const { getImageId } = useImageStore();
   const { resetActiveTool } = useToolStore();
-  const { undo, redo, canUndo, canRedo } = useLabelsHistory();
+  const { undo, redo, futureStates, pastStates } = useLabelsHistory(
+    (state) => state,
+  );
+  const canUndo = () => pastStates.length > 0;
+  const canRedo = () => futureStates.length > 0;
 
   const activeClassLabelId = getActiveClassLabelId();
   const panningEnabled = getEnabledPanning();
@@ -130,7 +134,6 @@ const PolygonTool = ({ width, height }: PolygonToolProps) => {
         classLabelId: activeClassLabelId ?? undefined,
         polygon: vertices,
         bbox: calculateBbox(vertices.flat()),
-        type: LabelType.POLYGON,
       },
     ]);
     resetData();

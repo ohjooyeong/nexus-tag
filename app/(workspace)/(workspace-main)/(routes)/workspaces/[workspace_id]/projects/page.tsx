@@ -16,6 +16,9 @@ const ProjectsPage = () => {
   const { workspace_id: workspaceId } = useParams();
   const { data: currentMyRole } = useWorkspaceMyRole();
 
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(20);
+
   const isMyRoleOwner = currentMyRole === 'OWNER';
 
   const [searchTerm, setSearchTerm] = useState(initialSearch);
@@ -37,6 +40,8 @@ const ProjectsPage = () => {
     20,
   );
 
+  const totalPages = Math.ceil(data?.total / limit) || 1;
+
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       setQuery(searchTerm);
@@ -46,6 +51,10 @@ const ProjectsPage = () => {
   const handleReset = () => {
     setSearchTerm('');
     setQuery('');
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
   };
 
   return (
@@ -101,7 +110,13 @@ const ProjectsPage = () => {
             )}
           </div>
         </div>
-        <ProjectList isLoading={isLoading} data={data} />
+        <ProjectList
+          isLoading={isLoading}
+          data={data}
+          handlePageChange={handlePageChange}
+          page={page}
+          totalPages={totalPages}
+        />
       </div>
       <NewProjectDialog
         isOpen={showNewProjectDialog}

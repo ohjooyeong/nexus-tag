@@ -47,8 +47,8 @@ const GeneralForm = () => {
   const form = useForm<WorkspaceFormValues>({
     resolver: zodResolver(workspaceFormSchema),
     defaultValues: {
-      name: currentWorkspace?.name || '',
-      description: currentWorkspace?.description || '',
+      name: '',
+      description: '',
     },
   });
 
@@ -93,6 +93,15 @@ const GeneralForm = () => {
     });
     return () => subscription.unsubscribe();
   }, [form, currentWorkspace]);
+
+  useEffect(() => {
+    if (currentWorkspace) {
+      form.reset({
+        name: currentWorkspace.name,
+        description: currentWorkspace.description,
+      });
+    }
+  }, [currentWorkspace, form]);
 
   return (
     <Form {...form}>

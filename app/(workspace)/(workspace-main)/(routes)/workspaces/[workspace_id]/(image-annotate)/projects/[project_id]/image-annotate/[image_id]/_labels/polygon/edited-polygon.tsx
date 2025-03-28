@@ -447,7 +447,7 @@ const EditedPolygon = ({
   );
 
   useHotkeys(
-    ['del', 'backspace'],
+    ['delete', 'backspace', 'del'],
     () => {
       if (selectedVertexIndexes.length) {
         if (label.polygon) {

@@ -16,6 +16,7 @@ import { MyRBush } from '../../_helpers/image-view/data.helpers';
 
 import {
   STAGE_INTERNAL_PADDING,
+  TOOL_HOTKEY_OVERRIDES,
   ZOOM_IN_MAX_VALUE,
   ZOOM_SPEED,
 } from '../../_constants/constants';
@@ -46,6 +47,8 @@ import Panning from '../../_tools/panning/panning';
 import Selection from '../../_tools/selection/selection';
 import PolygonTool from '../../_tools/polygon-tool/polygon-tool';
 import MaskTool from '../../_tools/mask-tool/mask-tool';
+import { useLabelsHistory } from '../../_store/label-collection/labels-store';
+import { HotkeysProvider, useHotkeys } from 'react-hotkeys-hook';
 
 type ImageViewProps = {
   labels: ImageLabel[];
@@ -62,13 +65,18 @@ const ImageView = ({
 }: ImageViewProps) => {
   const { getImageData, getObject, getImageId } = useImageStore();
   const { setZoom, getZoom } = useZoomStore();
-  const { getActiveTool } = useToolStore();
+  const { getActiveTool, setActiveTool } = useToolStore();
   const { getEnabledPanning, setEnabledPanning } = usePanningStore();
   const { resetSelection } = useSelectedLabelsStore();
   const toolId = getActiveTool();
   const currentZoom = getZoom();
   const panningEnabled = getEnabledPanning();
   const imageId = getImageId();
+  const { undo, redo, futureStates, pastStates } = useLabelsHistory(
+    (state) => state,
+  );
+  const canUndo = () => pastStates.length > 0;
+  const canRedo = () => futureStates.length > 0;
 
   const imageData = useMemo(
     () => getImageData() || { width: 1, height: 1 },
@@ -385,80 +393,129 @@ const ImageView = ({
     ],
   );
 
+  useHotkeys(['mod+z', 'ctrl+z'], () => {
+    if (TOOL_HOTKEY_OVERRIDES[toolId]?.undoRedo) {
+      return;
+    }
+    if (canUndo()) {
+      undo();
+    }
+  });
+
+  useHotkeys(['shift+mod+z', 'shift+ctrl+z'], () => {
+    if (TOOL_HOTKEY_OVERRIDES[toolId]?.undoRedo) {
+      return;
+    }
+    if (canRedo()) {
+      redo();
+    }
+  });
+
+  useHotkeys(['r'], () => {
+    setActiveTool(Tool.Bbox);
+  });
+
+  useHotkeys(['p'], () => {
+    setActiveTool(Tool.Polygon);
+  });
+
+  useHotkeys(['m'], () => {
+    setActiveTool(Tool.Selection);
+  });
+
+  useHotkeys(['h'], () => {
+    if (panningEnabled) return;
+    setActiveTool(Tool.Pan);
+  });
+
+  useHotkeys(
+    ['space'],
+    () => {
+      if (!panningEnabled) {
+        setEnabledPanning(true);
+      }
+    },
+    { keydown: true },
+  );
+
+  useHotkeys(
+    ['space'],
+    () => {
+      if (panningEnabled) {
+        setEnabledPanning(false);
+      }
+    },
+    { keyup: true },
+  );
+
   return (
     <div className="flex">
-      <Stage
-        className="flex flex-col relative overscroll-x-none touch-none p-[6px] bg-slate-300"
-        draggable={panningEnabled}
-        ref={stageRef}
-        width={width || 0}
-        height={height || 0}
-        x={x || 0}
-        y={y || 0}
-        onWheel={handleWheel}
-        dragBoundFunc={handleDragBound}
-        onMouseDown={handleMiddleMouseButton}
-        onMouseUp={handleMiddleMouseButtonUp}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMiddleMouseButtonLeave}
-      >
-        {stageRef.current ? (
-          <KonvaStageContextProvider stage={stageRef.current.getStage()}>
-            <CanvasDimensionsContextProvider sizes={canvasDimensions}>
-              <ImageClampingContextProvider>
-                <Layer>
-                  <Image
-                    ref={imageRef}
-                    image={imageObject}
-                    width={imageWidth}
-                    height={imageHeight}
-                    onClick={() => {
-                      resetSelection();
-                    }}
-                    strokeWidth={3}
-                    stroke={MID_BLUE}
-                    strokeScaleEnabled={false}
-                    alt="image"
-                  />
-                </Layer>
-                {toolId === Tool.Selection && (
-                  <Selection
-                    width={width}
-                    height={height}
-                    labels={labels}
-                    processedLabelsTree={processedLabelsTree}
-                  />
-                )}
-                {imageLoaded && (
-                  <Labels
-                    processedLabelsTree={processedLabelsTree}
-                    groupRef={groupRef}
-                  />
-                )}
-                {/* 라벨 선택 시 하얀 라인 위로 올리게 하는 레이어 */}
-                <Layer name={alwaysOnTopLayerName}>
-                  <Group name={alwaysOnTopGroupName} />
-                </Layer>
-                {toolId === Tool.Polygon && (
-                  <PolygonTool width={width} height={height} />
-                )}
-                {toolId === Tool.Mask && (
-                  <MaskTool
-                    key={imageId}
-                    width={imageWidth}
-                    height={imageHeight}
-                    labels={labels}
-                  />
-                )}
-                {toolId === Tool.Bbox && (
-                  <BboxTool width={width} height={height} />
-                )}
-                {panningEnabled && <Panning width={width} height={height} />}
-              </ImageClampingContextProvider>
-            </CanvasDimensionsContextProvider>
-          </KonvaStageContextProvider>
-        ) : null}
-      </Stage>
+      <HotkeysProvider>
+        <Stage
+          className="flex flex-col relative overscroll-x-none touch-none p-[6px] bg-slate-300"
+          draggable={panningEnabled}
+          ref={stageRef}
+          width={width || 0}
+          height={height || 0}
+          x={x || 0}
+          y={y || 0}
+          onWheel={handleWheel}
+          dragBoundFunc={handleDragBound}
+          onMouseDown={handleMiddleMouseButton}
+          onMouseUp={handleMiddleMouseButtonUp}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMiddleMouseButtonLeave}
+        >
+          {stageRef.current ? (
+            <KonvaStageContextProvider stage={stageRef.current.getStage()}>
+              <CanvasDimensionsContextProvider sizes={canvasDimensions}>
+                <ImageClampingContextProvider>
+                  <Layer>
+                    <Image
+                      ref={imageRef}
+                      image={imageObject}
+                      width={imageWidth}
+                      height={imageHeight}
+                      onClick={() => {
+                        resetSelection();
+                      }}
+                      strokeWidth={3}
+                      stroke={MID_BLUE}
+                      strokeScaleEnabled={false}
+                      alt="image"
+                    />
+                  </Layer>
+                  {toolId === Tool.Selection && (
+                    <Selection
+                      width={width}
+                      height={height}
+                      labels={labels}
+                      processedLabelsTree={processedLabelsTree}
+                    />
+                  )}
+                  {imageLoaded && (
+                    <Labels
+                      processedLabelsTree={processedLabelsTree}
+                      groupRef={groupRef}
+                    />
+                  )}
+                  {/* 라벨 선택 시 하얀 라인 위로 올리게 하는 레이어 */}
+                  <Layer name={alwaysOnTopLayerName}>
+                    <Group name={alwaysOnTopGroupName} />
+                  </Layer>
+                  {toolId === Tool.Polygon && (
+                    <PolygonTool width={width} height={height} />
+                  )}
+                  {toolId === Tool.Bbox && (
+                    <BboxTool width={width} height={height} />
+                  )}
+                  {panningEnabled && <Panning width={width} height={height} />}
+                </ImageClampingContextProvider>
+              </CanvasDimensionsContextProvider>
+            </KonvaStageContextProvider>
+          ) : null}
+        </Stage>
+      </HotkeysProvider>
     </div>
   );
 };

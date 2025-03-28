@@ -1,6 +1,11 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import useDashboardOverview from '../../_hooks/use-dashboard-overview';
 
 const ProjectOverview = () => {
+  const { data } = useDashboardOverview();
+
   return (
     <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       <Card>
@@ -21,7 +26,7 @@ const ProjectOverview = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">45231</div>
+          <div className="text-2xl font-bold">{data?.total || 0}</div>
         </CardContent>
       </Card>
       <Card>
@@ -42,7 +47,7 @@ const ProjectOverview = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">2350</div>
+          <div className="text-2xl font-bold">{data?.new || 0}</div>
         </CardContent>
       </Card>
       <Card>
@@ -63,7 +68,7 @@ const ProjectOverview = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">2234</div>
+          <div className="text-2xl font-bold">{data?.inProgress || 0}</div>
         </CardContent>
       </Card>
       <Card>
@@ -84,7 +89,7 @@ const ProjectOverview = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">2234</div>
+          <div className="text-2xl font-bold">{data?.inProgress || 0}</div>
         </CardContent>
       </Card>
       <Card>
@@ -105,7 +110,7 @@ const ProjectOverview = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">573</div>
+          <div className="text-2xl font-bold">{data?.toReview || 0}</div>
         </CardContent>
       </Card>
       <Card>
@@ -126,7 +131,7 @@ const ProjectOverview = () => {
           </svg>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">573</div>
+          <div className="text-2xl font-bold">{data?.completed || 0}</div>
         </CardContent>
       </Card>
     </div>

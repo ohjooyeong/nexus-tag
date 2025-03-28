@@ -6,11 +6,20 @@ type Login = {
   password: string;
 };
 
+type LoginResponse = {
+  statusCode: number;
+  message: string;
+  data: { access_token: string; expires_at: number; expires_in: number };
+};
+
 export default function useLogin() {
   const mutate = useMutation({
     mutationFn: async (context: Login) => {
-      const { data } = await axiosInstance.post(`/auth/login`, context);
-      return data;
+      const { data } = await axiosInstance.post<LoginResponse>(
+        `/auth/login`,
+        context,
+      );
+      return data.data;
     },
   });
 

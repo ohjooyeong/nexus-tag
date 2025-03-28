@@ -33,3 +33,25 @@ export const BRUSH_SIZE_SLIDER_PARAMS = {
   min: BRUSH_SIZE_VALUES.MIN,
 };
 export const UNDO_REDO_STACK_LIMIT = 20;
+export const ToolKey = {
+  Pan: 'pan',
+  Selection: 'selection',
+  Polygon: 'polygon',
+  Bbox: 'bbox',
+  Mask: 'mask',
+  Copy: 'copy',
+};
+
+export const TOOL_HOTKEY_OVERRIDES = {
+  [ToolKey.Polygon]: {
+    undoRedo: true,
+    escape: true,
+  },
+  [ToolKey.Mask]: {
+    e: true,
+    b: true,
+    undoRedo: true,
+    escape: true,
+  },
+  [ToolKey.Bbox]: { escape: true },
+};

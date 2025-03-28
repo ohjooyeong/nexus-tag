@@ -59,8 +59,10 @@ const ProjectCard = ({ project }: Props) => {
           <div className="flex justify-between items-center mt-2">
             <div className="flex justify-between items-center text-xs">
               <FolderIcon className="w-3 h-3 text-muted-foreground" />
-              <span className="ml-1">55</span>
-              <span className="ml-1">images</span>
+              <span className="ml-1">{project?.totalImages}</span>
+              <span className="ml-1">
+                {project?.totalImages === 1 ? 'image' : 'images'}
+              </span>
             </div>
             <div className="flex justify-between items-center ml-2">
               {/* <User2Icon className="w-3 h-3 text-muted-foreground" />

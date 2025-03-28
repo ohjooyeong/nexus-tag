@@ -33,7 +33,7 @@ const DataItemCard = ({
   const isMyRoleOwnerOrManager =
     currentMyRole === 'OWNER' || currentMyRole === 'MANAGER';
 
-  const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${dataItem?.fileUrl}`;
+  const imageUrl = `${dataItem?.fileUrl}`;
 
   const handleRoute = (event: React.MouseEvent<SVGSVGElement>) => {
     event.preventDefault();

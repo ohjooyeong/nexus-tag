@@ -1,9 +1,9 @@
-import { create } from 'zustand';
-import { temporal } from 'zundo';
-import { devtools } from 'zustand/middleware';
+import { create, useStore } from 'zustand';
+import { temporal, TemporalState } from 'zundo';
 import shortid from 'shortid';
 import { ImageLabel } from '../../_types/image-label';
 import { useLabelSyncStore } from './label-sync-store';
+import { devtools } from 'zustand/middleware';
 
 // State 타입
 interface State {
@@ -31,9 +31,9 @@ interface Actions {
 // 전체 Store 타입
 type LabelsState = State & Actions;
 
-export const useLabelsStore = create<LabelsState>()(
+export const useLabelsStore = create(
   devtools(
-    temporal(
+    temporal<LabelsState>(
       (set, get) => ({
         labels: {},
         currentGroup: undefined,
@@ -131,6 +131,7 @@ export const useLabelsStore = create<LabelsState>()(
 
             return { labels: newLabels };
           });
+          useLabelSyncStore.getState().markAsDirty();
         },
 
         getLabels: () => {
@@ -162,10 +163,15 @@ export const useLabelsStore = create<LabelsState>()(
       }),
 
       {
-        partialize: (state: LabelsState): State => ({
-          labels: state.labels,
-          currentGroup: state.currentGroup,
-        }),
+        partialize: (state: LabelsState): LabelsState => {
+          useLabelSyncStore.getState().markAsDirty();
+
+          return {
+            ...state,
+            currentGroup: state.currentGroup,
+            labels: state.labels,
+          };
+        },
         equality: (prev: State, next: State) => {
           return (
             prev.currentGroup === next.currentGroup &&
@@ -177,24 +183,11 @@ export const useLabelsStore = create<LabelsState>()(
   ),
 );
 
-type TemporalState = {
-  temporal: {
-    undo: () => void;
-    redo: () => void;
-    clear: () => void;
-    pastStates: unknown[];
-    futureStates: unknown[];
-  };
-};
-
-export const useLabelsHistory = () => {
-  const temporal = (useLabelsStore as unknown as TemporalState).temporal;
-
-  return {
-    undo: temporal.undo,
-    redo: temporal.redo,
-    clear: temporal.clear,
-    canUndo: () => temporal.pastStates?.length > 0,
-    canRedo: () => temporal.futureStates?.length > 0,
-  };
-};
+export const useLabelsHistory = <T>(
+  selector: (state: TemporalState<LabelsState>) => T,
+  equality?: (a: T, b: T) => boolean,
+) =>
+  useStore(
+    useLabelsStore.temporal,
+    selector as (state: TemporalState<any>) => T,
+  );

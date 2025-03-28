@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import useWorkspaceMyRole from '@/app/(workspace)/(workspace-main)/_hooks/use-workspace-my-role';
 import { useClassLabelStore } from '../../_store/class-label-store';
 import { useLabelsStore } from '../../_store/label-collection/labels-store';
+import DeleteClassLabelDialog from '../dialog/delete-classes-dialog';
 
 type ClassesCardProps = {
   classLabel: LabelClass;
@@ -23,7 +24,8 @@ type ClassesCardProps = {
 const ClassesCard = ({ classLabel }: ClassesCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isHide, setIsHide] = useState(false);
-  const [showLabelDialog, setShowLabelDialog] = useState(false);
+  const [showUpdateLabelDialog, setShowUpdateLabelDialog] = useState(false);
+  const [showDeleteLabelDialog, setShowDeleteLabelDialog] = useState(false);
   const { setActiveClassLabel, getActiveClassLabelId } = useClassLabelStore();
   const { getLabelCountByClassId } = useLabelsStore();
   const labelCount = getLabelCountByClassId(classLabel.id);
@@ -92,7 +94,7 @@ const ClassesCard = ({ classLabel }: ClassesCardProps) => {
                     className="w-6 h-6 text-gray-400 hover:text-blue-500"
                     size={'icon'}
                     onClick={() => {
-                      setShowLabelDialog(true);
+                      setShowUpdateLabelDialog(true);
                     }}
                   >
                     <Edit2Icon className="w-4 h-4" />
@@ -101,6 +103,9 @@ const ClassesCard = ({ classLabel }: ClassesCardProps) => {
                     variant={'ghost'}
                     className="w-6 h-6 text-gray-400 hover:text-blue-500"
                     size={'icon'}
+                    onClick={() => {
+                      setShowDeleteLabelDialog(true);
+                    }}
                   >
                     <Trash className="w-4 h-4" />
                   </Button>
@@ -116,13 +121,22 @@ const ClassesCard = ({ classLabel }: ClassesCardProps) => {
           )}
         </div>
       </div>
-      {showLabelDialog && (
+      {showUpdateLabelDialog && (
         <UpdateClassLabelDialog
-          isOpen={showLabelDialog}
+          isOpen={showUpdateLabelDialog}
           onClose={() => {
-            setShowLabelDialog(false);
+            setShowUpdateLabelDialog(false);
           }}
-          currentClassLabel={classLabel}
+          classLabel={classLabel}
+        />
+      )}
+      {showDeleteLabelDialog && (
+        <DeleteClassLabelDialog
+          isOpen={showDeleteLabelDialog}
+          onClose={() => {
+            setShowDeleteLabelDialog(false);
+          }}
+          classLabel={classLabel}
         />
       )}
     </div>
