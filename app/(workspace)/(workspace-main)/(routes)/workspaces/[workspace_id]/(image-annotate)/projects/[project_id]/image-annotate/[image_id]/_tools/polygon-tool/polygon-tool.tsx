@@ -20,7 +20,6 @@ import { getStagePointerCoordinatesSnappedToPixel } from '../../_helpers/image-v
 import { KonvaEventObject } from 'konva/lib/Node';
 import { v4 as uuidv4 } from 'uuid';
 import { calculateBbox } from '../../_utils/utils';
-import { LabelType } from '../../_types/image-label';
 import { useImageStore } from '../../_store/image-store';
 import { isPolygonValid } from '../../_helpers/polygon/polygon.helpers';
 import { Circle, Layer, Line, Rect } from 'react-konva';

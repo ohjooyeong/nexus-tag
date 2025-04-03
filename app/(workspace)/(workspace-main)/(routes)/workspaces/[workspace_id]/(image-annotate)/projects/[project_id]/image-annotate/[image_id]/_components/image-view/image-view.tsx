@@ -63,7 +63,7 @@ const ImageView = ({
   containerWidth,
   containerHeight,
 }: ImageViewProps) => {
-  const { getImageData, getObject, getImageId } = useImageStore();
+  const { getImageData, getObject } = useImageStore();
   const { setZoom, getZoom } = useZoomStore();
   const { getActiveTool, setActiveTool } = useToolStore();
   const { getEnabledPanning, setEnabledPanning } = usePanningStore();
@@ -71,7 +71,7 @@ const ImageView = ({
   const toolId = getActiveTool();
   const currentZoom = getZoom();
   const panningEnabled = getEnabledPanning();
-  const imageId = getImageId();
+
   const { undo, redo, futureStates, pastStates } = useLabelsHistory(
     (state) => state,
   );
@@ -503,12 +503,16 @@ const ImageView = ({
                   <Layer name={alwaysOnTopLayerName}>
                     <Group name={alwaysOnTopGroupName} />
                   </Layer>
+                  {toolId === Tool.Mask && (
+                    <MaskTool width={width} height={height} labels={labels} />
+                  )}
                   {toolId === Tool.Polygon && (
                     <PolygonTool width={width} height={height} />
                   )}
                   {toolId === Tool.Bbox && (
                     <BboxTool width={width} height={height} />
                   )}
+
                   {panningEnabled && <Panning width={width} height={height} />}
                 </ImageClampingContextProvider>
               </CanvasDimensionsContextProvider>

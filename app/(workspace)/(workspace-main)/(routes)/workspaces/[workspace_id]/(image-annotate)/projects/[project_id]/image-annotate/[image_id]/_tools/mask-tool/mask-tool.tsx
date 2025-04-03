@@ -83,7 +83,12 @@ const MaskTool = ({ width, height, labels }: MaskToolProps) => {
     setEraser,
   } = useMaskStore();
   const { resetActiveTool } = useToolStore();
-  const { undo, redo, canUndo, canRedo } = useLabelsHistory();
+  const { undo, redo, futureStates, pastStates } = useLabelsHistory(
+    (state) => state,
+  );
+  const canUndo = () => pastStates.length > 0;
+  const canRedo = () => futureStates.length > 0;
+
   const { updateLabels, deleteLabels, addLabels } = useLabelsStore();
 
   const maskExists = getMaskExists();
@@ -681,7 +686,6 @@ const MaskTool = ({ width, height, labels }: MaskToolProps) => {
                 mask,
                 classLabelId: activeClassLabelId ?? undefined,
                 borderData: borderData ?? undefined,
-                type: LabelType.MASK,
               },
             ]);
 
@@ -857,7 +861,6 @@ const MaskTool = ({ width, height, labels }: MaskToolProps) => {
   }, [
     undo,
     getCurrentStackValue,
-    canUndo,
     handleUndoRedo,
     minUndoIndex,
     undoStack,
@@ -877,14 +880,7 @@ const MaskTool = ({ width, height, labels }: MaskToolProps) => {
       handleUndoRedo(imageData);
     }
     triggerAction(null);
-  }, [
-    redo,
-    triggerAction,
-    getCurrentStackValue,
-    canRedo,
-    handleUndoRedo,
-    redoStack,
-  ]);
+  }, [redo, triggerAction, getCurrentStackValue, handleUndoRedo, redoStack]);
 
   useEffect(() => {
     if (actionTrigger === 'discard') handleClearDrawing();

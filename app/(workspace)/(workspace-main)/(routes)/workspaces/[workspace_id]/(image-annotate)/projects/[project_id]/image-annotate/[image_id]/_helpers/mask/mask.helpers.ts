@@ -120,53 +120,53 @@ export const generatePathData = (contours: Contour[]): string | null => {
   return pathData ? `${pathData} z` : null;
 };
 
-interface ContourImage {
-  data: Uint8Array;
-  width: number;
-  height: number;
-  offset: { x: number; y: number };
-}
+const prepareMask = (mask: ProcessedImageData) => {
+  const originalWidth = mask.width;
+  const maskData = mask.data;
+  const minX = mask.bounds.minX;
+  const maxX = mask.bounds.maxX;
+  const minY = mask.bounds.minY;
+  const maxY = mask.bounds.maxY;
 
-export const traceContours = (inputMask: ProcessedImageData) => {
-  // Prepare mask data with padding
-  const prepareImageData = (mask: ProcessedImageData) => {
-    const { width, data, bounds } = mask;
-    const { minX, maxX, minY, maxY } = bounds;
+  // 각 면에 1px의 "흰색" 테두리를 추가한 경계 크기
+  const reducedWidth = maxX - minX + 3;
+  const reducedHeight = maxY - minY + 3;
 
-    const paddedWidth = maxX - minX + 3;
-    const paddedHeight = maxY - minY + 3;
-    const paddedData = new Uint8Array(paddedWidth * paddedHeight);
+  // 축소된 마스크 (경계 크기)
+  const resultData = new Uint8Array(reducedWidth * reducedHeight);
 
-    for (let y = minY; y < maxY + 1; y++) {
-      for (let x = minX; x < maxX + 1; x++) {
-        if (data[y * width + x] === 1) {
-          paddedData[(y - minY + 1) * paddedWidth + (x - minX + 1)] = 1;
-        }
+  // 내부 값을 순회하면서 "검은색" 점들만 결과 마스크로 복사
+  for (let y = minY; y < maxY + 1; y++) {
+    for (let x = minX; x < maxX + 1; x++) {
+      if (maskData[y * originalWidth + x] === 1) {
+        resultData[(y - minY + 1) * reducedWidth + (x - minX + 1)] = 1;
       }
     }
+  }
 
-    return {
-      data: paddedData,
-      width: paddedWidth,
-      height: paddedHeight,
-      offset: { x: minX - 1, y: minY - 1 },
-    };
+  return {
+    data: resultData,
+    width: reducedWidth,
+    height: reducedHeight,
+    offset: { x: minX - 1, y: minY - 1 },
   };
+};
 
-  const paddedMask = prepareImageData(inputMask);
+const traceContours = (mask: ProcessedImageData) => {
+  const preparedMask = prepareMask(mask);
   const contours = [];
-  let contourCount = 0;
+  let labelCounter = 0;
 
-  const {
-    width: maskWidth,
-    height: maskHeight,
-    data: maskData,
-    offset,
-  } = paddedMask;
-  const doubleWidth = 2 * maskWidth;
-  const visitedPixels = new Uint8Array(maskData);
+  const width = preparedMask.width;
+  const doubleWidth = width * 2;
+  const height = preparedMask.height;
+  const sourceData = preparedMask.data;
+  const offsetX = preparedMask.offset.x;
+  const offsetY = preparedMask.offset.y;
 
-  // Direction vectors for 8-connected neighborhood
+  // 처리된 픽셀을 추적하기 위한 레이블 행렬
+  const labelMatrix = new Uint8Array(sourceData);
+
   const directions = [
     [1, 0],
     [1, 1],
@@ -178,185 +178,198 @@ export const traceContours = (inputMask: ProcessedImageData) => {
     [1, -1],
   ];
 
-  // Function to add point to contour
-  const addPointToContour = (
-    contourPoints: any[],
-    currentX: number,
-    currentY: number,
-    dirIndex: number,
-  ) => {
-    const addPoint = (dx: number, dy: number) => {
-      const x = currentX + offset.x + dx;
-      const y = currentY + offset.y + dy;
-      const lastPoint = contourPoints[contourPoints.length - 1];
+  for (let y = 1; y < height - 1; y++) {
+    for (let x = 1; x < width - 1; x++) {
+      const currentIndex = y * width + x;
 
-      if (!lastPoint || lastPoint.x !== x || lastPoint.y !== y) {
-        contourPoints.push({ x, y });
-      }
-    };
-
-    switch (dirIndex) {
-      case 0:
-        addPoint(1, 0);
-        break;
-      case 1:
-        addPoint(1, 0);
-        addPoint(1, 1);
-        break;
-      case 2:
-        addPoint(1, 1);
-        break;
-      case 3:
-        addPoint(1, 1);
-        addPoint(0, 1);
-        break;
-      case 4:
-        addPoint(0, 1);
-        break;
-      case 5:
-        addPoint(0, 1);
-        addPoint(0, 0);
-        break;
-      case 6:
-        addPoint(0, 0);
-        break;
-      case 7:
-        addPoint(0, 0);
-        addPoint(1, 0);
-        break;
-    }
-  };
-
-  // Trace contours
-  const traceContour = (
-    startX: number,
-    startY: number,
-    isInnerContour: boolean,
-    maskWidth: number,
-    maskData: Uint8Array,
-    visitedPixels: Uint8Array,
-    offset: { x: number; y: number },
-    directions: number[][],
-    contourCount: number,
-  ): { points: Point[]; completed: boolean } => {
-    const contourPoints: Point[] = [];
-    const startPos = { x: startX, y: startY };
-    let currentPos = { x: startX, y: startY };
-    let firstPoint = null;
-    let prevDir = isInnerContour ? 2 : 6;
-    let currentDir = prevDir;
-
-    // 시작점 추가
-    contourPoints.push({
-      x: startPos.x + (isInnerContour ? 1 : 0) + offset.x,
-      y: startPos.y + (isInnerContour ? 1 : 0) + offset.y,
-    });
-
-    while (true) {
-      visitedPixels[currentPos.y * maskWidth + currentPos.x] = contourCount;
-
-      // 다음 위치 찾기
-      let foundNextPos = false;
-      let nextPos = { x: currentPos.x, y: currentPos.y };
-
-      for (let i = 0; i < 8; i++) {
-        currentDir = (currentDir + 1) % 8;
-        const [dx, dy] = directions[currentDir];
-        const newPos = { x: currentPos.x + dx, y: currentPos.y + dy };
-        const newIndex = newPos.y * maskWidth + newPos.x;
-
-        if (maskData[newIndex] === 1) {
-          visitedPixels[newIndex] = contourCount;
-          nextPos = newPos;
-          foundNextPos = true;
-          break;
-        }
-        visitedPixels[newIndex] = -1;
-      }
-
-      if (!foundNextPos) {
-        return { points: contourPoints, completed: false };
-      }
-
-      if (firstPoint) {
-        if (
-          currentPos.x === startPos.x &&
-          currentPos.y === startPos.y &&
-          nextPos.x === firstPoint.x &&
-          nextPos.y === firstPoint.y
+      if (sourceData[currentIndex] === 1) {
+        for (
+          let traceOffset = -width;
+          traceOffset < doubleWidth;
+          traceOffset += doubleWidth
         ) {
-          return { points: contourPoints, completed: true };
-        }
-      } else {
-        firstPoint = { ...nextPos };
-      }
+          if (
+            sourceData[currentIndex + traceOffset] === 0 &&
+            labelMatrix[currentIndex + traceOffset] === 0
+          ) {
+            // 윤곽선 추적 필요
+            labelCounter++; // 다음 윤곽선을 위한 레이블
+            const isInnerContour = traceOffset === width;
 
-      // Add points to contour
-      const dirRange = [];
-      if ((prevDir - currentDir + 8) % 8 > 2) {
-        let dir = prevDir;
-        while (dir !== currentDir) {
-          dirRange.push(dir);
-          dir = (dir + 1) % 8;
-        }
-      }
-      dirRange.push(currentDir);
+            const contourPoints: Point[] = [];
+            let direction = isInnerContour ? 2 : 6; // 시작 방향향
+            let startDirection = direction; // 초기 방향 추적
 
-      dirRange.forEach((dir) => {
-        addPointToContour(contourPoints, currentPos.x, currentPos.y, dir);
-      });
+            let currentPoint = { x: x, y: y };
+            let previousPoint = currentPoint;
+            const firstPoint = currentPoint;
+            let secondPoint = null;
+            let nextPoint = null;
 
-      currentPos = nextPos;
-      prevDir = currentDir;
-      currentDir = (currentDir + 4) % 8;
-    }
-  };
+            // 두 번째 구현과 일치하도록 내부 윤곽선의 첫 번째 점 추가
+            if (isInnerContour) {
+              contourPoints.push({
+                x: firstPoint.x + 1 + offsetX,
+                y: firstPoint.y + 1 + offsetY,
+              });
+            } else {
+              contourPoints.push({
+                x: firstPoint.x + offsetX,
+                y: firstPoint.y + offsetY,
+              });
+            }
 
-  // Trace contours 함수 내부 수정
-  for (let y = 1; y < maskHeight - 1; y++) {
-    for (let x = 1; x < maskWidth - 1; x++) {
-      const pixelIndex = y * maskWidth + x;
+            // 윤곽선 추적
+            while (true) {
+              // 현재 점에 대한 레이블 표시
+              labelMatrix[currentPoint.y * width + currentPoint.x] =
+                labelCounter;
 
-      if (maskData[pixelIndex] !== 1) continue;
+              // 시계 방향으로 현재 점 주변의 모든 이웃을 순회
+              let foundNeighbor = false;
+              for (let j = 0; j < 8; j++) {
+                direction = (direction + 1) % 8;
 
-      for (const yOffset of [-maskWidth, maskWidth]) {
-        const neighborIndex = pixelIndex + yOffset;
-        if (
-          maskData[neighborIndex] === 0 &&
-          visitedPixels[neighborIndex] === 0
-        ) {
-          contourCount++;
-          const isInnerContour = yOffset === -maskWidth;
+                // 새로운 방향으로 다음 점 가져오기
+                const dirVector = directions[direction];
+                nextPoint = {
+                  x: currentPoint.x + dirVector[0],
+                  y: currentPoint.y + dirVector[1],
+                };
 
-          const { points, completed } = traceContour(
-            x,
-            y,
-            isInnerContour,
-            maskWidth,
-            maskData,
-            visitedPixels,
-            offset,
-            directions,
-            contourCount,
-          );
+                const nextIndex = nextPoint.y * width + nextPoint.x;
+                if (sourceData[nextIndex] === 1) {
+                  // 검은색 경계 픽셀
+                  labelMatrix[nextIndex] = labelCounter; // 레이블 표시
+                  foundNeighbor = true;
+                  break;
+                }
 
-          if (!completed) {
-            // 닫히지 않은 컨투어 처리
-            const closePoints = [
-              { x: x + offset.x, y: y + offset.y },
-              { x: x + 1 + offset.x, y: y + offset.y },
-              { x: x + 1 + offset.x, y: y + 1 + offset.y },
-              { x: x + offset.x, y: y + 1 + offset.y },
-              { x: x + offset.x, y: y + offset.y },
-            ];
-            points.push(...closePoints);
+                labelMatrix[nextIndex] = -1; // 흰색 경계 픽셀 표시
+                nextPoint = null;
+              }
+
+              if (!foundNeighbor) break; // (단일 점 윤곽선)
+
+              // 방향을 기반으로 점 추가
+              // 먼저, 중복 확인을 위한 오프셋이 있는 점을 추가하는 함수 생성
+              const addPoint = (dx: number, dy: number) => {
+                const newX = previousPoint.x + offsetX + dx;
+                const newY = previousPoint.y + offsetY + dy;
+                const lastPoint = contourPoints.length
+                  ? contourPoints[contourPoints.length - 1]
+                  : null;
+
+                // 마지막 점과 중복되지 않는 경우에만 점 추가
+                if (
+                  !(lastPoint && lastPoint.x === newX && lastPoint.y === newY)
+                ) {
+                  contourPoints.push({ x: newX, y: newY });
+                }
+              };
+
+              // 처리할 방향 계산
+              let currDir =
+                typeof startDirection === 'number' ? startDirection : direction;
+              const dirs = [];
+
+              // 90도 이상 회전하는 경우 중간 점들을 추가해야 함
+              if ((startDirection - direction + 8) % 8 > 2) {
+                while (currDir !== direction) {
+                  dirs.push(currDir);
+                  currDir = (currDir + 1) % 8;
+                }
+              }
+              dirs.push(direction);
+
+              // 각 방향을 처리하고 해당하는 점들을 추가
+              dirs.forEach((dir) => {
+                switch (dir) {
+                  case 0:
+                    addPoint(1, 0);
+                    break;
+                  case 1:
+                    addPoint(1, 0);
+                    addPoint(1, 1);
+                    break;
+                  case 2:
+                    addPoint(1, 1);
+                    break;
+                  case 3:
+                    addPoint(1, 1);
+                    addPoint(0, 1);
+                    break;
+                  case 4:
+                    addPoint(0, 1);
+                    break;
+                  case 5:
+                    addPoint(0, 1);
+                    addPoint(0, 0);
+                    break;
+                  case 6:
+                    addPoint(0, 0);
+                    break;
+                  case 7:
+                    addPoint(0, 0);
+                    addPoint(1, 0);
+                    break;
+                }
+              });
+
+              if (nextPoint === null) break;
+              currentPoint = nextPoint;
+
+              // 윤곽선이 완성되었는지 확인
+              if (secondPoint) {
+                if (
+                  previousPoint.x === firstPoint.x &&
+                  previousPoint.y === firstPoint.y &&
+                  currentPoint.x === secondPoint.x &&
+                  currentPoint.y === secondPoint.y
+                ) {
+                  break; // 원래 위치로 돌아왔을 때 윤곽선 생성 완료
+                }
+              } else {
+                secondPoint = nextPoint;
+              }
+
+              previousPoint = currentPoint;
+              startDirection = direction; // 다음 비교를 위해 현재 방향 저장
+              direction = (direction + 4) % 8; // 다음 방향 (현재 방향에 대해 대칭)
+            }
+
+            // 단일 점 윤곽선 처리 및 윤곽선 닫기
+            if (nextPoint === null) {
+              // 두 번째 구현과 일치하도록 단일 점 주위에 상자 생성
+              contourPoints.push({
+                x: firstPoint.x + offsetX,
+                y: firstPoint.y + offsetY,
+              });
+              contourPoints.push({
+                x: firstPoint.x + 1 + offsetX,
+                y: firstPoint.y + offsetY,
+              });
+              contourPoints.push({
+                x: firstPoint.x + 1 + offsetX,
+                y: firstPoint.y + 1 + offsetY,
+              });
+              contourPoints.push({
+                x: firstPoint.x + offsetX,
+                y: firstPoint.y + 1 + offsetY,
+              });
+              contourPoints.push({
+                x: firstPoint.x + offsetX,
+                y: firstPoint.y + offsetY,
+              });
+            }
+
+            // 윤곽선을 목록에 추가
+            contours.push({
+              inner: isInnerContour,
+              label: labelCounter,
+              points: contourPoints,
+            });
           }
-
-          contours.push({
-            inner: isInnerContour,
-            label: contourCount,
-            points,
-          });
         }
       }
     }
@@ -532,7 +545,7 @@ export const drawingOffScreen = async ({
     }
 
     // 포인트들을 연결하여 선 그리기
-    let lastPoint: [number, number] = [0, 0];
+    let lastPoint: [number, number] | [] = [];
     points.forEach(([x, y]) => {
       const [prevX = x, prevY = y] = lastPoint;
       // 선 굵기가 홀수/짝수인 경우에 따라 좌표 조정
