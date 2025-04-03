@@ -28,10 +28,7 @@ export const BRUSH_SIZE_VALUES = {
   MIN: 1,
   MAX: 200,
 };
-export const BRUSH_SIZE_SLIDER_PARAMS = {
-  max: BRUSH_SIZE_VALUES.MAX,
-  min: BRUSH_SIZE_VALUES.MIN,
-};
+
 export const UNDO_REDO_STACK_LIMIT = 20;
 export const ToolKey = {
   Pan: 'pan',

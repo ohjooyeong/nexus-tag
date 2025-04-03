@@ -899,7 +899,6 @@ const MaskTool = ({ width, height, labels }: MaskToolProps) => {
 
   useEffect(() => {
     stage.on('mousedown.drawing', handleMouseDown);
-
     stage.on('mousemove.drawing', handleMouseMove);
     stage.on('mouseup.drawing', handleMouseUp);
 

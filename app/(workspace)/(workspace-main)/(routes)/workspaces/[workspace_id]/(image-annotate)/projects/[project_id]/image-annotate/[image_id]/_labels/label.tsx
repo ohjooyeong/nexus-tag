@@ -25,6 +25,7 @@ import CursorSetter from '../_components/cursor/cursor-setter';
 import chroma from 'chroma-js';
 import AlwaysOnTop from '../_components/always-on-top/always-on-top';
 import Polygon from './polygon/polygon';
+import Mask from './mask';
 
 type LabelProps = {
   label: ImageLabel;
@@ -61,6 +62,8 @@ const Label = ({ label, labelClass, onDragStart, onDragEnd }: LabelProps) => {
     activeToolId !== Tool.Pan &&
     !panningEnabled &&
     (exclusivelySelected || !selected);
+  const maskEditing =
+    exclusivelySelected && label.mask && activeToolId === Tool.Mask;
   const classLabelHovered = isClassLabelHovered(label.classLabelId!);
 
   const timeoutRef = useRef<number | null>(null);
@@ -182,6 +185,28 @@ const Label = ({ label, labelClass, onDragStart, onDragEnd }: LabelProps) => {
         fill={fill}
         stroke={stroke}
         dash={dash}
+        strokeWidth={strokeWidth}
+      />
+    );
+
+  if (label.mask)
+    LabelComponent = (
+      <Mask
+        label={label}
+        isDragged={isDragged}
+        onClick={handleClick}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        draggable={draggable}
+        dragDistance={DRAG_DISTANCE}
+        absoluteScale={absoluteScale}
+        onMouseOver={handleOnMouseOver}
+        onMouseOut={handleOnMouseOut}
+        fill={fill}
+        stroke={stroke}
+        dash={dash}
+        visible={!maskEditing}
+        dragBoundFunc={handleDragBound}
         strokeWidth={strokeWidth}
       />
     );

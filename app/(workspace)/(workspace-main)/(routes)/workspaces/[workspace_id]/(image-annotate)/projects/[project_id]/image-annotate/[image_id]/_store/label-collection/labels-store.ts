@@ -4,6 +4,7 @@ import shortid from 'shortid';
 import { ImageLabel } from '../../_types/image-label';
 import { useLabelSyncStore } from './label-sync-store';
 import { devtools } from 'zustand/middleware';
+import { useSelectedLabelsStore } from './selected-labels-store';
 
 // State 타입
 interface State {
@@ -106,6 +107,7 @@ export const useLabelsStore = create(
             return { labels: newLabels };
           });
           useLabelSyncStore.getState().markAsDirty();
+          useSelectedLabelsStore.getState().resetSelection();
         },
 
         updateLabels: (updates, undoGroup) => {

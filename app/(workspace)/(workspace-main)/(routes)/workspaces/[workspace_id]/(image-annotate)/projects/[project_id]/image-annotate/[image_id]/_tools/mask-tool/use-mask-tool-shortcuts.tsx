@@ -45,8 +45,12 @@ export const useMaskToolShortcuts = ({
   );
 
   // 브러시 크기 조절
-  useHotkeys(',', () => handleDecreaseBrushSize(), { scopes: 'mask-tool' });
-  useHotkeys('.', () => handleIncreaseBrushSize(), { scopes: 'mask-tool' });
+  useHotkeys(['['], () => handleDecreaseBrushSize(), {
+    scopes: 'mask-tool',
+  });
+  useHotkeys([']'], () => handleIncreaseBrushSize(), {
+    scopes: 'mask-tool',
+  });
 
   // 오버페인팅 토글
   useHotkeys(['shift+o'], () => toggleOverpainting(), { scopes: 'mask-tool' });

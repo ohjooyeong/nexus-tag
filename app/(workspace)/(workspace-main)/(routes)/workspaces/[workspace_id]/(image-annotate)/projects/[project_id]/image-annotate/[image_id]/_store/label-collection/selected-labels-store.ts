@@ -33,7 +33,10 @@ export const useSelectedLabelsStore = create<SelectedLabelsState>(
       set((state) => {
         const newSelectedLabelIds = new Set(state.selectedLabelIds);
         labelIds.forEach((id) => newSelectedLabelIds.delete(id));
-        return { selectedLabelIds: newSelectedLabelIds };
+        return {
+          selectedLabelIds: newSelectedLabelIds,
+          selectedLabelIdsArray: Array.from(newSelectedLabelIds),
+        };
       });
     },
 
@@ -57,7 +60,10 @@ export const useSelectedLabelsStore = create<SelectedLabelsState>(
         } else {
           newSelectedLabelIds.add(labelId);
         }
-        return { selectedLabelIds: newSelectedLabelIds };
+        return {
+          selectedLabelIds: newSelectedLabelIds,
+          selectedLabelIdsArray: Array.from(newSelectedLabelIds),
+        };
       });
     },
 
@@ -65,11 +71,18 @@ export const useSelectedLabelsStore = create<SelectedLabelsState>(
       const availableLabels = Object.values(labels)
         .filter((label) => !label.isDeleted)
         .map((label) => label.id);
-      set({ selectedLabelIds: new Set(availableLabels) });
+      const newSelectedLabelIds = new Set(availableLabels);
+      set({
+        selectedLabelIds: newSelectedLabelIds,
+        selectedLabelIdsArray: Array.from(newSelectedLabelIds),
+      });
     },
 
     resetSelection: () => {
-      set({ selectedLabelIds: new Set() });
+      set({
+        selectedLabelIds: new Set(),
+        selectedLabelIdsArray: [],
+      });
     },
 
     // 값을 가져올 때 Array.from으로 매번 변환하는 건 비효율적이고,

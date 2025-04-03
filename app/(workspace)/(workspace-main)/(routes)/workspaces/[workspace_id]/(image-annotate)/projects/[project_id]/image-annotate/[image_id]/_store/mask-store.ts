@@ -28,6 +28,7 @@ interface Actions {
   setBrushSize: (size: number) => void;
   setBrush: () => void;
   setEraser: () => void;
+  toggleMode: () => void;
   toggleOverpainting: () => void;
   triggerAction: (type: ActionTriggerType) => void;
 }
@@ -71,6 +72,10 @@ export const useMaskStore = create<MaskState>((set, get) => ({
 
   setEraser: () => {
     set({ mode: 'eraser' });
+  },
+
+  toggleMode: () => {
+    set({ mode: get().mode === 'brush' ? 'eraser' : 'brush' });
   },
 
   toggleOverpainting: () => {
