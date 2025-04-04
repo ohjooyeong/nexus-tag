@@ -52,3 +52,28 @@ export const TOOL_HOTKEY_OVERRIDES = {
   },
   [ToolKey.Bbox]: { escape: true },
 };
+
+export const STATUS_OPTIONS = [
+  { value: 'NEW', label: 'New', allowedRoles: ['OWNER', 'MANAGER'] },
+  {
+    value: 'IN_PROGRESS',
+    label: 'In Progress',
+    allowedRoles: ['OWNER', 'MANAGER', 'WORKER'],
+  },
+  {
+    value: 'TO_REVIEW',
+    label: 'To Review',
+    allowedRoles: ['OWNER', 'MANAGER', 'WORKER'],
+  },
+  {
+    value: 'DONE',
+    label: 'Done',
+    allowedRoles: ['OWNER', 'MANAGER', 'REVIEWER'],
+  },
+  {
+    value: 'COMPLETED',
+    label: 'Completed',
+    allowedRoles: ['OWNER', 'MANAGER'],
+  },
+  { value: 'SKIPPED', label: 'Skipped', allowedRoles: ['OWNER', 'MANAGER'] },
+];

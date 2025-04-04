@@ -47,6 +47,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import useUpdateClassLabel from '../../_hooks/use-update-class-label';
 
 const UpdateClassLabelDialog = ({
   isOpen,
@@ -100,7 +101,7 @@ const UpdateClassLabelDialog = ({
     },
   });
 
-  const updateClassLabelMutation = useCreateClassLabel();
+  const updateClassLabelMutation = useUpdateClassLabel();
 
   const onSubmit = async (data: ClassLabelFormValues) => {
     setIsLoading(true);
@@ -140,8 +141,8 @@ const UpdateClassLabelDialog = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Class Label</DialogTitle>
-          <DialogDescription>Add a new class Label.</DialogDescription>
+          <DialogTitle>Update Class Label</DialogTitle>
+          <DialogDescription>update a class Label.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -156,7 +157,7 @@ const UpdateClassLabelDialog = ({
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Please enter the new class Label name."
+                      placeholder="Please enter the class Label name."
                       {...field}
                       disabled={isLoading}
                       autoComplete="off"
@@ -269,7 +270,7 @@ const UpdateClassLabelDialog = ({
                   transition"
                 disabled={isLoading}
               >
-                Create
+                Update
               </Button>
             </DialogFooter>
           </form>

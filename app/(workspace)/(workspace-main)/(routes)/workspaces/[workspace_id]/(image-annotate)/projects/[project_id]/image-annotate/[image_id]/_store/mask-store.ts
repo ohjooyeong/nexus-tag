@@ -36,7 +36,7 @@ interface Actions {
 type MaskState = State & Actions;
 
 export const useMaskStore = create<MaskState>((set, get) => ({
-  brushSize: 1,
+  brushSize: 10,
   overpainting: true,
   mode: 'brush',
   actionTrigger: null,
