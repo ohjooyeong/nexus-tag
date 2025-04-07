@@ -48,7 +48,6 @@ export const DatasetDistribution = ({ data }: DatasetDistributionProps) => {
               name="Total Items"
               radius={4}
             />
-            <Legend />
           </BarChart>
         </ChartContainer>
       </CardContent>
