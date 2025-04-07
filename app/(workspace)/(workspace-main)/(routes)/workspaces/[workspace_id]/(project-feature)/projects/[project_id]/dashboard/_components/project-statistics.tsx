@@ -1,28 +1,16 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import axiosInstance from '@/config/axios-instance';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { DatasetDistribution } from './charts/dataset-distribution';
 import { StatusDistribution } from './charts/status-distribution';
 import { DailyProgress } from './charts/daily-progress';
 import { datasetColors, statusChartConfig } from './configs/chart-configs';
+import useProjectStatistics from '../_hooks/use-project-statistics';
 
 const ProjectStatistics = () => {
-  const { workspace_id: workspaceId, project_id: projectId } = useParams();
-
-  const { data: statistics, isLoading } = useQuery({
-    queryKey: ['project-statistics', projectId],
-    queryFn: async () => {
-      const { data } = await axiosInstance.get(
-        `/workspaces/${workspaceId}/projects/${projectId}/dashboard/statistics`,
-      );
-      return data?.data;
-    },
-  });
+  const { data: statistics, isLoading } = useProjectStatistics();
 
   const totalCount = useMemo(() => {
     return (

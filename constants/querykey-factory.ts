@@ -61,4 +61,5 @@ export const dashboardQueries = {
   default: () => ['dashboard'],
   overview: (id: string) => [...dashboardQueries.default(), 'overview', id],
   info: (id: string) => [...dashboardQueries.default(), 'info', id],
+  statistics: (id: string) => [...dashboardQueries.default(), 'statistics', id],
 };
