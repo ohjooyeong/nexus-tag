@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Metadata } from 'next';
 import ProjectOverview from './_components/project-overview';
 import ProjectInfo from './_components/project-info';
+import ProjectStatistics from './_components/project-statistics';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -28,6 +29,7 @@ const DashboardPage = () => {
             <ProjectInfo />
           </TabsContent>
         </Tabs>
+        <ProjectStatistics />
       </div>
     </div>
   );
