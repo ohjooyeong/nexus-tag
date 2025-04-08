@@ -68,10 +68,9 @@ PostgreSQL 설치 시 가능
 ```
 
 ## 📸 스크린샷
-![annotate](https://github.com/user-attachments/assets/1c1b6f0e-6ace-4d33-b8a6-ad022d0164f2)
-![화면 캡처 2025-03-22 184735](https://github.com/user-attachments/assets/30a893da-1110-4d57-9ee6-3cc8206819fc)
-![화면 캡처 2025-03-22 184715](https://github.com/user-attachments/assets/8273650d-227a-484c-89b9-759cce8c8743)
-![화면 캡처 2025-03-22 184646](https://github.com/user-attachments/assets/0f1d6ea0-d951-40ef-a057-3e2857430c28)
+![화면 캡처 2025-04-08 103004](https://github.com/user-attachments/assets/fd26bc87-2427-4fb6-a33f-cacc3f3e9028)
+![화면 캡처 2025-04-08 103049](https://github.com/user-attachments/assets/d39eb97d-5c53-480b-a0d8-7fc428ac6fe2)
+![화면 캡처 2025-04-08 103136](https://github.com/user-attachments/assets/16eb70b1-7263-4e92-9f2d-a2ffab31f976)
 
 ## 💡 기타 및 문의
 궁금한 점이 있다면 GitHub Discussions에서 소통해 주세요. 🙌
